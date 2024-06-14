@@ -1,4 +1,6 @@
 # Dockerfile
+# 로컬에서 '~/.ssh/id_rsa.pub' (공개키) = 원격에서 '~/.ssh/authorized_keys' (인증키)
+# 로컬에서 '~/.ssh/id_rsa' (개인키)를 SSH_PRIVATE_KEY에 삽입
 
 # Use the official Maven image with Java 11
 FROM maven:3.8.8-eclipse-temurin-21
