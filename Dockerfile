@@ -5,6 +5,7 @@ FROM maven:3.8.8-eclipse-temurin-21
 
 # Set the working directory
 # 이 부분 사용자의 디렉토리에 맞게 수정
+#
 WORKDIR /coupons
 
 # Copy the pom.xml and download dependencies
