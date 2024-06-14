@@ -1,0 +1,15 @@
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/CouponApiApplication.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/controller/CouponController.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/model/Coupon.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/model/CouponPolicy.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/model/CouponPolicyBook.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/model/CouponPolicyTag.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/model/CouponTagCategory.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/model/CouponUsage.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/repository/CouponPolicyBookRepository.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/repository/CouponPolicyRepository.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/repository/CouponPolicyTagRepository.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/repository/CouponRepository.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/repository/CouponTagCategoryRepository.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/repository/CouponUsageRepository.java
+/Users/imchaelyeong/Desktop/couponApiTest/src/main/java/com/nhnacademy/couponapi/service/CouponService.java

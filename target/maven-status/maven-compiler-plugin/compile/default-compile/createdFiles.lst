@@ -1,0 +1,15 @@
+com/nhnacademy/couponapi/repository/CouponTagCategoryRepository.class
+com/nhnacademy/couponapi/repository/CouponRepository.class
+com/nhnacademy/couponapi/controller/CouponController.class
+com/nhnacademy/couponapi/model/Coupon.class
+com/nhnacademy/couponapi/model/CouponPolicy.class
+com/nhnacademy/couponapi/repository/CouponPolicyBookRepository.class
+com/nhnacademy/couponapi/model/CouponPolicyTag.class
+com/nhnacademy/couponapi/CouponApiApplication.class
+com/nhnacademy/couponapi/model/CouponPolicyBook.class
+com/nhnacademy/couponapi/service/CouponService.class
+com/nhnacademy/couponapi/repository/CouponPolicyTagRepository.class
+com/nhnacademy/couponapi/model/CouponUsage.class
+com/nhnacademy/couponapi/repository/CouponPolicyRepository.class
+com/nhnacademy/couponapi/repository/CouponUsageRepository.class
+com/nhnacademy/couponapi/model/CouponTagCategory.class

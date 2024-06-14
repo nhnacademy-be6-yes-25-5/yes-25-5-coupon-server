@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+
+    environment {
+        DB_URL = 'jdbc:mysql://133.186.241.167:3306/nhn_academy_36'
+        DB_USER = 'nhn_academy_36'
+        DB_PASS = 'LE./7B[CZtN1T0SA'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Limchaereong/coupon-api.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Deploy to Staging') {
+            steps {
+                script {
+                    sh '''
+                    # Deploy to Staging
+                    scp target/coupon-api.jar user@staging-server:/path/to/deploy
+                    ssh user@staging-server 'java -jar /path/to/deploy/coupon-api.jar'
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    sh '''
+                    # Deploy to Production
+                    scp target/coupon-api.jar user@production-server:/path/to/deploy
+                    ssh user@production-server 'java -jar /path/to/deploy/coupon-api.jar'
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Deployment failed'
+        }
+    }
+}

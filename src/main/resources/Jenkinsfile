@@ -1,0 +1,91 @@
+// pipeline {
+//     agent any
+//
+//     environment {
+//         DB_URL = 'jdbc:mysql://133.186.241.167:3306/nhn_academy_36'
+//         DB_USER = 'nhn_academy_36'
+//         DB_PASS = 'LE./7B[CZtN1T0SA'
+//         HOOK_URL = 'https://hook.dooray.com/services/3204376758577275363/3824312399885046720/ZqH6q36TRc6JoU4aGrKTNA'
+//         STAGING_SERVER = '172.20.160.173' // 스테이징 서버의 호스트 이름 또는 IP 주소
+// //        STAGING_SERVER = '133.186.135.211' // 스테이징 서버의 호스트 이름 또는 IP 주소 cloud로 만든 서버
+// //        PRODUCTION_SERVER = 'your.production.server' // 프로덕션 서버의 호스트 이름 또는 IP 주소
+//     }
+//
+//     stages {
+//         stage('Print Environment Variables') {
+//             steps {
+//                 script {
+//                     env.each { key, value ->
+//                         echo "${key} = ${value}"
+//                     }
+//                 }
+//             }
+//         }
+//
+//         stage('Checkout') {
+//             steps {
+//                 git branch: 'main', url: 'https://github.com/Limchaereong/couponApiTest.git'
+//             }
+//         }
+//
+//         stage('Build') {
+//             steps {
+//                 script {
+//                     sh './mvnw clean install'
+//                 }
+//             }
+//         }
+//
+//         stage('Test') {
+//             steps {
+//                 script {
+//                     sh './mvnw test'
+//                 }
+//             }
+//         }
+//
+//         stage('Deploy to Staging') {
+//             steps {
+//                 script {
+//                     sh '''
+//                     if [ -f ~/.ssh/id_rsa ]; then
+//                         scp -i ~/.ssh/id_rsa target/couponApi-0.0.1-SNAPSHOT.jar deployuser@172.20.160.173:/home/deployuser/deployments
+//                         ssh -i ~/.ssh/id_rsa deployuser@172.20.160.173 'java -jar /home/deployuser/deployments/couponApi-0.0.1-SNAPSHOT.jar'
+//                     else
+//                         echo "SSH 키가 없습니다: ~/.ssh/id_rsa"
+//                         exit 1
+//                     fi
+//                     '''
+//                 }
+//             }
+//         }
+//     }
+//
+//     post {
+//         success {
+//             script {
+//                 sendMessage('Coupon CI/CD', '빌드 및 배포가 성공적으로 완료되었습니다.')
+//             }
+//             echo '배포 성공'
+//         }
+//         failure {
+//             script {
+//                 sendMessage('Coupon CI/CD', '배포에 실패했습니다.')
+//             }
+//             echo '배포 실패'
+//         }
+//     }
+// }
+//
+// def sendMessage(String user, String message) {
+//     def payload = [
+//         botName: user,
+//         text   : message
+//     ]
+//
+//     def json = groovy.json.JsonOutput.toJson(payload)
+//
+//     sh """
+//     curl -X POST -H 'Content-Type: application/json' -d '${json}' ${env.HOOK_URL}
+//     """
+// }
