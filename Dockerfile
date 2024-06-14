@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Use the official Maven image with Java 11
-FROM maven:4.0.0-openjdk-21
+FROM maven:3.8.7-openjdk-21
 
 # Set the working directory
 WORKDIR /coupons
