@@ -5,5 +5,5 @@
 //import org.springframework.stereotype.Repository;
 //
 //@Repository
-//public interface CouponPolicyRepository extends JpaRepository<CouponPolicy, Long> {
+//public interface CouponPolicyRepository extends JpaRepository<CouponPolicy, Long> {d
 //}
