@@ -34,9 +34,9 @@
 //        couponPolicy.setCouponPolicyDiscountValue(100L);
 //        couponPolicy.setCouponPolicyMaxAmount(500.0);
 //        couponPolicy.setCouponPolicyMinOrderAmount(50.0);
-//        couponPolicy = couponPolicyRepository.save(couponPolicy);
+//        couponPolicy = couponPolicyRepository.save(couponPolicy);d
 //
-//        // Create and save a CouponPolicyBook
+//        // Create and save a CouponPolicyBookd
 //        CouponPolicyBook couponPolicyBook = new CouponPolicyBook();
 //        couponPolicyBook.setCouponPolicy(couponPolicy);
 //        couponPolicyBook.setBookId(123L);

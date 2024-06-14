@@ -25,8 +25,8 @@ jobs:
       - name: Execute SonarQube Analysis
         run: |
           mvn clean verify sonar:sonar \
-          -Dsonar.projectKey=yes25-5-coupon-server \
-          -Dsonar.projectName='yes25-5-coupon-server' \
+          -Dsonar.projectKey=yes-25-5-coupons \
+          -Dsonar.projectName='yes-25-5-coupons' \
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
@@ -69,9 +69,9 @@ jobs:
           script: |
             const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
             const payload = {
-              botName: "주문 결제 서버 Bot",
+              botName: "채령 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
-              text: "주문 및 결제 서버의 Pull Request가 성공적으로 올라갔어요!",
+              text: "쿠폰 서버의 Pull Request가 성공적으로 올라갔어요!",
               attachments: [
                 {
                   title: "Pull Request URL",
@@ -106,9 +106,9 @@ jobs:
           script: |
             const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
             const payload = {
-              botName: "주문 결제 서버 Bot",
+              botName: "채령 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
-              text: "주문 및 결제 서버의 Pull Request가 실패했어요...",
+              text: "쿠폰 서버의 Pull Request가 실패했어요...",
               attachments: [
                 {
                   title: "Pull Request URL",
