@@ -22,7 +22,8 @@ jobs:
           fi
 
       - name: Build Docker image
-        run: docker build -t my-app-ci .
+        run: |
+          docker build -t my-app-ci .
 
       - name: Run Maven tests in Docker
         run: |
@@ -33,7 +34,8 @@ jobs:
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
       - name: Build Maven project in Docker
-        run: docker run --rm -v "$(pwd)":/app -w /app my-app-ci mvn package
+        run: |
+          docker run --rm -v "$(pwd)":/app -w /app my-app-ci mvn package
 
       - name: Check if JAR file exists
         run: |
@@ -52,14 +54,14 @@ jobs:
       - name: Upload JAR to Remote Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+          REMOTE_USER: nhnacademy
+          REMOTE_HOST: 133.186.153.195
+          REMOTE_DIR: /home/nhnacademy/coupons
         run: |
           mkdir -p ~/.ssh
           echo "${SSH_PRIVATE_KEY}" > ~/.ssh/github_rsa
           chmod 400 ~/.ssh/github_rsa
-          ssh-keyscan ${REMOTE_HOST} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${REMOTE_HOST} >> ~/.ssh/known_hosts
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no target/*.jar ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}
 
       - name: Send Dooray Webhook on Success
