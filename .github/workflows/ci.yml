@@ -25,8 +25,8 @@ jobs:
       - name: Execute SonarQube Analysis
         run: |
           mvn clean verify sonar:sonar \
-          -Dsonar.projectKey=yes-25-5-coupon \
-          -Dsonar.projectName='yes-25-5-coupon' \
+          -Dsonar.projectKey=yes-25-5-coupons \
+          -Dsonar.projectName='yes-25-5-coupons' \
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
