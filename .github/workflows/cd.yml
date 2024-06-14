@@ -39,6 +39,10 @@ jobs:
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
           cd ${REMOTE_DIR}
+          if [ ! -f Dockerfile ]; then
+            echo "Dockerfile not found!"
+            exit 1
+          fi
           docker build -t my-app .
           docker stop my-app || true
           docker rm my-app || true
