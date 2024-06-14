@@ -36,7 +36,7 @@
 //        couponPolicy.setCouponPolicyMinOrderAmount(50.0);
 //        couponPolicy = couponPolicyRepository.save(couponPolicy);
 //
-//        // Create and save a CouponPolicyBook
+//        // Create and save a CouponPolicyBookd
 //        CouponPolicyBook couponPolicyBook = new CouponPolicyBook();
 //        couponPolicyBook.setCouponPolicy(couponPolicy);
 //        couponPolicyBook.setBookId(123L);
