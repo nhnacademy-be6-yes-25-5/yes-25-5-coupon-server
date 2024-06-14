@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.nhnacademy</groupId>
-    <artifactId>couponApi</artifactId>
+    <artifactId>yes-25-5-coupon-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>couponApi</name>
-    <description>couponApi</description>
+    <name>yes-25-5-coupon-server</name>
+    <description>yes-25-5-coupon-server</description>
     <properties>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <java.version>21</java.version>
