@@ -1,0 +1,16 @@
+package com.nhnacademy.couponapi.application.service;
+
+import com.nhnacademy.couponapi.persistance.domain.CouponPolicy;
+import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
+
+import java.util.List;
+
+public interface CouponPolicyService {
+    List<CouponPolicyResponseDTO> getAllCouponPolicies();
+    CouponPolicyResponseDTO getCouponPolicyById(Long id); // This will return the DTO
+    CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO requestDTO);
+    CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO requestDTO);
+    void deleteCouponPolicy(Long id);
+    CouponPolicy getCouponPolicyEntityById(Long id); // This will return the entity
+}
