@@ -3,16 +3,18 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponPolicyBookService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/coupon-policy-books")
 public class CouponPolicyBookController {
-    @Autowired
-    private CouponPolicyBookService couponPolicyBookService;
+
+    private final CouponPolicyBookService couponPolicyBookService;
 
     @GetMapping
     public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {

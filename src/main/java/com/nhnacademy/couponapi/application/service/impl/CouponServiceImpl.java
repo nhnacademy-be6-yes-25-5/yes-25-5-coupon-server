@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
-
     private final CouponPolicyService couponPolicyService;
 
     @Override
@@ -37,13 +36,13 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO) {
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
-                .couponName(couponRequestDTO.getCouponName())
-                .couponCode(couponRequestDTO.getCouponCode())
-                .couponExpiredAt(couponRequestDTO.getCouponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.getCouponCreatedAt());
+                .couponName(couponRequestDTO.couponName())
+                .couponCode(couponRequestDTO.couponCode())
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
+                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
 
-        if (couponRequestDTO.getCouponPolicyId() != null) {
-            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.getCouponPolicyId()));
+        if (couponRequestDTO.couponPolicyId() != null) {
+            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
         }
 
         Coupon savedCoupon = couponRepository.save(couponBuilder.build());
@@ -57,13 +56,13 @@ public class CouponServiceImpl implements CouponService {
 
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
                 .couponId(existingCoupon.getCouponId())
-                .couponName(couponRequestDTO.getCouponName())
-                .couponCode(couponRequestDTO.getCouponCode())
-                .couponExpiredAt(couponRequestDTO.getCouponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.getCouponCreatedAt());
+                .couponName(couponRequestDTO.couponName())
+                .couponCode(couponRequestDTO.couponCode())
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
+                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
 
-        if (couponRequestDTO.getCouponPolicyId() != null) {
-            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.getCouponPolicyId()));
+        if (couponRequestDTO.couponPolicyId() != null) {
+            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
         }
 
         Coupon updatedCoupon = couponRepository.save(couponBuilder.build());
@@ -76,19 +75,19 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Coupon getCouponEntityById(Long id) {  // 메서드 구현
+    public Coupon getCouponEntityById(Long id) {
         return couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
     }
 
     private CouponResponseDTO toResponseDTO(Coupon coupon) {
-        return CouponResponseDTO.builder()
-                .couponId(coupon.getCouponId())
-                .couponName(coupon.getCouponName())
-                .couponCode(coupon.getCouponCode())
-                .couponExpiredAt(coupon.getCouponExpiredAt())
-                .couponCreatedAt(coupon.getCouponCreatedAt())
-                .couponPolicyId(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null)
-                .build();
+        return new CouponResponseDTO(
+                coupon.getCouponId(),
+                coupon.getCouponName(),
+                coupon.getCouponCode(),
+                coupon.getCouponExpiredAt(),
+                coupon.getCouponCreatedAt(),
+                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null
+        );
     }
 }

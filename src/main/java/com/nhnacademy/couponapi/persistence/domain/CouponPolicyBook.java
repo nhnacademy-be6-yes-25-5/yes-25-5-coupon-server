@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "coupon_policy_book")
 public class CouponPolicyBook {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponPolicyBookId;
@@ -36,4 +37,5 @@ public class CouponPolicyBook {
     public void setBookId(Long bookId) {
         this.bookId = bookId;
     }
+
 }

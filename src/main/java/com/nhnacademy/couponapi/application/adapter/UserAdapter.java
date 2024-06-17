@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-api", url = "http://user-api")
 public interface UserAdapter {
+
     @GetMapping("/users/{id}")
     UserResponseDTO getUserById(@PathVariable("id") Long id);
+
 }

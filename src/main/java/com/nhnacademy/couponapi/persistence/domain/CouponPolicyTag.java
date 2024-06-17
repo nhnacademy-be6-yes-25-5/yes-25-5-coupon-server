@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "coupon_policy_tag")
 public class CouponPolicyTag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponPolicyTagId;
@@ -36,4 +37,5 @@ public class CouponPolicyTag {
     public void setTagId(Long tagId) {
         this.tagId = tagId;
     }
+
 }

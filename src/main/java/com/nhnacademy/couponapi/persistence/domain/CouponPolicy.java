@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class CouponPolicy {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponPolicyId;
@@ -44,4 +45,5 @@ public class CouponPolicy {
         this.couponPolicyDiscountType = couponPolicyDiscountType;
         this.coupons = coupons;
     }
+
 }

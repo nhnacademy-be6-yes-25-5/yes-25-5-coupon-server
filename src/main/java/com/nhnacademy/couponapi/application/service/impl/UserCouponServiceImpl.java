@@ -33,34 +33,44 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Override
     public UserCouponResponseDTO getUserCouponById(Long id) {
+
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
+
         return toResponseDTO(userCoupon);
     }
 
     @Override
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
-        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.getCouponId());
-        userAdapter.getUserById(userCouponRequestDTO.getUserId()); // Verify user exists
+
+        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
+        userAdapter.getUserById(userCouponRequestDTO.userId());
+
         UserCoupon userCoupon = UserCoupon.builder()
-                .userId(userCouponRequestDTO.getUserId())
+                .userId(userCouponRequestDTO.userId())
                 .coupon(coupon)
-                .userCouponUsedAt(userCouponRequestDTO.getUserCouponUsedAt())
+                .userCouponUsedAt(userCouponRequestDTO.userCouponUsedAt())
                 .build();
+
         UserCoupon savedUserCoupon = userCouponRepository.save(userCoupon);
+
         return toResponseDTO(savedUserCoupon);
     }
 
     @Override
     public UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO) {
+
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
-        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.getCouponId());
-        userAdapter.getUserById(userCouponRequestDTO.getUserId()); // Verify user exists
+
+        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
+
+        userAdapter.getUserById(userCouponRequestDTO.userId());
         userCoupon.setCoupon(coupon);
-        userCoupon.setUserId(userCouponRequestDTO.getUserId());
-        userCoupon.setUserCouponUsedAt(userCouponRequestDTO.getUserCouponUsedAt());
+        userCoupon.setUserId(userCouponRequestDTO.userId());
+        userCoupon.setUserCouponUsedAt(userCouponRequestDTO.userCouponUsedAt());
         UserCoupon updatedUserCoupon = userCouponRepository.save(userCoupon);
+
         return toResponseDTO(updatedUserCoupon);
     }
 

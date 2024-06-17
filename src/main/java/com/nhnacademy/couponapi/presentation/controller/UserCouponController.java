@@ -3,16 +3,18 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.UserCouponService;
 import com.nhnacademy.couponapi.presentation.dto.request.UserCouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.UserCouponResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user-coupons")
 public class UserCouponController {
-    @Autowired
-    private UserCouponService userCouponService;
+
+    private final UserCouponService userCouponService;
 
     @GetMapping
     public List<UserCouponResponseDTO> getAllUserCoupons() {

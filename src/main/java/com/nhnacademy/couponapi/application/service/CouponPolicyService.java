@@ -7,10 +7,12 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDT
 import java.util.List;
 
 public interface CouponPolicyService {
+
     List<CouponPolicyResponseDTO> getAllCouponPolicies();
-    CouponPolicyResponseDTO getCouponPolicyById(Long id); // This will return the DTO
+    CouponPolicyResponseDTO getCouponPolicyById(Long id);
     CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO requestDTO);
     CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO requestDTO);
     void deleteCouponPolicy(Long id);
-    CouponPolicy getCouponPolicyEntityById(Long id); // This will return the entity
+    CouponPolicy getCouponPolicyEntityById(Long id);
+
 }

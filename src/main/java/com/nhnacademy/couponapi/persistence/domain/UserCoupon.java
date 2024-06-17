@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class UserCoupon {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userCouponId;
@@ -44,4 +45,5 @@ public class UserCoupon {
     public void setUserCouponUsedAt(Date userCouponUsedAt) {
         this.userCouponUsedAt = userCouponUsedAt;
     }
+
 }

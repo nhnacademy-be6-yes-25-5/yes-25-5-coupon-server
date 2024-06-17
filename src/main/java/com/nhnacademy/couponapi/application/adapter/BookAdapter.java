@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "book-api", url = "http://book-api")
 public interface BookAdapter {
+
     @GetMapping("/books/{id}")
     BookResponseDTO getBookById(@PathVariable("id") Long id);
+
 }
