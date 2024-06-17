@@ -1,6 +1,6 @@
 package com.nhnacademy.couponapi.application.service;
 
-import com.nhnacademy.couponapi.persistance.domain.Coupon;
+import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 

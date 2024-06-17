@@ -1,12 +1,11 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
-import com.nhnacademy.couponapi.persistance.domain.CouponPolicy;
-import com.nhnacademy.couponapi.persistance.repository.CouponPolicyRepository;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
+import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

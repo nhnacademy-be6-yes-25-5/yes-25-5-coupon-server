@@ -2,8 +2,8 @@ package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
-import com.nhnacademy.couponapi.persistance.domain.Coupon;
-import com.nhnacademy.couponapi.persistance.repository.CouponRepository;
+import com.nhnacademy.couponapi.persistence.domain.Coupon;
+import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
