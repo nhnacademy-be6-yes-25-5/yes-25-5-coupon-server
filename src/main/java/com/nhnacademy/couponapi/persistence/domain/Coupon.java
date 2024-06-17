@@ -1,4 +1,4 @@
-package com.nhnacademy.couponapi.persistance.domain;
+package com.nhnacademy.couponapi.persistence.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
