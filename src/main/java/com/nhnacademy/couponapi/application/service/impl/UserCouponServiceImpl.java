@@ -43,13 +43,13 @@ public class UserCouponServiceImpl implements UserCouponService {
     @Override
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
 
-        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.getCouponId());
-        userAdapter.getUserById(userCouponRequestDTO.getUserId());
+        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
+        userAdapter.getUserById(userCouponRequestDTO.userId());
 
         UserCoupon userCoupon = UserCoupon.builder()
-                .userId(userCouponRequestDTO.getUserId())
+                .userId(userCouponRequestDTO.userId())
                 .coupon(coupon)
-                .userCouponUsedAt(userCouponRequestDTO.getUserCouponUsedAt())
+                .userCouponUsedAt(userCouponRequestDTO.userCouponUsedAt())
                 .build();
 
         UserCoupon savedUserCoupon = userCouponRepository.save(userCoupon);
@@ -63,12 +63,12 @@ public class UserCouponServiceImpl implements UserCouponService {
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
 
-        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.getCouponId());
+        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
 
-        userAdapter.getUserById(userCouponRequestDTO.getUserId());
+        userAdapter.getUserById(userCouponRequestDTO.userId());
         userCoupon.setCoupon(coupon);
-        userCoupon.setUserId(userCouponRequestDTO.getUserId());
-        userCoupon.setUserCouponUsedAt(userCouponRequestDTO.getUserCouponUsedAt());
+        userCoupon.setUserId(userCouponRequestDTO.userId());
+        userCoupon.setUserCouponUsedAt(userCouponRequestDTO.userCouponUsedAt());
         UserCoupon updatedUserCoupon = userCouponRepository.save(userCoupon);
 
         return toResponseDTO(updatedUserCoupon);
@@ -87,5 +87,4 @@ public class UserCouponServiceImpl implements UserCouponService {
                 .userCouponUsedAt(userCoupon.getUserCouponUsedAt())
                 .build();
     }
-
 }

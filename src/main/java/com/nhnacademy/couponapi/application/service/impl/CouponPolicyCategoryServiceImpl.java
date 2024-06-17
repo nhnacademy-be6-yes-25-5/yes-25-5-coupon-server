@@ -43,11 +43,11 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Override
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
 
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        categoryAdapter.getCategoryById(requestDTO.getCategoryId());
+        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        categoryAdapter.getCategoryById(requestDTO.categoryId());
         CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
                 .couponPolicy(couponPolicy)
-                .categoryId(requestDTO.getCategoryId())
+                .categoryId(requestDTO.categoryId())
                 .build();
         CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
@@ -59,10 +59,10 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyCategory not found"));
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        categoryAdapter.getCategoryById(requestDTO.getCategoryId());
+        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        categoryAdapter.getCategoryById(requestDTO.categoryId());
         couponPolicyCategory.setCouponPolicy(couponPolicy);
-        couponPolicyCategory.setCategoryId(requestDTO.getCategoryId());
+        couponPolicyCategory.setCategoryId(requestDTO.categoryId());
         CouponPolicyCategory updatedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
         return toResponseDTO(updatedCouponPolicyCategory);

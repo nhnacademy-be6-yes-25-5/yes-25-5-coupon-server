@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
-
     private final CouponPolicyService couponPolicyService;
 
     @Override
@@ -29,50 +28,44 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponResponseDTO getCouponById(Long id) {
-
         Coupon coupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
-
         return toResponseDTO(coupon);
     }
 
     @Override
     public CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO) {
-
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
-                .couponName(couponRequestDTO.getCouponName())
-                .couponCode(couponRequestDTO.getCouponCode())
-                .couponExpiredAt(couponRequestDTO.getCouponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.getCouponCreatedAt());
+                .couponName(couponRequestDTO.couponName())
+                .couponCode(couponRequestDTO.couponCode())
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
+                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
 
-        if (couponRequestDTO.getCouponPolicyId() != null) {
-            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.getCouponPolicyId()));
+        if (couponRequestDTO.couponPolicyId() != null) {
+            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
         }
 
         Coupon savedCoupon = couponRepository.save(couponBuilder.build());
-
         return toResponseDTO(savedCoupon);
     }
 
     @Override
     public CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO) {
-
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
 
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
                 .couponId(existingCoupon.getCouponId())
-                .couponName(couponRequestDTO.getCouponName())
-                .couponCode(couponRequestDTO.getCouponCode())
-                .couponExpiredAt(couponRequestDTO.getCouponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.getCouponCreatedAt());
+                .couponName(couponRequestDTO.couponName())
+                .couponCode(couponRequestDTO.couponCode())
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
+                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
 
-        if (couponRequestDTO.getCouponPolicyId() != null) {
-            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.getCouponPolicyId()));
+        if (couponRequestDTO.couponPolicyId() != null) {
+            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
         }
 
         Coupon updatedCoupon = couponRepository.save(couponBuilder.build());
-
         return toResponseDTO(updatedCoupon);
     }
 
@@ -88,14 +81,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     private CouponResponseDTO toResponseDTO(Coupon coupon) {
-        return CouponResponseDTO.builder()
-                .couponId(coupon.getCouponId())
-                .couponName(coupon.getCouponName())
-                .couponCode(coupon.getCouponCode())
-                .couponExpiredAt(coupon.getCouponExpiredAt())
-                .couponCreatedAt(coupon.getCouponCreatedAt())
-                .couponPolicyId(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null)
-                .build();
+        return new CouponResponseDTO(
+                coupon.getCouponId(),
+                coupon.getCouponName(),
+                coupon.getCouponCode(),
+                coupon.getCouponExpiredAt(),
+                coupon.getCouponCreatedAt(),
+                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null
+        );
     }
-
 }

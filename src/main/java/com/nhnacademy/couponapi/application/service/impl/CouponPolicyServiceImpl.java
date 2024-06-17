@@ -31,26 +31,26 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                 .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
 
         return toResponseDTO(couponPolicy);
-    } //클라이언트에게 응답하기위해 couponPolicyResponseDTO로 변환
+    } // 클라이언트에게 응답하기 위해 CouponPolicyResponseDTO로 변환
 
     @Override
     public CouponPolicy getCouponPolicyEntityById(Long id) {
         return couponPolicyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
-    } //서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할때 사용
+    } // 서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할 때 사용
 
     @Override
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
         CouponPolicy couponPolicy = CouponPolicy.builder()
-                .couponPolicyName(couponPolicyRequestDTO.getCouponPolicyName())
-                .couponPolicyDiscountValue(couponPolicyRequestDTO.getCouponPolicyDiscountValue())
-                .couponPolicyCreatedAt(couponPolicyRequestDTO.getCouponPolicyCreatedAt())
-                .couponPolicyUpdatedAt(couponPolicyRequestDTO.getCouponPolicyUpdatedAt())
-                .couponPolicyRate(couponPolicyRequestDTO.getCouponPolicyRate())
-                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.getCouponPolicyMinOrderAmount())
-                .couponPolicyMaxAmount(couponPolicyRequestDTO.getCouponPolicyMaxAmount())
-                .couponPolicyDiscountType(couponPolicyRequestDTO.isCouponPolicyDiscountType())
+                .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                .couponPolicyCreatedAt(couponPolicyRequestDTO.couponPolicyCreatedAt())
+                .couponPolicyUpdatedAt(couponPolicyRequestDTO.couponPolicyUpdatedAt())
+                .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
                 .build();
 
         CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
@@ -66,14 +66,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
         CouponPolicy updatedCouponPolicy = CouponPolicy.builder()
                 .couponPolicyId(existingCouponPolicy.getCouponPolicyId())
-                .couponPolicyName(couponPolicyRequestDTO.getCouponPolicyName())
-                .couponPolicyDiscountValue(couponPolicyRequestDTO.getCouponPolicyDiscountValue())
-                .couponPolicyCreatedAt(couponPolicyRequestDTO.getCouponPolicyCreatedAt())
-                .couponPolicyUpdatedAt(couponPolicyRequestDTO.getCouponPolicyUpdatedAt())
-                .couponPolicyRate(couponPolicyRequestDTO.getCouponPolicyRate())
-                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.getCouponPolicyMinOrderAmount())
-                .couponPolicyMaxAmount(couponPolicyRequestDTO.getCouponPolicyMaxAmount())
-                .couponPolicyDiscountType(couponPolicyRequestDTO.isCouponPolicyDiscountType())
+                .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                .couponPolicyCreatedAt(couponPolicyRequestDTO.couponPolicyCreatedAt())
+                .couponPolicyUpdatedAt(couponPolicyRequestDTO.couponPolicyUpdatedAt())
+                .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
                 .build();
 
         CouponPolicy savedCouponPolicy = couponPolicyRepository.save(updatedCouponPolicy);

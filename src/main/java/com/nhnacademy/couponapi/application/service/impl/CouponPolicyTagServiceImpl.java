@@ -33,7 +33,6 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
     @Override
     public CouponPolicyTagResponseDTO getCouponPolicyTagById(Long id) {
-
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
         return toResponseDTO(couponPolicyTag);
@@ -41,29 +40,25 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
     @Override
     public CouponPolicyTagResponseDTO createCouponPolicyTag(CouponPolicyTagRequestDTO requestDTO) {
-
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        tagAdapter.getTagById(requestDTO.getTagId());
+        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        tagAdapter.getTagById(requestDTO.tagId());
         CouponPolicyTag couponPolicyTag = CouponPolicyTag.builder()
                 .couponPolicy(couponPolicy)
-                .tagId(requestDTO.getTagId())
+                .tagId(requestDTO.tagId())
                 .build();
         CouponPolicyTag savedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
-
         return toResponseDTO(savedCouponPolicyTag);
     }
 
     @Override
     public CouponPolicyTagResponseDTO updateCouponPolicyTag(Long id, CouponPolicyTagRequestDTO requestDTO) {
-
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        tagAdapter.getTagById(requestDTO.getTagId());
+        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        tagAdapter.getTagById(requestDTO.tagId());
         couponPolicyTag.setCouponPolicy(couponPolicy);
-        couponPolicyTag.setTagId(requestDTO.getTagId());
+        couponPolicyTag.setTagId(requestDTO.tagId());
         CouponPolicyTag updatedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
-
         return toResponseDTO(updatedCouponPolicyTag);
     }
 
@@ -73,11 +68,11 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     private CouponPolicyTagResponseDTO toResponseDTO(CouponPolicyTag couponPolicyTag) {
-        return CouponPolicyTagResponseDTO.builder()
-                .couponPolicyTagId(couponPolicyTag.getCouponPolicyTagId())
-                .couponPolicyId(couponPolicyTag.getCouponPolicy().getCouponPolicyId())
-                .tagId(couponPolicyTag.getTagId())
-                .build();
+        return new CouponPolicyTagResponseDTO(
+                couponPolicyTag.getCouponPolicyTagId(),
+                couponPolicyTag.getCouponPolicy().getCouponPolicyId(),
+                couponPolicyTag.getTagId()
+        );
     }
 
 }
