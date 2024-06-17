@@ -29,13 +29,16 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponResponseDTO getCouponById(Long id) {
+
         Coupon coupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
+
         return toResponseDTO(coupon);
     }
 
     @Override
     public CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO) {
+
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
                 .couponName(couponRequestDTO.getCouponName())
                 .couponCode(couponRequestDTO.getCouponCode())
@@ -47,11 +50,13 @@ public class CouponServiceImpl implements CouponService {
         }
 
         Coupon savedCoupon = couponRepository.save(couponBuilder.build());
+
         return toResponseDTO(savedCoupon);
     }
 
     @Override
     public CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO) {
+
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
 
@@ -67,6 +72,7 @@ public class CouponServiceImpl implements CouponService {
         }
 
         Coupon updatedCoupon = couponRepository.save(couponBuilder.build());
+
         return toResponseDTO(updatedCoupon);
     }
 
@@ -76,7 +82,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Coupon getCouponEntityById(Long id) {  // 메서드 구현
+    public Coupon getCouponEntityById(Long id) {
         return couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
     }
@@ -91,4 +97,5 @@ public class CouponServiceImpl implements CouponService {
                 .couponPolicyId(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null)
                 .build();
     }
+
 }

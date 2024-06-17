@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Coupon {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponId;
@@ -33,4 +34,5 @@ public class Coupon {
         this.couponCreatedAt = couponCreatedAt;
         this.couponPolicy = couponPolicy;
     }
+
 }

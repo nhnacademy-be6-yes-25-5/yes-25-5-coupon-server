@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "coupon_policy_category")
 public class CouponPolicyCategory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponPolicyCategoryId;
@@ -36,4 +37,5 @@ public class CouponPolicyCategory {
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
+
 }

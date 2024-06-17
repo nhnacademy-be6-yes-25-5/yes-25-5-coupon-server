@@ -33,13 +33,16 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
     @Override
     public CouponPolicyCategoryResponseDTO getCouponPolicyCategoryById(Long id) {
+
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyCategory not found"));
+
         return toResponseDTO(couponPolicyCategory);
     }
 
     @Override
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
+
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
         categoryAdapter.getCategoryById(requestDTO.getCategoryId());
         CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
@@ -47,18 +50,21 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                 .categoryId(requestDTO.getCategoryId())
                 .build();
         CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
+
         return toResponseDTO(savedCouponPolicyCategory);
     }
 
     @Override
     public CouponPolicyCategoryResponseDTO updateCouponPolicyCategory(Long id, CouponPolicyCategoryRequestDTO requestDTO) {
+
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyCategory not found"));
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        categoryAdapter.getCategoryById(requestDTO.getCategoryId()); // Verify category exists
+        categoryAdapter.getCategoryById(requestDTO.getCategoryId());
         couponPolicyCategory.setCouponPolicy(couponPolicy);
         couponPolicyCategory.setCategoryId(requestDTO.getCategoryId());
         CouponPolicyCategory updatedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
+
         return toResponseDTO(updatedCouponPolicyCategory);
     }
 

@@ -33,6 +33,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
     @Override
     public CouponPolicyTagResponseDTO getCouponPolicyTagById(Long id) {
+
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
         return toResponseDTO(couponPolicyTag);
@@ -40,25 +41,29 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
     @Override
     public CouponPolicyTagResponseDTO createCouponPolicyTag(CouponPolicyTagRequestDTO requestDTO) {
+
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        tagAdapter.getTagById(requestDTO.getTagId()); // Verify tag exists
+        tagAdapter.getTagById(requestDTO.getTagId());
         CouponPolicyTag couponPolicyTag = CouponPolicyTag.builder()
                 .couponPolicy(couponPolicy)
                 .tagId(requestDTO.getTagId())
                 .build();
         CouponPolicyTag savedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
+
         return toResponseDTO(savedCouponPolicyTag);
     }
 
     @Override
     public CouponPolicyTagResponseDTO updateCouponPolicyTag(Long id, CouponPolicyTagRequestDTO requestDTO) {
+
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        tagAdapter.getTagById(requestDTO.getTagId()); // Verify tag exists
+        tagAdapter.getTagById(requestDTO.getTagId());
         couponPolicyTag.setCouponPolicy(couponPolicy);
         couponPolicyTag.setTagId(requestDTO.getTagId());
         CouponPolicyTag updatedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
+
         return toResponseDTO(updatedCouponPolicyTag);
     }
 
@@ -74,4 +79,5 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
                 .tagId(couponPolicyTag.getTagId())
                 .build();
     }
+
 }

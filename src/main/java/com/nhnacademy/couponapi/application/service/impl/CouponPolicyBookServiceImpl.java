@@ -33,32 +33,38 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     @Override
     public CouponPolicyBookResponseDTO getCouponPolicyBookById(Long id) {
+
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
+
         return toResponseDTO(couponPolicyBook);
     }
 
     @Override
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
+
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        bookAdapter.getBookById(requestDTO.getBookId()); // Verify book exists
+        bookAdapter.getBookById(requestDTO.getBookId());
         CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
                 .couponPolicy(couponPolicy)
                 .bookId(requestDTO.getBookId())
                 .build();
         CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
+
         return toResponseDTO(savedCouponPolicyBook);
     }
 
     @Override
     public CouponPolicyBookResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO) {
+
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.getCouponPolicyId());
-        bookAdapter.getBookById(requestDTO.getBookId()); // Verify book exists
+        bookAdapter.getBookById(requestDTO.getBookId());
         couponPolicyBook.setCouponPolicy(couponPolicy);
         couponPolicyBook.setBookId(requestDTO.getBookId());
         CouponPolicyBook updatedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
+
         return toResponseDTO(updatedCouponPolicyBook);
     }
 
@@ -74,4 +80,5 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                 .bookId(couponPolicyBook.getBookId())
                 .build();
     }
+
 }

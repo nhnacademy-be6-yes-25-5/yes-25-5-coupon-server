@@ -33,34 +33,44 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Override
     public UserCouponResponseDTO getUserCouponById(Long id) {
+
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
+
         return toResponseDTO(userCoupon);
     }
 
     @Override
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
+
         Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.getCouponId());
-        userAdapter.getUserById(userCouponRequestDTO.getUserId()); // Verify user exists
+        userAdapter.getUserById(userCouponRequestDTO.getUserId());
+
         UserCoupon userCoupon = UserCoupon.builder()
                 .userId(userCouponRequestDTO.getUserId())
                 .coupon(coupon)
                 .userCouponUsedAt(userCouponRequestDTO.getUserCouponUsedAt())
                 .build();
+
         UserCoupon savedUserCoupon = userCouponRepository.save(userCoupon);
+
         return toResponseDTO(savedUserCoupon);
     }
 
     @Override
     public UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO) {
+
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
+
         Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.getCouponId());
-        userAdapter.getUserById(userCouponRequestDTO.getUserId()); // Verify user exists
+
+        userAdapter.getUserById(userCouponRequestDTO.getUserId());
         userCoupon.setCoupon(coupon);
         userCoupon.setUserId(userCouponRequestDTO.getUserId());
         userCoupon.setUserCouponUsedAt(userCouponRequestDTO.getUserCouponUsedAt());
         UserCoupon updatedUserCoupon = userCouponRepository.save(userCoupon);
+
         return toResponseDTO(updatedUserCoupon);
     }
 
@@ -77,4 +87,5 @@ public class UserCouponServiceImpl implements UserCouponService {
                 .userCouponUsedAt(userCoupon.getUserCouponUsedAt())
                 .build();
     }
+
 }
