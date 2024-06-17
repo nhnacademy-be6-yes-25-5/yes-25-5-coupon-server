@@ -1,13 +1,16 @@
-//package com.nhnacademy.couponapi.application.service;
-//
-//import com.nhnacademy.couponapi.presentation.dto.request.CreateCouponRequest;
-//import com.nhnacademy.couponapi.presentation.dto.request.UseCouponRequest;
-//import com.nhnacademy.couponapi.presentation.dto.response.CouponResponse;
-//
-//import java.util.List;
-//
-//public interface CouponService {
-//    CouponResponse createCoupon(CreateCouponRequest request);
-//    List<CouponResponse> getCouponsByUser(Long userId);
-//    void useCoupon(UseCouponRequest request);
-//}
+package com.nhnacademy.couponapi.application.service;
+
+import com.nhnacademy.couponapi.persistance.domain.Coupon;
+import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
+
+import java.util.List;
+
+public interface CouponService {
+    List<CouponResponseDTO> getAllCoupons();
+    CouponResponseDTO getCouponById(Long id);
+    CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO);
+    CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO);
+    void deleteCoupon(Long id);
+    Coupon getCouponEntityById(Long id);
+}
