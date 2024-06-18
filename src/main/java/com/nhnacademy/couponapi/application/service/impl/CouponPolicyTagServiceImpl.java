@@ -10,6 +10,7 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyTagRequestD
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyTagResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     private final TagAdapter tagAdapter;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CouponPolicyTagResponseDTO> getAllCouponPolicyTags() {
         return couponPolicyTagRepository.findAll().stream()
                 .map(this::toResponseDTO)
@@ -32,6 +34,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CouponPolicyTagResponseDTO getCouponPolicyTagById(Long id) {
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
@@ -39,6 +42,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     @Override
+    @Transactional
     public CouponPolicyTagResponseDTO createCouponPolicyTag(CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
         tagAdapter.getTagById(requestDTO.tagId());
@@ -51,6 +55,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     @Override
+    @Transactional
     public CouponPolicyTagResponseDTO updateCouponPolicyTag(Long id, CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
@@ -63,6 +68,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     @Override
+    @Transactional
     public void deleteCouponPolicyTag(Long id) {
         couponPolicyTagRepository.deleteById(id);
     }

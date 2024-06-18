@@ -1,0 +1,35 @@
+### CouponPolicyCategoryController 테스트 요청
+
+# 1. 모든 CouponPolicyCategory 조회
+GET http://localhost:8081/coupon-policy-categories
+Accept: application/json
+
+###
+# 2. 특정 CouponPolicyCategory 조회
+GET http://localhost:8081/coupon-policy-categories/1
+Accept: application/json
+
+###
+# 3. CouponPolicyCategory 생성
+POST http://localhost:8081/coupon-policy-categories
+Content-Type: application/json
+
+{
+  "couponPolicyId": 1,
+  "categoryId": 2
+}
+
+###
+# 4. CouponPolicyCategory 수정
+PUT http://localhost:8081/coupon-policy-categories/1
+Content-Type: application/json
+
+{
+  "couponPolicyId": 1,
+  "categoryId": 3
+}
+
+###
+# 5. CouponPolicyCategory 삭제
+DELETE http://localhost:8081/coupon-policy-categories/1
+Content-Type: application/json
