@@ -4,7 +4,8 @@ import com.nhnacademy.couponapi.application.service.CouponPolicyBookService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +18,32 @@ public class CouponPolicyBookController {
     private final CouponPolicyBookService couponPolicyBookService;
 
     @GetMapping
-    public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
-        return couponPolicyBookService.getAllCouponPolicyBooks();
+    public ResponseEntity<List<CouponPolicyBookResponseDTO>> getAllCouponPolicyBooks() {
+        List<CouponPolicyBookResponseDTO> couponPolicyBooks = couponPolicyBookService.getAllCouponPolicyBooks();
+        return new ResponseEntity<>(couponPolicyBooks, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public CouponPolicyBookResponseDTO getCouponPolicyBookById(@PathVariable Long id) {
-        return couponPolicyBookService.getCouponPolicyBookById(id);
+    public ResponseEntity<CouponPolicyBookResponseDTO> getCouponPolicyBookById(@PathVariable Long id) {
+        CouponPolicyBookResponseDTO couponPolicyBook = couponPolicyBookService.getCouponPolicyBookById(id);
+        return new ResponseEntity<>(couponPolicyBook, HttpStatus.OK);
     }
 
     @PostMapping
-    public CouponPolicyBookResponseDTO createCouponPolicyBook(@RequestBody CouponPolicyBookRequestDTO requestDTO) {
-        return couponPolicyBookService.createCouponPolicyBook(requestDTO);
+    public ResponseEntity<CouponPolicyBookResponseDTO> createCouponPolicyBook(@RequestBody CouponPolicyBookRequestDTO requestDTO) {
+        CouponPolicyBookResponseDTO createdCouponPolicyBook = couponPolicyBookService.createCouponPolicyBook(requestDTO);
+        return new ResponseEntity<>(createdCouponPolicyBook, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public CouponPolicyBookResponseDTO updateCouponPolicyBook(@PathVariable Long id, @RequestBody CouponPolicyBookRequestDTO requestDTO) {
-        return couponPolicyBookService.updateCouponPolicyBook(id, requestDTO);
+    public ResponseEntity<CouponPolicyBookResponseDTO> updateCouponPolicyBook(@PathVariable Long id, @RequestBody CouponPolicyBookRequestDTO requestDTO) {
+        CouponPolicyBookResponseDTO updatedCouponPolicyBook = couponPolicyBookService.updateCouponPolicyBook(id, requestDTO);
+        return new ResponseEntity<>(updatedCouponPolicyBook, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCouponPolicyBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCouponPolicyBook(@PathVariable Long id) {
         couponPolicyBookService.deleteCouponPolicyBook(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -4,7 +4,8 @@ import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,28 +18,32 @@ public class CouponController {
     private final CouponService couponService;
 
     @GetMapping
-    public List<CouponResponseDTO> getAllCoupons() {
-        return couponService.getAllCoupons();
+    public ResponseEntity<List<CouponResponseDTO>> getAllCoupons() {
+        List<CouponResponseDTO> coupons = couponService.getAllCoupons();
+        return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public CouponResponseDTO getCouponById(@PathVariable Long id) {
-        return couponService.getCouponById(id);
+    public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
+        CouponResponseDTO coupon = couponService.getCouponById(id);
+        return new ResponseEntity<>(coupon, HttpStatus.OK);
     }
 
     @PostMapping
-    public CouponResponseDTO createCoupon(@RequestBody CouponRequestDTO couponRequestDTO) {
-        return couponService.createCoupon(couponRequestDTO);
+    public ResponseEntity<CouponResponseDTO> createCoupon(@RequestBody CouponRequestDTO couponRequestDTO) {
+        CouponResponseDTO createdCoupon = couponService.createCoupon(couponRequestDTO);
+        return new ResponseEntity<>(createdCoupon, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public CouponResponseDTO updateCoupon(@PathVariable Long id, @RequestBody CouponRequestDTO couponRequestDTO) {
-        return couponService.updateCoupon(id, couponRequestDTO);
+    public ResponseEntity<CouponResponseDTO> updateCoupon(@PathVariable Long id, @RequestBody CouponRequestDTO couponRequestDTO) {
+        CouponResponseDTO updatedCoupon = couponService.updateCoupon(id, couponRequestDTO);
+        return new ResponseEntity<>(updatedCoupon, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCoupon(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
         couponService.deleteCoupon(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

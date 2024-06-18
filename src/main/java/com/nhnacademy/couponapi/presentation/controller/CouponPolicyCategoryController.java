@@ -4,7 +4,8 @@ import com.nhnacademy.couponapi.application.service.CouponPolicyCategoryService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyCategoryRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +18,32 @@ public class CouponPolicyCategoryController {
     private final CouponPolicyCategoryService couponPolicyCategoryService;
 
     @GetMapping
-    public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
-        return couponPolicyCategoryService.getAllCouponPolicyCategories();
+    public ResponseEntity<List<CouponPolicyCategoryResponseDTO>> getAllCouponPolicyCategories() {
+        List<CouponPolicyCategoryResponseDTO> couponPolicyCategories = couponPolicyCategoryService.getAllCouponPolicyCategories();
+        return new ResponseEntity<>(couponPolicyCategories, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public CouponPolicyCategoryResponseDTO getCouponPolicyCategoryById(@PathVariable Long id) {
-        return couponPolicyCategoryService.getCouponPolicyCategoryById(id);
+    public ResponseEntity<CouponPolicyCategoryResponseDTO> getCouponPolicyCategoryById(@PathVariable Long id) {
+        CouponPolicyCategoryResponseDTO couponPolicyCategory = couponPolicyCategoryService.getCouponPolicyCategoryById(id);
+        return new ResponseEntity<>(couponPolicyCategory, HttpStatus.OK);
     }
 
     @PostMapping
-    public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(@RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
-        return couponPolicyCategoryService.createCouponPolicyCategory(requestDTO);
+    public ResponseEntity<CouponPolicyCategoryResponseDTO> createCouponPolicyCategory(@RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
+        CouponPolicyCategoryResponseDTO createdCouponPolicyCategory = couponPolicyCategoryService.createCouponPolicyCategory(requestDTO);
+        return new ResponseEntity<>(createdCouponPolicyCategory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public CouponPolicyCategoryResponseDTO updateCouponPolicyCategory(@PathVariable Long id, @RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
-        return couponPolicyCategoryService.updateCouponPolicyCategory(id, requestDTO);
+    public ResponseEntity<CouponPolicyCategoryResponseDTO> updateCouponPolicyCategory(@PathVariable Long id, @RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
+        CouponPolicyCategoryResponseDTO updatedCouponPolicyCategory = couponPolicyCategoryService.updateCouponPolicyCategory(id, requestDTO);
+        return new ResponseEntity<>(updatedCouponPolicyCategory, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCouponPolicyCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCouponPolicyCategory(@PathVariable Long id) {
         couponPolicyCategoryService.deleteCouponPolicyCategory(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
