@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: coupon-server
+eureka:
+  client:
+    enabled: false
+    fetchRegistry: false
+    registerWithEureka: false
+
+  instance:
+    preferIpAddress: true

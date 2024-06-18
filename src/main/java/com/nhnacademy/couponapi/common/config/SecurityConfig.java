@@ -11,6 +11,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+//                .authorizeRequests()
+//                .requestMatchers("/h2-console/**").permitAll()
+//                .and()
+
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers("/**").permitAll()
                 )
