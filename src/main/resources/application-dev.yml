@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://133.186.241.167:3306/be6_yes255_coupon
-    username: be6_yes255
+    username: be6_yes255_coupon
     password: ${YES25_5_MYSQL_PASSWORD}
   h2:
     console:
@@ -32,4 +32,4 @@ server:
   port: 8081
 
 application:
-  name: COUPON-SERVER
+  name: coupon-server

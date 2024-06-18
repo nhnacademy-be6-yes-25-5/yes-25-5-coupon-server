@@ -43,5 +43,5 @@ Content-Type: application/json
 
 ###
 # 5. CouponPolicy 삭제
-DELETE http://localhost:8081/coupon-policies/1
+DELETE http://localhost:8081/coupon-policies/2
 Content-Type: application/json
