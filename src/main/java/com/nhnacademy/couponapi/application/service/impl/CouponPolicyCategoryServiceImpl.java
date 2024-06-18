@@ -19,9 +19,7 @@ import java.util.stream.Collectors;
 public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryService {
 
     private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
-
     private final CouponPolicyService couponPolicyService;
-
     private final CategoryAdapter categoryAdapter;
 
     @Override
@@ -80,4 +78,5 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                 .categoryId(couponPolicyCategory.getCategoryId())
                 .build();
     }
+
 }

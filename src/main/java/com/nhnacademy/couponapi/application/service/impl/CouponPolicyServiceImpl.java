@@ -99,4 +99,5 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                 .couponPolicyDiscountType(couponPolicy.isCouponPolicyDiscountType())
                 .build();
     }
+
 }

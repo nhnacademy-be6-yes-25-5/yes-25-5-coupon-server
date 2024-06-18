@@ -19,9 +19,7 @@ import java.util.stream.Collectors;
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     private final CouponPolicyBookRepository couponPolicyBookRepository;
-
     private final CouponPolicyService couponPolicyService;
-
     private final BookAdapter bookAdapter;
 
     @Override
