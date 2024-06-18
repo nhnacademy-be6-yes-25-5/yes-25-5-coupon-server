@@ -10,6 +10,7 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequest
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     private final BookAdapter bookAdapter;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
         return couponPolicyBookRepository.findAll().stream()
                 .map(this::toResponseDTO)
@@ -30,6 +32,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CouponPolicyBookResponseDTO getCouponPolicyBookById(Long id) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
@@ -39,6 +42,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
+    @Transactional
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
 
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
@@ -53,6 +57,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
+    @Transactional
     public CouponPolicyBookResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
@@ -67,6 +72,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
+    @Transactional
     public void deleteCouponPolicyBook(Long id) {
         couponPolicyBookRepository.deleteById(id);
     }

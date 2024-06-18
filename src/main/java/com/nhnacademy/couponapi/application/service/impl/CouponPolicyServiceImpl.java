@@ -7,6 +7,7 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     private final CouponPolicyRepository couponPolicyRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
         return couponPolicyRepository.findAll().stream()
                 .map(this::toResponseDTO)
@@ -25,6 +27,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CouponPolicyResponseDTO getCouponPolicyById(Long id) {
 
         CouponPolicy couponPolicy = couponPolicyRepository.findById(id)
@@ -34,12 +37,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     } // 클라이언트에게 응답하기 위해 CouponPolicyResponseDTO로 변환
 
     @Override
+    @Transactional(readOnly = true)
     public CouponPolicy getCouponPolicyEntityById(Long id) {
         return couponPolicyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
     } // 서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할 때 사용
 
     @Override
+    @Transactional
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
         CouponPolicy couponPolicy = CouponPolicy.builder()
@@ -59,6 +64,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     }
 
     @Override
+    @Transactional
     public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
         CouponPolicy existingCouponPolicy = couponPolicyRepository.findById(id)
@@ -82,6 +88,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     }
 
     @Override
+    @Transactional
     public void deleteCouponPolicy(Long id) {
         couponPolicyRepository.deleteById(id);
     }

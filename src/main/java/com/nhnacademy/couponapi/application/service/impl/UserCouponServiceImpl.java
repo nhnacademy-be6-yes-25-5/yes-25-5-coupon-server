@@ -10,6 +10,7 @@ import com.nhnacademy.couponapi.presentation.dto.request.UserCouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.UserCouponResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +20,11 @@ import java.util.stream.Collectors;
 public class UserCouponServiceImpl implements UserCouponService {
 
     private final UserCouponRepository userCouponRepository;
-
     private final CouponService couponService;
-
     private final UserAdapter userAdapter;
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserCouponResponseDTO> getAllUserCoupons() {
         return userCouponRepository.findAll().stream()
                 .map(this::toResponseDTO)
@@ -32,6 +32,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserCouponResponseDTO getUserCouponById(Long id) {
 
         UserCoupon userCoupon = userCouponRepository.findById(id)
@@ -41,6 +42,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
+    @Transactional
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
 
         Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
@@ -58,6 +60,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
+    @Transactional
     public UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO) {
 
         UserCoupon userCoupon = userCouponRepository.findById(id)
@@ -75,6 +78,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
+    @Transactional
     public void deleteUserCoupon(Long id) {
         userCouponRepository.deleteById(id);
     }

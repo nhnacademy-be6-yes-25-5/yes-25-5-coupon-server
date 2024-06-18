@@ -10,6 +10,7 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyCategoryReq
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     private final CategoryAdapter categoryAdapter;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
         return couponPolicyCategoryRepository.findAll().stream()
                 .map(this::toResponseDTO)
@@ -30,6 +32,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CouponPolicyCategoryResponseDTO getCouponPolicyCategoryById(Long id) {
 
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
@@ -39,6 +42,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
+    @Transactional
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
 
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
@@ -53,6 +57,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
+    @Transactional
     public CouponPolicyCategoryResponseDTO updateCouponPolicyCategory(Long id, CouponPolicyCategoryRequestDTO requestDTO) {
 
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
@@ -67,6 +72,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
+    @Transactional
     public void deleteCouponPolicyCategory(Long id) {
         couponPolicyCategoryRepository.deleteById(id);
     }
