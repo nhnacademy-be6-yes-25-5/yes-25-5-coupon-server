@@ -1,0 +1,35 @@
+### CouponPolicyBookController 테스트 요청
+
+# 1. 모든 CouponPolicyBook 조회
+GET http://localhost:8081/coupon-policy-books
+Accept: application/json
+
+###
+# 2. 특정 CouponPolicyBook 조회
+GET http://localhost:8081/coupon-policy-books/1
+Accept: application/json
+
+###
+# 3. CouponPolicyBook 생성
+POST http://localhost:8081/coupon-policy-books
+Content-Type: application/json
+
+{
+  "couponPolicyId": 1,
+  "bookId": 2
+}
+
+###
+# 4. CouponPolicyBook 수정
+PUT http://localhost:8081/coupon-policy-books/1
+Content-Type: application/json
+
+{
+  "couponPolicyId": 1,
+  "bookId": 3
+}
+
+###
+# 5. CouponPolicyBook 삭제
+DELETE http://localhost:8081/coupon-policy-books/1
+Content-Type: application/json

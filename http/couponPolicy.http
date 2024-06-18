@@ -1,0 +1,47 @@
+### CouponPolicyController 테스트 요청
+
+# 1. 모든 CouponPolicy 조회
+GET http://localhost:8081/coupon-policies
+Accept: application/json
+
+###
+# 2. 특정 CouponPolicy 조회
+GET http://localhost:8081/coupon-policies/2
+Accept: application/json
+
+###
+# 3. CouponPolicy 생성
+POST http://localhost:8081/coupon-policies
+Content-Type: application/json
+
+{
+  "couponPolicyName": "New Coupon Policy",
+  "couponPolicyDiscountValue": 10.00,
+  "couponPolicyCreatedAt": "2024-06-18T00:00:00Z",
+  "couponPolicyUpdatedAt": "2024-06-18T00:00:00Z",
+  "couponPolicyRate": 5.00,
+  "couponPolicyMinOrderAmount": 50.00,
+  "couponPolicyMaxAmount": 100.00,
+  "couponPolicyDiscountType": true
+}
+
+###
+# 4. CouponPolicy 수정
+PUT http://localhost:8081/coupon-policies/2
+Content-Type: application/json
+
+{
+  "couponPolicyName": "Updated Coupon Policy",
+  "couponPolicyDiscountValue": 15.00,
+  "couponPolicyCreatedAt": "2024-06-18T00:00:00Z",
+  "couponPolicyUpdatedAt": "2024-06-18T00:00:00Z",
+  "couponPolicyRate": 6.00,
+  "couponPolicyMinOrderAmount": 60.00,
+  "couponPolicyMaxAmount": 120.00,
+  "couponPolicyDiscountType": false
+}
+
+###
+# 5. CouponPolicy 삭제
+DELETE http://localhost:8081/coupon-policies/1
+Content-Type: application/json
