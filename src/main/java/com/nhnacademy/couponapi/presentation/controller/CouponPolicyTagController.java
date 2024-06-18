@@ -18,32 +18,32 @@ public class CouponPolicyTagController {
     private final CouponPolicyTagService couponPolicyTagService;
 
     @GetMapping
-    public ResponseEntity<List<CouponPolicyTagResponseDTO>> getAllCouponPolicyTags() {
-        List<CouponPolicyTagResponseDTO> couponPolicyTags = couponPolicyTagService.getAllCouponPolicyTags();
-        return new ResponseEntity<>(couponPolicyTags, HttpStatus.OK);
+    public ResponseEntity<List<CouponPolicyTagResponseDTO>> findAll() {
+        List<CouponPolicyTagResponseDTO> couponPolicyTags = couponPolicyTagService.findAllCouponPolicyTags();
+        return ResponseEntity.ok(couponPolicyTags);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CouponPolicyTagResponseDTO> getCouponPolicyTagById(@PathVariable Long id) {
-        CouponPolicyTagResponseDTO couponPolicyTag = couponPolicyTagService.getCouponPolicyTagById(id);
-        return new ResponseEntity<>(couponPolicyTag, HttpStatus.OK);
+    public ResponseEntity<CouponPolicyTagResponseDTO> find(@PathVariable Long id) {
+        CouponPolicyTagResponseDTO couponPolicyTag = couponPolicyTagService.findCouponPolicyTagById(id);
+        return ResponseEntity.ok(couponPolicyTag);
     }
 
     @PostMapping
-    public ResponseEntity<CouponPolicyTagResponseDTO> createCouponPolicyTag(@RequestBody CouponPolicyTagRequestDTO requestDTO) {
+    public ResponseEntity<CouponPolicyTagResponseDTO> create(@RequestBody CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicyTagResponseDTO createdCouponPolicyTag = couponPolicyTagService.createCouponPolicyTag(requestDTO);
-        return new ResponseEntity<>(createdCouponPolicyTag, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicyTag);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CouponPolicyTagResponseDTO> updateCouponPolicyTag(@PathVariable Long id, @RequestBody CouponPolicyTagRequestDTO requestDTO) {
+    public ResponseEntity<CouponPolicyTagResponseDTO> update(@PathVariable Long id, @RequestBody CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicyTagResponseDTO updatedCouponPolicyTag = couponPolicyTagService.updateCouponPolicyTag(id, requestDTO);
-        return new ResponseEntity<>(updatedCouponPolicyTag, HttpStatus.OK);
+        return ResponseEntity.ok(updatedCouponPolicyTag);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCouponPolicyTag(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         couponPolicyTagService.deleteCouponPolicyTag(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

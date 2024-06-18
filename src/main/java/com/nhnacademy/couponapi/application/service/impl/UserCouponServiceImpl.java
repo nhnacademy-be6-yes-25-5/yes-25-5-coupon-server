@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class UserCouponServiceImpl implements UserCouponService {
 
@@ -25,7 +26,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserCouponResponseDTO> getAllUserCoupons() {
+    public List<UserCouponResponseDTO> findAllUserCoupons() {
         return userCouponRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -33,7 +34,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserCouponResponseDTO getUserCouponById(Long id) {
+    public UserCouponResponseDTO findUserCouponById(Long id) {
 
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
@@ -42,10 +43,9 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    @Transactional
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
 
-        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
+        Coupon coupon = couponService.findCouponEntityById(userCouponRequestDTO.couponId());
         userAdapter.getUserById(userCouponRequestDTO.userId());
 
         UserCoupon userCoupon = UserCoupon.builder()
@@ -60,13 +60,12 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    @Transactional
     public UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO) {
 
         UserCoupon userCoupon = userCouponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
 
-        Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
+        Coupon coupon = couponService.findCouponEntityById(userCouponRequestDTO.couponId());
 
         userAdapter.getUserById(userCouponRequestDTO.userId());
         userCoupon.setCoupon(coupon);
@@ -78,7 +77,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    @Transactional
     public void deleteUserCoupon(Long id) {
         userCouponRepository.deleteById(id);
     }

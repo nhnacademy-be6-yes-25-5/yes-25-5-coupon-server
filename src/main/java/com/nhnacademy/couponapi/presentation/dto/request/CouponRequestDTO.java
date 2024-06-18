@@ -6,6 +6,5 @@ public record CouponRequestDTO(
         String couponName,
         String couponCode,
         Date couponExpiredAt,
-        Date couponCreatedAt,
         Long couponPolicyId
 ) {}

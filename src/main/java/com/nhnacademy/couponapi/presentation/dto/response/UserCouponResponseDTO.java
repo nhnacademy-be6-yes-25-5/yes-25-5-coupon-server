@@ -9,5 +9,6 @@ public record UserCouponResponseDTO(
         Long userCouponId,
         Long userId,
         Long couponId,
-        Date userCouponUsedAt
+        Date userCouponUsedAt,
+        Date userCouponCreatedAt
 ) {}

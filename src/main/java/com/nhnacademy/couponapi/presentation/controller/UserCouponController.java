@@ -18,32 +18,32 @@ public class UserCouponController {
     private final UserCouponService userCouponService;
 
     @GetMapping
-    public ResponseEntity<List<UserCouponResponseDTO>> getAllUserCoupons() {
-        List<UserCouponResponseDTO> userCoupons = userCouponService.getAllUserCoupons();
-        return new ResponseEntity<>(userCoupons, HttpStatus.OK);
+    public ResponseEntity<List<UserCouponResponseDTO>> findAll() {
+        List<UserCouponResponseDTO> userCoupons = userCouponService.findAllUserCoupons();
+        return ResponseEntity.ok(userCoupons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserCouponResponseDTO> getUserCouponById(@PathVariable Long id) {
-        UserCouponResponseDTO userCoupon = userCouponService.getUserCouponById(id);
-        return new ResponseEntity<>(userCoupon, HttpStatus.OK);
+    public ResponseEntity<UserCouponResponseDTO> find(@PathVariable Long id) {
+        UserCouponResponseDTO userCoupon = userCouponService.findUserCouponById(id);
+        return ResponseEntity.ok(userCoupon);
     }
 
     @PostMapping
-    public ResponseEntity<UserCouponResponseDTO> createUserCoupon(@RequestBody UserCouponRequestDTO userCouponRequestDTO) {
+    public ResponseEntity<UserCouponResponseDTO> create(@RequestBody UserCouponRequestDTO userCouponRequestDTO) {
         UserCouponResponseDTO createdUserCoupon = userCouponService.createUserCoupon(userCouponRequestDTO);
-        return new ResponseEntity<>(createdUserCoupon, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserCoupon);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserCouponResponseDTO> updateUserCoupon(@PathVariable Long id, @RequestBody UserCouponRequestDTO userCouponRequestDTO) {
+    public ResponseEntity<UserCouponResponseDTO> update(@PathVariable Long id, @RequestBody UserCouponRequestDTO userCouponRequestDTO) {
         UserCouponResponseDTO updatedUserCoupon = userCouponService.updateUserCoupon(id, userCouponRequestDTO);
-        return new ResponseEntity<>(updatedUserCoupon, HttpStatus.OK);
+        return ResponseEntity.ok(updatedUserCoupon);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserCoupon(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         userCouponService.deleteUserCoupon(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

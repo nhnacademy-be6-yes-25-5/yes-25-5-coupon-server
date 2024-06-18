@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface CouponPolicyCategoryService {
 
-    List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories();
-    CouponPolicyCategoryResponseDTO getCouponPolicyCategoryById(Long id);
+    List<CouponPolicyCategoryResponseDTO> findAllCouponPolicyCategories();
+    CouponPolicyCategoryResponseDTO findCouponPolicyCategoryById(Long id);
     CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO);
     CouponPolicyCategoryResponseDTO updateCouponPolicyCategory(Long id, CouponPolicyCategoryRequestDTO requestDTO);
     void deleteCouponPolicyCategory(Long id);

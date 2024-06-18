@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
@@ -27,7 +28,7 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyTagResponseDTO> getAllCouponPolicyTags() {
+    public List<CouponPolicyTagResponseDTO> findAllCouponPolicyTags() {
         return couponPolicyTagRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -35,16 +36,15 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
 
     @Override
     @Transactional(readOnly = true)
-    public CouponPolicyTagResponseDTO getCouponPolicyTagById(Long id) {
+    public CouponPolicyTagResponseDTO findCouponPolicyTagById(Long id) {
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
         return toResponseDTO(couponPolicyTag);
     }
 
     @Override
-    @Transactional
     public CouponPolicyTagResponseDTO createCouponPolicyTag(CouponPolicyTagRequestDTO requestDTO) {
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         tagAdapter.getTagById(requestDTO.tagId());
         CouponPolicyTag couponPolicyTag = CouponPolicyTag.builder()
                 .couponPolicy(couponPolicy)
@@ -55,11 +55,10 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     @Override
-    @Transactional
     public CouponPolicyTagResponseDTO updateCouponPolicyTag(Long id, CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         tagAdapter.getTagById(requestDTO.tagId());
         couponPolicyTag.setCouponPolicy(couponPolicy);
         couponPolicyTag.setTagId(requestDTO.tagId());
@@ -68,7 +67,6 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     }
 
     @Override
-    @Transactional
     public void deleteCouponPolicyTag(Long id) {
         couponPolicyTagRepository.deleteById(id);
     }

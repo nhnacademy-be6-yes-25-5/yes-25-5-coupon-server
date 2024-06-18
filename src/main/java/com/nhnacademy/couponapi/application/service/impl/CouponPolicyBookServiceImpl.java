@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
@@ -25,7 +26,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
+    public List<CouponPolicyBookResponseDTO> findAllCouponPolicyBooks() {
         return couponPolicyBookRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -33,7 +34,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     @Override
     @Transactional(readOnly = true)
-    public CouponPolicyBookResponseDTO getCouponPolicyBookById(Long id) {
+    public CouponPolicyBookResponseDTO findCouponPolicyBookById(Long id) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
@@ -42,10 +43,9 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
-    @Transactional
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
 
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         bookAdapter.getBookById(requestDTO.bookId());
         CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
                 .couponPolicy(couponPolicy)
@@ -57,12 +57,11 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
-    @Transactional
     public CouponPolicyBookResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         bookAdapter.getBookById(requestDTO.bookId());
         couponPolicyBook.setCouponPolicy(couponPolicy);
         couponPolicyBook.setBookId(requestDTO.bookId());
@@ -72,7 +71,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
-    @Transactional
     public void deleteCouponPolicyBook(Long id) {
         couponPolicyBookRepository.deleteById(id);
     }

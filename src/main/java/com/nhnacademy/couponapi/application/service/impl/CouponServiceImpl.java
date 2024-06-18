@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponServiceImpl implements CouponService {
 
@@ -22,7 +23,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponResponseDTO> getAllCoupons() {
+    public List<CouponResponseDTO> findAllCoupons() {
         return couponRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -30,23 +31,21 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional(readOnly = true)
-    public CouponResponseDTO getCouponById(Long id) {
+    public CouponResponseDTO findCouponById(Long id) {
         Coupon coupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
         return toResponseDTO(coupon);
     }
 
     @Override
-    @Transactional
     public CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO) {
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
                 .couponName(couponRequestDTO.couponName())
                 .couponCode(couponRequestDTO.couponCode())
-                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt());
 
         if (couponRequestDTO.couponPolicyId() != null) {
-            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
+            couponBuilder.couponPolicy(couponPolicyService.findCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
         }
 
         Coupon savedCoupon = couponRepository.save(couponBuilder.build());
@@ -54,7 +53,6 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    @Transactional
     public CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO) {
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
@@ -63,11 +61,10 @@ public class CouponServiceImpl implements CouponService {
                 .couponId(existingCoupon.getCouponId())
                 .couponName(couponRequestDTO.couponName())
                 .couponCode(couponRequestDTO.couponCode())
-                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt());
 
         if (couponRequestDTO.couponPolicyId() != null) {
-            couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
+            couponBuilder.couponPolicy(couponPolicyService.findCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
         }
 
         Coupon updatedCoupon = couponRepository.save(couponBuilder.build());
@@ -75,14 +72,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    @Transactional
     public void deleteCoupon(Long id) {
         couponRepository.deleteById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Coupon getCouponEntityById(Long id) {
+    public Coupon findCouponEntityById(Long id) {
         return couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
     }
