@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
@@ -42,7 +43,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
-    @Transactional
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
 
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
@@ -57,7 +57,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
-    @Transactional
     public CouponPolicyBookResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
@@ -72,7 +71,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     }
 
     @Override
-    @Transactional
     public void deleteCouponPolicyBook(Long id) {
         couponPolicyBookRepository.deleteById(id);
     }

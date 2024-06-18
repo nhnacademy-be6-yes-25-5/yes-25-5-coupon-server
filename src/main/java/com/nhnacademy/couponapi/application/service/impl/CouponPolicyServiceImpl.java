@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponPolicyServiceImpl implements CouponPolicyService {
 
@@ -44,7 +45,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     } // 서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할 때 사용
 
     @Override
-    @Transactional
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
         CouponPolicy couponPolicy = CouponPolicy.builder()
@@ -64,7 +64,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     }
 
     @Override
-    @Transactional
     public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
         CouponPolicy existingCouponPolicy = couponPolicyRepository.findById(id)
@@ -88,7 +87,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     }
 
     @Override
-    @Transactional
     public void deleteCouponPolicy(Long id) {
         couponPolicyRepository.deleteById(id);
     }

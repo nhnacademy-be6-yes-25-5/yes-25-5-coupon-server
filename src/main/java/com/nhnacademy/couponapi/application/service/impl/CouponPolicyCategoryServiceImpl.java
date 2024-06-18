@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryService {
 
@@ -42,7 +43,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
-    @Transactional
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
 
         CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
@@ -57,7 +57,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
-    @Transactional
     public CouponPolicyCategoryResponseDTO updateCouponPolicyCategory(Long id, CouponPolicyCategoryRequestDTO requestDTO) {
 
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
@@ -72,7 +71,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     }
 
     @Override
-    @Transactional
     public void deleteCouponPolicyCategory(Long id) {
         couponPolicyCategoryRepository.deleteById(id);
     }

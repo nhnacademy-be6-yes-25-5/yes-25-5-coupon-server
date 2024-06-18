@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class CouponServiceImpl implements CouponService {
 
@@ -37,7 +38,6 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    @Transactional
     public CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO) {
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
                 .couponName(couponRequestDTO.couponName())
@@ -54,7 +54,6 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    @Transactional
     public CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO) {
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coupon not found"));
@@ -75,7 +74,6 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    @Transactional
     public void deleteCoupon(Long id) {
         couponRepository.deleteById(id);
     }

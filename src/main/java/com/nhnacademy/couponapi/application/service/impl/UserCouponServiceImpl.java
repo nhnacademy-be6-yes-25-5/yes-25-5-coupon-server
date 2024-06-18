@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class UserCouponServiceImpl implements UserCouponService {
 
@@ -42,7 +43,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    @Transactional
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
 
         Coupon coupon = couponService.getCouponEntityById(userCouponRequestDTO.couponId());
@@ -60,7 +60,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    @Transactional
     public UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO) {
 
         UserCoupon userCoupon = userCouponRepository.findById(id)
@@ -78,7 +77,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    @Transactional
     public void deleteUserCoupon(Long id) {
         userCouponRepository.deleteById(id);
     }
