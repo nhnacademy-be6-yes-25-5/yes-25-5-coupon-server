@@ -20,30 +20,30 @@ public class CouponPolicyBookController {
     @GetMapping
     public ResponseEntity<List<CouponPolicyBookResponseDTO>> getAllCouponPolicyBooks() {
         List<CouponPolicyBookResponseDTO> couponPolicyBooks = couponPolicyBookService.getAllCouponPolicyBooks();
-        return new ResponseEntity<>(couponPolicyBooks, HttpStatus.OK);
+        return ResponseEntity.ok(couponPolicyBooks);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CouponPolicyBookResponseDTO> getCouponPolicyBookById(@PathVariable Long id) {
         CouponPolicyBookResponseDTO couponPolicyBook = couponPolicyBookService.getCouponPolicyBookById(id);
-        return new ResponseEntity<>(couponPolicyBook, HttpStatus.OK);
+        return ResponseEntity.ok(couponPolicyBook);
     }
 
     @PostMapping
     public ResponseEntity<CouponPolicyBookResponseDTO> createCouponPolicyBook(@RequestBody CouponPolicyBookRequestDTO requestDTO) {
         CouponPolicyBookResponseDTO createdCouponPolicyBook = couponPolicyBookService.createCouponPolicyBook(requestDTO);
-        return new ResponseEntity<>(createdCouponPolicyBook, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicyBook);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CouponPolicyBookResponseDTO> updateCouponPolicyBook(@PathVariable Long id, @RequestBody CouponPolicyBookRequestDTO requestDTO) {
         CouponPolicyBookResponseDTO updatedCouponPolicyBook = couponPolicyBookService.updateCouponPolicyBook(id, requestDTO);
-        return new ResponseEntity<>(updatedCouponPolicyBook, HttpStatus.OK);
+        return ResponseEntity.ok(updatedCouponPolicyBook);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCouponPolicyBook(@PathVariable Long id) {
         couponPolicyBookService.deleteCouponPolicyBook(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

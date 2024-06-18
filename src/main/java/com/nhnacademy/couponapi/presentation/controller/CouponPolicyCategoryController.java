@@ -20,30 +20,30 @@ public class CouponPolicyCategoryController {
     @GetMapping
     public ResponseEntity<List<CouponPolicyCategoryResponseDTO>> getAllCouponPolicyCategories() {
         List<CouponPolicyCategoryResponseDTO> couponPolicyCategories = couponPolicyCategoryService.getAllCouponPolicyCategories();
-        return new ResponseEntity<>(couponPolicyCategories, HttpStatus.OK);
+        return ResponseEntity.ok(couponPolicyCategories);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CouponPolicyCategoryResponseDTO> getCouponPolicyCategoryById(@PathVariable Long id) {
         CouponPolicyCategoryResponseDTO couponPolicyCategory = couponPolicyCategoryService.getCouponPolicyCategoryById(id);
-        return new ResponseEntity<>(couponPolicyCategory, HttpStatus.OK);
+        return ResponseEntity.ok(couponPolicyCategory);
     }
 
     @PostMapping
     public ResponseEntity<CouponPolicyCategoryResponseDTO> createCouponPolicyCategory(@RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
         CouponPolicyCategoryResponseDTO createdCouponPolicyCategory = couponPolicyCategoryService.createCouponPolicyCategory(requestDTO);
-        return new ResponseEntity<>(createdCouponPolicyCategory, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicyCategory);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CouponPolicyCategoryResponseDTO> updateCouponPolicyCategory(@PathVariable Long id, @RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
         CouponPolicyCategoryResponseDTO updatedCouponPolicyCategory = couponPolicyCategoryService.updateCouponPolicyCategory(id, requestDTO);
-        return new ResponseEntity<>(updatedCouponPolicyCategory, HttpStatus.OK);
+        return ResponseEntity.ok(updatedCouponPolicyCategory);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCouponPolicyCategory(@PathVariable Long id) {
         couponPolicyCategoryService.deleteCouponPolicyCategory(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

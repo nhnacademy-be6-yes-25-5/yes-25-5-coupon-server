@@ -42,8 +42,7 @@ public class CouponServiceImpl implements CouponService {
         Coupon.CouponBuilder couponBuilder = Coupon.builder()
                 .couponName(couponRequestDTO.couponName())
                 .couponCode(couponRequestDTO.couponCode())
-                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt());
 
         if (couponRequestDTO.couponPolicyId() != null) {
             couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
@@ -62,8 +61,7 @@ public class CouponServiceImpl implements CouponService {
                 .couponId(existingCoupon.getCouponId())
                 .couponName(couponRequestDTO.couponName())
                 .couponCode(couponRequestDTO.couponCode())
-                .couponExpiredAt(couponRequestDTO.couponExpiredAt())
-                .couponCreatedAt(couponRequestDTO.couponCreatedAt());
+                .couponExpiredAt(couponRequestDTO.couponExpiredAt());
 
         if (couponRequestDTO.couponPolicyId() != null) {
             couponBuilder.couponPolicy(couponPolicyService.getCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));

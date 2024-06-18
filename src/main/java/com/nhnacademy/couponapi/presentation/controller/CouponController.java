@@ -20,30 +20,30 @@ public class CouponController {
     @GetMapping
     public ResponseEntity<List<CouponResponseDTO>> getAllCoupons() {
         List<CouponResponseDTO> coupons = couponService.getAllCoupons();
-        return new ResponseEntity<>(coupons, HttpStatus.OK);
+        return ResponseEntity.ok(coupons);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
         CouponResponseDTO coupon = couponService.getCouponById(id);
-        return new ResponseEntity<>(coupon, HttpStatus.OK);
+        return ResponseEntity.ok(coupon);
     }
 
     @PostMapping
     public ResponseEntity<CouponResponseDTO> createCoupon(@RequestBody CouponRequestDTO couponRequestDTO) {
         CouponResponseDTO createdCoupon = couponService.createCoupon(couponRequestDTO);
-        return new ResponseEntity<>(createdCoupon, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCoupon);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CouponResponseDTO> updateCoupon(@PathVariable Long id, @RequestBody CouponRequestDTO couponRequestDTO) {
         CouponResponseDTO updatedCoupon = couponService.updateCoupon(id, couponRequestDTO);
-        return new ResponseEntity<>(updatedCoupon, HttpStatus.OK);
+        return ResponseEntity.ok(updatedCoupon);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
         couponService.deleteCoupon(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }
