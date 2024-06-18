@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface CouponPolicyTagService {
 
-    List<CouponPolicyTagResponseDTO> getAllCouponPolicyTags();
-    CouponPolicyTagResponseDTO getCouponPolicyTagById(Long id);
+    List<CouponPolicyTagResponseDTO> findAllCouponPolicyTags();
+    CouponPolicyTagResponseDTO findCouponPolicyTagById(Long id);
     CouponPolicyTagResponseDTO createCouponPolicyTag(CouponPolicyTagRequestDTO requestDTO);
     CouponPolicyTagResponseDTO updateCouponPolicyTag(Long id, CouponPolicyTagRequestDTO requestDTO);
     void deleteCouponPolicyTag(Long id);

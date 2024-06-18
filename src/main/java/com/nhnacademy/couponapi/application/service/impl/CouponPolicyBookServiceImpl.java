@@ -26,7 +26,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
+    public List<CouponPolicyBookResponseDTO> findAllCouponPolicyBooks() {
         return couponPolicyBookRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -34,7 +34,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     @Override
     @Transactional(readOnly = true)
-    public CouponPolicyBookResponseDTO getCouponPolicyBookById(Long id) {
+    public CouponPolicyBookResponseDTO findCouponPolicyBookById(Long id) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
@@ -45,7 +45,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     @Override
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
 
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         bookAdapter.getBookById(requestDTO.bookId());
         CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
                 .couponPolicy(couponPolicy)
@@ -61,7 +61,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         bookAdapter.getBookById(requestDTO.bookId());
         couponPolicyBook.setCouponPolicy(couponPolicy);
         couponPolicyBook.setBookId(requestDTO.bookId());

@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface UserCouponService {
 
-    List<UserCouponResponseDTO> getAllUserCoupons();
-    UserCouponResponseDTO getUserCouponById(Long id);
+    List<UserCouponResponseDTO> findAllUserCoupons();
+    UserCouponResponseDTO findUserCouponById(Long id);
     UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO);
     UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO);
     void deleteUserCoupon(Long id);

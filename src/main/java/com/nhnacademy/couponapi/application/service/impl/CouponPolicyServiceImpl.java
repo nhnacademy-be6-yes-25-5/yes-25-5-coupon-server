@@ -21,7 +21,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
+    public List<CouponPolicyResponseDTO> findAllCouponPolicies() {
         return couponPolicyRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -29,7 +29,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     @Override
     @Transactional(readOnly = true)
-    public CouponPolicyResponseDTO getCouponPolicyById(Long id) {
+    public CouponPolicyResponseDTO findCouponPolicyById(Long id) {
 
         CouponPolicy couponPolicy = couponPolicyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
@@ -39,7 +39,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     @Override
     @Transactional(readOnly = true)
-    public CouponPolicy getCouponPolicyEntityById(Long id) {
+    public CouponPolicy findCouponPolicyEntityById(Long id) {
         return couponPolicyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
     } // 서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할 때 사용

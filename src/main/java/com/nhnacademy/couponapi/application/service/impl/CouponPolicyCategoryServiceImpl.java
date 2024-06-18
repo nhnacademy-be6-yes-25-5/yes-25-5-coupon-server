@@ -26,7 +26,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
+    public List<CouponPolicyCategoryResponseDTO> findAllCouponPolicyCategories() {
         return couponPolicyCategoryRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -34,7 +34,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
     @Override
     @Transactional(readOnly = true)
-    public CouponPolicyCategoryResponseDTO getCouponPolicyCategoryById(Long id) {
+    public CouponPolicyCategoryResponseDTO findCouponPolicyCategoryById(Long id) {
 
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyCategory not found"));
@@ -45,7 +45,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Override
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
 
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         categoryAdapter.getCategoryById(requestDTO.categoryId());
         CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
                 .couponPolicy(couponPolicy)
@@ -61,7 +61,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
         CouponPolicyCategory couponPolicyCategory = couponPolicyCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CouponPolicyCategory not found"));
-        CouponPolicy couponPolicy = couponPolicyService.getCouponPolicyEntityById(requestDTO.couponPolicyId());
+        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
         categoryAdapter.getCategoryById(requestDTO.categoryId());
         couponPolicyCategory.setCouponPolicy(couponPolicy);
         couponPolicyCategory.setCategoryId(requestDTO.categoryId());

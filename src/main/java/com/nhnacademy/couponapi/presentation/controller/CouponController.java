@@ -18,31 +18,31 @@ public class CouponController {
     private final CouponService couponService;
 
     @GetMapping
-    public ResponseEntity<List<CouponResponseDTO>> getAllCoupons() {
-        List<CouponResponseDTO> coupons = couponService.getAllCoupons();
+    public ResponseEntity<List<CouponResponseDTO>> findAll() {
+        List<CouponResponseDTO> coupons = couponService.findAllCoupons();
         return ResponseEntity.ok(coupons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
-        CouponResponseDTO coupon = couponService.getCouponById(id);
+    public ResponseEntity<CouponResponseDTO> find(@PathVariable Long id) {
+        CouponResponseDTO coupon = couponService.findCouponById(id);
         return ResponseEntity.ok(coupon);
     }
 
     @PostMapping
-    public ResponseEntity<CouponResponseDTO> createCoupon(@RequestBody CouponRequestDTO couponRequestDTO) {
+    public ResponseEntity<CouponResponseDTO> create(@RequestBody CouponRequestDTO couponRequestDTO) {
         CouponResponseDTO createdCoupon = couponService.createCoupon(couponRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCoupon);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CouponResponseDTO> updateCoupon(@PathVariable Long id, @RequestBody CouponRequestDTO couponRequestDTO) {
+    public ResponseEntity<CouponResponseDTO> update(@PathVariable Long id, @RequestBody CouponRequestDTO couponRequestDTO) {
         CouponResponseDTO updatedCoupon = couponService.updateCoupon(id, couponRequestDTO);
         return ResponseEntity.ok(updatedCoupon);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         couponService.deleteCoupon(id);
         return ResponseEntity.noContent().build();
     }
