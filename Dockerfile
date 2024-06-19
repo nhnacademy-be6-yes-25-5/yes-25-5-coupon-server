@@ -33,9 +33,9 @@ ENV SONAR_HOST_URL="***"
 ENV SONAR_TOKEN="***"
 
 # Run SonarQube analysis
-CMD ["mvn", "clean", "verify", "sonar:sonar",
-     "-Dspring.profile.active=ci",
-     "-Dsonar.projectKey=${SONAR_PROJECT_KEY}",
-     "-Dsonar.projectName=${SONAR_PROJECT_NAME}",
-     "-Dsonar.host.url=${SONAR_HOST_URL}",
+CMD ["mvn", "clean", "verify", "sonar:sonar", \
+     "-Dspring.profile.active=ci", \
+     "-Dsonar.projectKey=${SONAR_PROJECT_KEY}", \
+     "-Dsonar.projectName=${SONAR_PROJECT_NAME}", \
+     "-Dsonar.host.url=${SONAR_HOST_URL}", \
      "-Dsonar.login=${SONAR_TOKEN}"]
