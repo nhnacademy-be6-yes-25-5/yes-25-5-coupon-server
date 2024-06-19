@@ -3,6 +3,7 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,13 @@ public class CouponPolicyController {
     }
 
     @PostMapping
-    public ResponseEntity<CouponPolicyResponseDTO> create(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+    public ResponseEntity<CouponPolicyResponseDTO> create(@RequestBody @Valid CouponPolicyRequestDTO couponPolicyRequestDTO) {
         CouponPolicyResponseDTO createdCouponPolicy = couponPolicyService.createCouponPolicy(couponPolicyRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicy);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CouponPolicyResponseDTO> update(@PathVariable Long id, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+    public ResponseEntity<CouponPolicyResponseDTO> update(@PathVariable @Valid Long id, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
         CouponPolicyResponseDTO updatedCouponPolicy = couponPolicyService.updateCouponPolicy(id, couponPolicyRequestDTO);
         return ResponseEntity.ok(updatedCouponPolicy);
     }

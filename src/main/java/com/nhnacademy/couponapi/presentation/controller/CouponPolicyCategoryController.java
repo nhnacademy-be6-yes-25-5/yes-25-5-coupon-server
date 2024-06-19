@@ -3,6 +3,7 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponPolicyCategoryService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyCategoryRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,13 @@ public class CouponPolicyCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CouponPolicyCategoryResponseDTO> create(@RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
+    public ResponseEntity<CouponPolicyCategoryResponseDTO> create(@RequestBody @Valid CouponPolicyCategoryRequestDTO requestDTO) {
         CouponPolicyCategoryResponseDTO createdCouponPolicyCategory = couponPolicyCategoryService.createCouponPolicyCategory(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicyCategory);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CouponPolicyCategoryResponseDTO> update(@PathVariable Long id, @RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
+    public ResponseEntity<CouponPolicyCategoryResponseDTO> update(@PathVariable @Valid Long id, @RequestBody CouponPolicyCategoryRequestDTO requestDTO) {
         CouponPolicyCategoryResponseDTO updatedCouponPolicyCategory = couponPolicyCategoryService.updateCouponPolicyCategory(id, requestDTO);
         return ResponseEntity.ok(updatedCouponPolicyCategory);
     }

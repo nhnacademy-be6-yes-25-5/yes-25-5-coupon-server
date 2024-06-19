@@ -3,6 +3,7 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponPolicyTagService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyTagRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyTagResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,13 @@ public class CouponPolicyTagController {
     }
 
     @PostMapping
-    public ResponseEntity<CouponPolicyTagResponseDTO> create(@RequestBody CouponPolicyTagRequestDTO requestDTO) {
+    public ResponseEntity<CouponPolicyTagResponseDTO> create(@RequestBody @Valid CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicyTagResponseDTO createdCouponPolicyTag = couponPolicyTagService.createCouponPolicyTag(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicyTag);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CouponPolicyTagResponseDTO> update(@PathVariable Long id, @RequestBody CouponPolicyTagRequestDTO requestDTO) {
+    public ResponseEntity<CouponPolicyTagResponseDTO> update(@PathVariable @Valid Long id, @RequestBody CouponPolicyTagRequestDTO requestDTO) {
         CouponPolicyTagResponseDTO updatedCouponPolicyTag = couponPolicyTagService.updateCouponPolicyTag(id, requestDTO);
         return ResponseEntity.ok(updatedCouponPolicyTag);
     }
