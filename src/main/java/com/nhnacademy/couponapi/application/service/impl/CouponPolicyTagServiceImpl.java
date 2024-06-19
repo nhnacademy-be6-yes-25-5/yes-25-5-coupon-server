@@ -3,6 +3,8 @@ package com.nhnacademy.couponapi.application.service.impl;
 import com.nhnacademy.couponapi.application.service.CouponPolicyTagService;
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.application.adapter.TagAdapter;
+import com.nhnacademy.couponapi.common.exception.CouponPolicyTagServiceException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyTag;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyTagRepository;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,37 +41,61 @@ public class CouponPolicyTagServiceImpl implements CouponPolicyTagService {
     @Transactional(readOnly = true)
     public CouponPolicyTagResponseDTO findCouponPolicyTagById(Long id) {
         CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
+                .orElseThrow(() -> new CouponPolicyTagServiceException(
+                        ErrorStatus.toErrorStatus("Coupon policy tag not found by id", 404, LocalDateTime.now())
+                ));
         return toResponseDTO(couponPolicyTag);
     }
 
     @Override
     public CouponPolicyTagResponseDTO createCouponPolicyTag(CouponPolicyTagRequestDTO requestDTO) {
-        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
-        tagAdapter.getTagById(requestDTO.tagId());
-        CouponPolicyTag couponPolicyTag = CouponPolicyTag.builder()
-                .couponPolicy(couponPolicy)
-                .tagId(requestDTO.tagId())
-                .build();
-        CouponPolicyTag savedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
-        return toResponseDTO(savedCouponPolicyTag);
+
+        try {
+            CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
+            tagAdapter.getTagById(requestDTO.tagId());
+            CouponPolicyTag couponPolicyTag = CouponPolicyTag.builder()
+                    .couponPolicy(couponPolicy)
+                    .tagId(requestDTO.tagId())
+                    .build();
+            CouponPolicyTag savedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
+            return toResponseDTO(savedCouponPolicyTag);
+        } catch (Exception e) {
+            throw new CouponPolicyTagServiceException(
+                    ErrorStatus.toErrorStatus("Coupon policy tag creation failed", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public CouponPolicyTagResponseDTO updateCouponPolicyTag(Long id, CouponPolicyTagRequestDTO requestDTO) {
-        CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
-        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
-        tagAdapter.getTagById(requestDTO.tagId());
-        couponPolicyTag.setCouponPolicy(couponPolicy);
-        couponPolicyTag.setTagId(requestDTO.tagId());
-        CouponPolicyTag updatedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
-        return toResponseDTO(updatedCouponPolicyTag);
+
+        try {
+            CouponPolicyTag couponPolicyTag = couponPolicyTagRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("CouponPolicyTag not found"));
+            CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
+            tagAdapter.getTagById(requestDTO.tagId());
+            couponPolicyTag.setCouponPolicy(couponPolicy);
+            couponPolicyTag.setTagId(requestDTO.tagId());
+            CouponPolicyTag updatedCouponPolicyTag = couponPolicyTagRepository.save(couponPolicyTag);
+            return toResponseDTO(updatedCouponPolicyTag);
+        } catch (Exception e) {
+            throw new CouponPolicyTagServiceException(
+                    ErrorStatus.toErrorStatus("Coupon policy tag update failed", 500, LocalDateTime.now()
+                    )
+            );
+        }
     }
 
     @Override
     public void deleteCouponPolicyTag(Long id) {
-        couponPolicyTagRepository.deleteById(id);
+
+        try {
+            couponPolicyTagRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CouponPolicyTagServiceException(
+                    ErrorStatus.toErrorStatus("Coupon policy tag delete failed", 500, LocalDateTime.now())
+            );
+        }
     }
 
     private CouponPolicyTagResponseDTO toResponseDTO(CouponPolicyTag couponPolicyTag) {

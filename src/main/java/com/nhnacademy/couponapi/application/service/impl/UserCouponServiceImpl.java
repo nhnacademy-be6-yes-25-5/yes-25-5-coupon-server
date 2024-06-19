@@ -3,6 +3,8 @@ package com.nhnacademy.couponapi.application.service.impl;
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.application.service.UserCouponService;
 import com.nhnacademy.couponapi.application.adapter.UserAdapter;
+import com.nhnacademy.couponapi.common.exception.UserCouponServiceException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.UserCoupon;
 import com.nhnacademy.couponapi.persistence.repository.UserCouponRepository;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,48 +40,68 @@ public class UserCouponServiceImpl implements UserCouponService {
     public UserCouponResponseDTO findUserCouponById(Long id) {
 
         UserCoupon userCoupon = userCouponRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
-
+                .orElseThrow(() -> new UserCouponServiceException(
+                        ErrorStatus.toErrorStatus("User coupon not found by id", 404, LocalDateTime.now())
+                ));
         return toResponseDTO(userCoupon);
     }
 
     @Override
     public UserCouponResponseDTO createUserCoupon(UserCouponRequestDTO userCouponRequestDTO) {
 
-        Coupon coupon = couponService.findCouponEntityById(userCouponRequestDTO.couponId());
-        userAdapter.getUserById(userCouponRequestDTO.userId());
+        try {
+            Coupon coupon = couponService.findCouponEntityById(userCouponRequestDTO.couponId());
+            userAdapter.getUserById(userCouponRequestDTO.userId());
 
-        UserCoupon userCoupon = UserCoupon.builder()
-                .userId(userCouponRequestDTO.userId())
-                .coupon(coupon)
-                .userCouponUsedAt(userCouponRequestDTO.userCouponUsedAt())
-                .build();
+            UserCoupon userCoupon = UserCoupon.builder()
+                    .userId(userCouponRequestDTO.userId())
+                    .coupon(coupon)
+                    .userCouponUsedAt(userCouponRequestDTO.userCouponUsedAt())
+                    .build();
 
-        UserCoupon savedUserCoupon = userCouponRepository.save(userCoupon);
+            UserCoupon savedUserCoupon = userCouponRepository.save(userCoupon);
 
-        return toResponseDTO(savedUserCoupon);
+            return toResponseDTO(savedUserCoupon);
+        } catch (Exception e) {
+            throw new UserCouponServiceException(
+                    ErrorStatus.toErrorStatus("Failed to create user coupon", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public UserCouponResponseDTO updateUserCoupon(Long id, UserCouponRequestDTO userCouponRequestDTO) {
 
-        UserCoupon userCoupon = userCouponRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
+        try {
+            UserCoupon userCoupon = userCouponRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("UserCoupon not found"));
 
-        Coupon coupon = couponService.findCouponEntityById(userCouponRequestDTO.couponId());
+            Coupon coupon = couponService.findCouponEntityById(userCouponRequestDTO.couponId());
 
-        userAdapter.getUserById(userCouponRequestDTO.userId());
-        userCoupon.setCoupon(coupon);
-        userCoupon.setUserId(userCouponRequestDTO.userId());
-        userCoupon.setUserCouponUsedAt(userCouponRequestDTO.userCouponUsedAt());
-        UserCoupon updatedUserCoupon = userCouponRepository.save(userCoupon);
+            userAdapter.getUserById(userCouponRequestDTO.userId());
+            userCoupon.setCoupon(coupon);
+            userCoupon.setUserId(userCouponRequestDTO.userId());
+            userCoupon.setUserCouponUsedAt(userCouponRequestDTO.userCouponUsedAt());
+            UserCoupon updatedUserCoupon = userCouponRepository.save(userCoupon);
 
-        return toResponseDTO(updatedUserCoupon);
+            return toResponseDTO(updatedUserCoupon);
+        } catch (Exception e) {
+            throw new UserCouponServiceException(
+                    ErrorStatus.toErrorStatus("Failed to update user coupon", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public void deleteUserCoupon(Long id) {
-        userCouponRepository.deleteById(id);
+
+        try {
+            userCouponRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new UserCouponServiceException(
+                    ErrorStatus.toErrorStatus("Failed to delete user coupon", 500, LocalDateTime.now())
+            );
+        }
     }
 
     private UserCouponResponseDTO toResponseDTO(UserCoupon userCoupon) {

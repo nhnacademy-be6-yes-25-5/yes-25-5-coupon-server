@@ -3,6 +3,8 @@ package com.nhnacademy.couponapi.application.service.impl;
 import com.nhnacademy.couponapi.application.adapter.BookAdapter;
 import com.nhnacademy.couponapi.application.service.CouponPolicyBookService;
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
+import com.nhnacademy.couponapi.common.exception.CouponPolicyBookServiceException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +40,9 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     public CouponPolicyBookResponseDTO findCouponPolicyBookById(Long id) {
 
         CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
+                .orElseThrow(() -> new CouponPolicyBookServiceException(
+                        ErrorStatus.toErrorStatus("Coupon policy book not found", 404, LocalDateTime.now())
+                ));
 
         return toResponseDTO(couponPolicyBook);
     }
@@ -45,34 +50,54 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     @Override
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
 
-        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
-        bookAdapter.getBookById(requestDTO.bookId());
-        CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
-                .couponPolicy(couponPolicy)
-                .bookId(requestDTO.bookId())
-                .build();
-        CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
+        try {
+            CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
+            bookAdapter.getBookById(requestDTO.bookId());
+            CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
+                    .couponPolicy(couponPolicy)
+                    .bookId(requestDTO.bookId())
+                    .build();
+            CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
-        return toResponseDTO(savedCouponPolicyBook);
+            return toResponseDTO(savedCouponPolicyBook);
+        } catch (Exception e) {
+            throw new CouponPolicyBookServiceException(
+                    ErrorStatus.toErrorStatus("Error creating CouponPolicyBook", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public CouponPolicyBookResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO) {
 
-        CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicyBook not found"));
-        CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
-        bookAdapter.getBookById(requestDTO.bookId());
-        couponPolicyBook.setCouponPolicy(couponPolicy);
-        couponPolicyBook.setBookId(requestDTO.bookId());
-        CouponPolicyBook updatedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
+        try {
+            CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
+                    .orElseThrow(() -> new CouponPolicyBookServiceException(
+                            ErrorStatus.toErrorStatus("Coupon policy book not found by id", 404, LocalDateTime.now())));
+            CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
+            bookAdapter.getBookById(requestDTO.bookId());
+            couponPolicyBook.setCouponPolicy(couponPolicy);
+            couponPolicyBook.setBookId(requestDTO.bookId());
+            CouponPolicyBook updatedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
-        return toResponseDTO(updatedCouponPolicyBook);
+            return toResponseDTO(updatedCouponPolicyBook);
+        } catch (Exception e) {
+            throw new CouponPolicyBookServiceException(
+                    ErrorStatus.toErrorStatus("Error updating CouponPolicyBook", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public void deleteCouponPolicyBook(Long id) {
-        couponPolicyBookRepository.deleteById(id);
+
+        try {
+            couponPolicyBookRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CouponPolicyBookServiceException(
+                    ErrorStatus.toErrorStatus("Error deleting CouponPolicyBook", 500, LocalDateTime.now())
+            );
+        }
     }
 
     private CouponPolicyBookResponseDTO toResponseDTO(CouponPolicyBook couponPolicyBook) {
