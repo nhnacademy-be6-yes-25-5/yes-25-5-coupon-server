@@ -33,3 +33,6 @@ server:
 
 application:
   name: coupon-server
+
+jwt:
+  secret: ${JWT_SECRET:this-is-coupon-jwt-secret-key-i-am-hungry}
