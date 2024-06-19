@@ -1,4 +1,4 @@
-# Use the official Maven image with Java 21
+# Stage 1: Build the application
 FROM maven:3.8.8-eclipse-temurin-21 AS builder
 
 # Set the working directory
@@ -17,7 +17,7 @@ ENV JWT_SECRET=this-is-coupon-jwt-secret-key-i-am-hungry
 # Build the application with the environment variable
 RUN mvn package -Djwt.secret=${JWT_SECRET}
 
-# Use a smaller base image for the final image
+# Stage 2: Run the application
 FROM eclipse-temurin:21-jdk
 
 # Set working directory
