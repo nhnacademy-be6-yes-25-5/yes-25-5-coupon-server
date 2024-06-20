@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,7 +22,13 @@ public class CouponPolicy {
     private Long couponPolicyId;
     private String couponPolicyName;
     private BigDecimal couponPolicyDiscountValue;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date couponPolicyCreatedAt;
+
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date couponPolicyUpdatedAt;
     private BigDecimal couponPolicyRate;
     private BigDecimal couponPolicyMinOrderAmount;
