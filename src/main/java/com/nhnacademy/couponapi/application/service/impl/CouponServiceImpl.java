@@ -13,7 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,15 +128,23 @@ public class CouponServiceImpl implements CouponService {
     }
 
     private CouponUserListResponseDTO toUserListResponseDTO(Coupon coupon) {
-        return new CouponUserListResponseDTO(
-                coupon.getCouponName(),
-                coupon.getCouponCode(),
-                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyDiscountValue() : null,
-                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyRate() : null,
-                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMinOrderAmount() : null,
-                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMaxAmount() : null,
-                coupon.getCouponCreatedAt(),
-                coupon.getCouponExpiredAt()
-        );
+        LocalDate localDate = LocalDate.of(2024, 6, 19);
+
+        Date userCouponUsedAt = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return CouponUserListResponseDTO.builder()
+                .userCouponId(1L)
+                .userId(4L)
+                .couponId(coupon.getCouponId())
+                .couponName(coupon.getCouponName())
+                .couponCode(coupon.getCouponCode())
+                .couponPolicyDiscountValue(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyDiscountValue() : null)
+                .couponPolicyRate(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyRate() : null)
+                .couponPolicyMinOrderAmount(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMinOrderAmount() : null)
+                .couponPolicyMaxAmount(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMaxAmount() : null)
+                .couponCreatedAt(coupon.getCouponCreatedAt())
+                .couponExpiredAt(coupon.getCouponExpiredAt())
+                .userCouponUsedAt(userCouponUsedAt)
+                .build();
     }
 }

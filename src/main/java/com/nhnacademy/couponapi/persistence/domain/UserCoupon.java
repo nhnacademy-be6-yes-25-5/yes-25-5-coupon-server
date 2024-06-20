@@ -45,5 +45,4 @@ public class UserCoupon {
     public void setUserCouponUsedAt(Date userCouponUsedAt) {
         this.userCouponUsedAt = userCouponUsedAt;
     }
-
 }
