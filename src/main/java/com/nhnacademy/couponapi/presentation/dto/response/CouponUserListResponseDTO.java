@@ -10,6 +10,9 @@ import java.util.Date;
  */
 @Builder
 public record CouponUserListResponseDTO(
+        Long userCouponId,
+        Long userId,
+        Long couponId,
         String couponName,
         String couponCode,
         BigDecimal couponPolicyDiscountValue,
@@ -17,5 +20,6 @@ public record CouponUserListResponseDTO(
         BigDecimal couponPolicyMinOrderAmount,
         BigDecimal couponPolicyMaxAmount,
         Date couponCreatedAt,
-        Date couponExpiredAt
+        Date couponExpiredAt,
+        Date userCouponUsedAt
 ) {}
