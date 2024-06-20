@@ -8,8 +8,8 @@ import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +27,9 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CouponResponseDTO> findAllCoupons() {
+    public List<CouponUserListResponseDTO> findAllCoupons() {
         return couponRepository.findAll().stream()
-                .map(this::toResponseDTO)
+                .map(this::toUserListResponseDTO)
                 .collect(Collectors.toList());
     }
 
@@ -121,6 +121,19 @@ public class CouponServiceImpl implements CouponService {
                 coupon.getCouponExpiredAt(),
                 coupon.getCouponCreatedAt(),
                 coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null
+        );
+    }
+
+    private CouponUserListResponseDTO toUserListResponseDTO(Coupon coupon) {
+        return new CouponUserListResponseDTO(
+                coupon.getCouponName(),
+                coupon.getCouponCode(),
+                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyDiscountValue() : null,
+                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyRate() : null,
+                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMinOrderAmount() : null,
+                coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMaxAmount() : null,
+                coupon.getCouponCreatedAt(),
+                coupon.getCouponExpiredAt()
         );
     }
 }

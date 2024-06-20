@@ -3,6 +3,7 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,8 @@ public class CouponController {
     private final CouponService couponService;
 
     @GetMapping
-    public ResponseEntity<List<CouponResponseDTO>> findAll() {
-        List<CouponResponseDTO> coupons = couponService.findAllCoupons();
+    public ResponseEntity<List<CouponUserListResponseDTO>> findAll() {
+        List<CouponUserListResponseDTO> coupons = couponService.findAllCoupons();
         return ResponseEntity.ok(coupons);
     }
 
