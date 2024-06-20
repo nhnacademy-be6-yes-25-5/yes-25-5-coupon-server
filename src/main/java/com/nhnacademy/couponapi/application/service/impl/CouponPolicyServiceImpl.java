@@ -1,6 +1,8 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
+import com.nhnacademy.couponapi.common.exception.CouponPolicyServiceException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +35,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     public CouponPolicyResponseDTO findCouponPolicyById(Long id) {
 
         CouponPolicy couponPolicy = couponPolicyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
+                .orElseThrow(() -> new CouponPolicyServiceException(
+                        ErrorStatus.toErrorStatus("Coupon policy not found by id", 404, LocalDateTime.now())
+                ));
 
         return toResponseDTO(couponPolicy);
     } // 클라이언트에게 응답하기 위해 CouponPolicyResponseDTO로 변환
@@ -41,50 +46,71 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     @Transactional(readOnly = true)
     public CouponPolicy findCouponPolicyEntityById(Long id) {
         return couponPolicyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
+                .orElseThrow(() -> new CouponPolicyServiceException(
+                        ErrorStatus.toErrorStatus("Coupon policy not found by id", 404, LocalDateTime.now())
+                ));
     } // 서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할 때 사용
 
     @Override
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
-        CouponPolicy couponPolicy = CouponPolicy.builder()
-                .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
-                .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
-                .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
-                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
-                .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
-                .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
-                .build();
+        try {
+            CouponPolicy couponPolicy = CouponPolicy.builder()
+                    .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                    .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                    .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                    .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                    .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                    .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
+                    .build();
 
-        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+            CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
-        return toResponseDTO(savedCouponPolicy);
+            return toResponseDTO(savedCouponPolicy);
+        } catch (Exception e) {
+            throw new CouponPolicyServiceException(
+                    ErrorStatus.toErrorStatus("Coupon Policy creation failed", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO couponPolicyRequestDTO) {
 
-        CouponPolicy existingCouponPolicy = couponPolicyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
+        try {
+            CouponPolicy existingCouponPolicy = couponPolicyRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
 
-        CouponPolicy updatedCouponPolicy = CouponPolicy.builder()
-                .couponPolicyId(existingCouponPolicy.getCouponPolicyId())
-                .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
-                .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
-                .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
-                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
-                .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
-                .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
-                .build();
+            CouponPolicy updatedCouponPolicy = CouponPolicy.builder()
+                    .couponPolicyId(existingCouponPolicy.getCouponPolicyId())
+                    .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                    .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                    .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                    .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                    .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                    .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
+                    .build();
 
-        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(updatedCouponPolicy);
+            CouponPolicy savedCouponPolicy = couponPolicyRepository.save(updatedCouponPolicy);
 
-        return toResponseDTO(savedCouponPolicy);
+            return toResponseDTO(savedCouponPolicy);
+        } catch (Exception e) {
+            throw new CouponPolicyServiceException(
+                    ErrorStatus.toErrorStatus("Coupon Policy update failed", 500, LocalDateTime.now())
+            );
+        }
     }
 
     @Override
     public void deleteCouponPolicy(Long id) {
-        couponPolicyRepository.deleteById(id);
+
+        try {
+            couponPolicyRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CouponPolicyServiceException(
+                    ErrorStatus.toErrorStatus("Coupon Policy delete failed", 500, LocalDateTime.now())
+            );
+        }
     }
 
     private CouponPolicyResponseDTO toResponseDTO(CouponPolicy couponPolicy) {
