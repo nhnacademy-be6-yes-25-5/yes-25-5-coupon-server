@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "category-api", url = "http://category-api")
+@FeignClient(name = "bookAdapterhttp://133.186.153.195:8085", url = "")
 public interface CategoryAdapter {
 
     @GetMapping("/categories/{id}")

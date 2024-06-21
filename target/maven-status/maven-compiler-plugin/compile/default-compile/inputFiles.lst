@@ -18,6 +18,7 @@
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/application/service/queue/Queue.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/advice/GlobalRestControllerAdvice.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/EurekaConfig.java
+/Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/QueryDSLConfig.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/SecurityConfig.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/ApplicationException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/CouponPolicyBookServiceException.java
@@ -62,6 +63,7 @@
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/CouponPolicyResponseDTO.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/CouponPolicyTagResponseDTO.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/CouponResponseDTO.java
+/Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/CouponUserListResponseDTO.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/TagResponseDTO.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/UserCouponResponseDTO.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/presentation/dto/response/UserResponseDTO.java
