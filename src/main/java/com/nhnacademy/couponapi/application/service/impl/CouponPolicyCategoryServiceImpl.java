@@ -76,8 +76,8 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .orElseThrow(() -> new RuntimeException("CouponPolicyCategory not found"));
             CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
             categoryAdapter.getCategoryById(requestDTO.categoryId());
-            couponPolicyCategory.setCouponPolicy(couponPolicy);
-            couponPolicyCategory.setCategoryId(requestDTO.categoryId());
+            couponPolicyCategory.updateCouponPolicy(couponPolicy);
+            couponPolicyCategory.updateCategoryId(requestDTO.categoryId());
             CouponPolicyCategory updatedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
             return toResponseDTO(updatedCouponPolicyCategory);
