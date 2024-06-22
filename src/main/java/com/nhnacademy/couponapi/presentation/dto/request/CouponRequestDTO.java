@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 public record CouponRequestDTO(
-
         @NotEmpty(message = "Coupon name cannot be empty")
         String couponName,
 

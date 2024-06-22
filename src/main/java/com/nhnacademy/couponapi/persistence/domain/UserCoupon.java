@@ -26,12 +26,21 @@ public class UserCoupon {
 
     private Date userCouponUsedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "coupon_status")
+    private CouponStatus couponStatus;
+
+    @Column(name = "coupon_type")
+    private String couponType;
+
     @Builder
-    public UserCoupon(Long userCouponId, Long userId, Coupon coupon, Date userCouponUsedAt) {
+    public UserCoupon(Long userCouponId, Long userId, Coupon coupon, Date userCouponUsedAt, CouponStatus couponStatus, String couponType) {
         this.userCouponId = userCouponId;
         this.userId = userId;
         this.coupon = coupon;
         this.userCouponUsedAt = userCouponUsedAt;
+        this.couponStatus = couponStatus;
+        this.couponType = couponType;
     }
 
     public void setCoupon(Coupon coupon) {
@@ -44,5 +53,19 @@ public class UserCoupon {
 
     public void setUserCouponUsedAt(Date userCouponUsedAt) {
         this.userCouponUsedAt = userCouponUsedAt;
+    }
+
+    public void setCouponStatus(CouponStatus couponStatus) {
+        this.couponStatus = couponStatus;
+    }
+
+    public void setCouponType(String couponType) {
+        this.couponType = couponType;
+    }
+
+    public enum CouponStatus {
+        ACTIVE,
+        USED,
+        EXPIRED
     }
 }

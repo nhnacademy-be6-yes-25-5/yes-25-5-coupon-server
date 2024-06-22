@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 public record UserCouponRequestDTO(
-
         @NotNull(message = "User ID cannot be null")
         Long userId,
 

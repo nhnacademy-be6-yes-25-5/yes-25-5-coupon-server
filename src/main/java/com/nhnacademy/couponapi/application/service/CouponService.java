@@ -15,5 +15,6 @@ public interface CouponService {
     CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO);
     void deleteCoupon(Long id);
     Coupon findCouponEntityById(Long id);
-
+    CouponResponseDTO issueBirthdayCoupon(Long userId);
+    CouponResponseDTO issueWelcomeCoupon(Long userId);
 }
