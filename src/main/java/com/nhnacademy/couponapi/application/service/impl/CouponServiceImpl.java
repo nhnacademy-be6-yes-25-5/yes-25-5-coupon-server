@@ -112,53 +112,42 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
+    @Transactional
     public CouponResponseDTO issueBirthdayCoupon(Long userId) {
-        try {
-            Date now = new Date();
-            Date validTo = new Date(now.getTime() + 30L * 24 * 60 * 60 * 1000); // 30일 유효
+        Date now = new Date();
+        Date validTo = new Date(now.getTime() + 30L * 24 * 60 * 60 * 1000); // 30일 유효
 
-            Coupon coupon = Coupon.builder()
-                    .couponName("생일 쿠폰")
-                    .couponCode(generateCouponCode())
-                    .validFrom(now)
-                    .validTo(validTo)
-                    .couponCreatedAt(now)
-                    .build();
+        Coupon coupon = Coupon.builder()
+                .couponName("생일 쿠폰")
+                .couponCode(createCouponCode())
+                .validFrom(now)
+                .validTo(validTo)
+                .couponCreatedAt(now)
+                .build();
 
-            Coupon savedCoupon = couponRepository.save(coupon);
-            return toResponseDTO(savedCoupon);
-        } catch (Exception e) {
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus("Birthday coupon could not be issued", 500, LocalDateTime.now())
-            );
-        }
+        Coupon savedCoupon = couponRepository.save(coupon);
+        return toResponseDTO(savedCoupon);
     }
 
     @Override
+    @Transactional
     public CouponResponseDTO issueWelcomeCoupon(Long userId) {
-        try {
-            Date now = new Date();
-            Date validTo = new Date(now.getTime() + 60L * 24 * 60 * 60 * 1000); // 60일 유효
+        Date now = new Date();
+        Date validTo = new Date(now.getTime() + 60L * 24 * 60 * 60 * 1000); // 60일 유효
 
-            Coupon coupon = Coupon.builder()
-                    .couponName("웰컴 쿠폰")
-                    .couponCode(generateCouponCode())
-                    .validFrom(now)
-                    .validTo(validTo)
-                    .couponCreatedAt(now)
-                    .build();
+        Coupon coupon = Coupon.builder()
+                .couponName("웰컴 쿠폰")
+                .couponCode(createCouponCode())
+                .validFrom(now)
+                .validTo(validTo)
+                .couponCreatedAt(now)
+                .build();
 
-            Coupon savedCoupon = couponRepository.save(coupon);
-            return toResponseDTO(savedCoupon);
-        } catch (Exception e) {
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus("Welcome coupon could not be issued", 500, LocalDateTime.now())
-            );
-        }
+        Coupon savedCoupon = couponRepository.save(coupon);
+        return toResponseDTO(savedCoupon);
     }
 
-    private String generateCouponCode() {
-        // 쿠폰 코드 생성 로직
+    private String createCouponCode() {
         return UUID.randomUUID().toString();
     }
 
