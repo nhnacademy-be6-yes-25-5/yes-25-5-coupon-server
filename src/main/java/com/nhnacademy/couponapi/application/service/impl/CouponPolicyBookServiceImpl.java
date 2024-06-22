@@ -76,8 +76,8 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                             ErrorStatus.toErrorStatus("Coupon policy book not found by id", 404, LocalDateTime.now())));
             CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
             bookAdapter.getBookById(requestDTO.bookId());
-            couponPolicyBook.setCouponPolicy(couponPolicy);
-            couponPolicyBook.setBookId(requestDTO.bookId());
+            couponPolicyBook.updateCouponPolicy(couponPolicy);
+            couponPolicyBook.updateBookId(requestDTO.bookId());
             CouponPolicyBook updatedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
             return toResponseDTO(updatedCouponPolicyBook);

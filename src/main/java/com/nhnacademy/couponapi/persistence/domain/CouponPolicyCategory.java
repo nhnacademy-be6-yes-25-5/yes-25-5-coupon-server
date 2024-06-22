@@ -5,11 +5,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "coupon_policy_category")
+@SuperBuilder(toBuilder = true)
 public class CouponPolicyCategory {
 
     @Id
@@ -30,12 +32,15 @@ public class CouponPolicyCategory {
         this.categoryId = categoryId;
     }
 
-    public void setCouponPolicy(CouponPolicy couponPolicy) {
-        this.couponPolicy = couponPolicy;
+    public CouponPolicyCategory updateCouponPolicy(CouponPolicy couponPolicy) {
+        return this.toBuilder()
+                .couponPolicy(couponPolicy)
+                .build();
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public CouponPolicyCategory updateCategoryId(Long categoryId) {
+        return this.toBuilder()
+                .categoryId(categoryId)
+                .build();
     }
-
 }
