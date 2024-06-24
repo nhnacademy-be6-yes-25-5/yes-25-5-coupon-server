@@ -48,6 +48,9 @@ jobs:
           REMOTE_USER: ${{ secrets.SSH_USER }}
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+          YES25_5_MYSQL_PASSWORD: ${{ secrets.YES25_5_MYSQL_PASSWORD }}
+          EUREKA_GATEWAY_PORT: ${{ secrets.EUREKA_GATEWAY_PORT }}
+          EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
@@ -55,10 +58,10 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t my-app .
+            docker buildx build --tag my-app-ci .
             docker stop my-app || true
             docker rm my-app || true
-            docker run -d -p 8080:8080 --name my-app my-app \
+            docker run -d -p 8080:8080 --name my-app my-app-ci \
               -e YES25_5_MYSQL_PASSWORD=${YES25_5_MYSQL_PASSWORD} \
               -e EUREKA_GATEWAY_PORT=${EUREKA_GATEWAY_PORT} \
               -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME}
