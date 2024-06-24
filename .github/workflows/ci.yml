@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --no-cache -t coupon-app
+          docker build --no-cache -t coupon-app .
 
       - name: Run Maven tests in Docker
         run: |
