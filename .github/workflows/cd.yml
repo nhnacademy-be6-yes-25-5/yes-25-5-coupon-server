@@ -2,7 +2,7 @@ name: Java CD with Maven
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "develop", "main" ]
 
 permissions: write-all
 
@@ -32,6 +32,7 @@ jobs:
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no Dockerfile ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/Dockerfile
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no pom.xml ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/pom.xml
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no -r src ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/src
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no src/main/resources/application-prod.yml ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/src/main/resources/application-prod.yml
 
       - name: Check Dockerfile on Remote Server
         env:
@@ -42,6 +43,7 @@ jobs:
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "ls -la ${REMOTE_DIR}/Dockerfile"
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "ls -la ${REMOTE_DIR}/pom.xml"
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "ls -la ${REMOTE_DIR}/src"
+          ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "ls -la ${REMOTE_DIR}/src/main/resources/application-prod.yml"
 
       - name: Deploy JAR on Remote Server
         env:
@@ -49,8 +51,9 @@ jobs:
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
           YES25_5_MYSQL_PASSWORD: ${{ secrets.YES25_5_MYSQL_PASSWORD }}
-          EUREKA_GATEWAY_PORT: ${{ secrets.EUREKA_GATEWAY_PORT }}
           EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
+          EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
+          BOOK_USER_SERVER: ${{ secrets.BOOK_USER_SERVER }}
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
@@ -58,13 +61,15 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker buildx build --tag my-app-ci .
+            docker build -t my-app .
             docker stop my-app || true
             docker rm my-app || true
-            docker run -d -p 8080:8080 --name my-app my-app-ci \
+            docker run -d -p 8080:8080 --name my-app \
               -e YES25_5_MYSQL_PASSWORD=${YES25_5_MYSQL_PASSWORD} \
-              -e EUREKA_GATEWAY_PORT=${EUREKA_GATEWAY_PORT} \
-              -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME}
+              -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
+              -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
+              -e BOOK_USER_SERVER=${BOOK_USER_SERVER} \
+              my-app
           EOF
 
       - name: Send Deployment Status to Dooray
@@ -79,9 +84,9 @@ jobs:
           script: |
             const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
             const payload = {
-              botName: "쿠폰 회원 서버 Bot",
+              botName: "쿠폰 및 결제 서버 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
-              text: "쿠폰 회원 서버의 배포가 성공적으로 완료되었습니다!",
+              text: "쿠폰 서버의 배포가 성공적으로 완료되었습니다!",
               attachments: [
                 {
                   title: "Pull Request URL",
@@ -116,9 +121,9 @@ jobs:
           script: |
             const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
             const payload = {
-              botName: "쿠폰 회원 서버 Bot",
+              botName: "쿠폰 서버 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
-              text: "쿠폰 회원 서버의 배포가 실패했습니다...",
+              text: "쿠폰 서버의 배포가 실패했습니다...",
               attachments: [
                 {
                   title: "Pull Request URL",
