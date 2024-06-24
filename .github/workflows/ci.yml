@@ -23,11 +23,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t my-app-ci .
+          docker build --no-cache -t coupon-app .
 
       - name: Run Maven tests in Docker
         run: |
-          docker run --rm my-app-ci mvn clean verify sonar:sonar \
+          docker run --rm coupon-app mvn clean verify sonar:sonar \
           -Dspring.profile.active=ci \
           -Dsonar.projectKey=yes-25-5-coupons \
           -Dsonar.projectName='yes-25-5-coupons' \
@@ -36,7 +36,7 @@ jobs:
 
       - name: Build Maven project in Docker
         run: |
-          docker run --rm -v "$(pwd)":/app -w /app my-app-ci mvn package \
+          docker run --rm -v "$(pwd)":/app -w /app coupon-app mvn package \
           -Dspring.profiles.active=ci
 
       - name: Check if JAR file exists

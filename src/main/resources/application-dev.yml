@@ -1,38 +1,57 @@
 spring:
-  application:
-    name: coupon-server
+  rabbitmq:
+    host: 133.186.153.195
+    port: 5672
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 5
+          multiplier: 1.5
+        default-requeue-rejected: false
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        multiplier: 1.5
+    username: yes255
+    password: yes255
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://133.186.241.167:3306/be6_yes255_coupon
     username: be6_yes255
     password: ${YES25_5_MYSQL_PASSWORD}
-  h2:
-    console:
-      enabled: false
   jpa:
     open-in-view: false
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         use_sql_comments: true
         highlight_sql: true
         auto_quote_keyword: true
+    database: mysql
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
-    generate-ddl: true
-  sql:
-    init:
-      mode: always
+  data:
+    redis:
+      host: 133.186.241.167
+      port: 6379
+      database: 34
+      password: ${YES25_5_REDIS_PASSWORD}
+  application:
+    name: coupon-server
 logging:
   level:
+    org.springframework.amqp.rabbit.listener: debug
     org.hibernate.orm.jdbc.bind: trace
     org.springframework.transaction.interceptor: trace
 server:
   port: 8081
-
 eureka:
   client:
     enabled: true
@@ -41,6 +60,9 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
-
 jwt:
-  secret: ${JWT_SECRET:this-is-coupon-jwt-secret-key-i-am-hungry}
+  secret: this-is-secret-key-yeah-ho-hu-yea-yes-hi-bye
+
+# 각 서버별 api 호출 코드를 수정합니다.
+api:
+  books-users: http://localhost:8061
