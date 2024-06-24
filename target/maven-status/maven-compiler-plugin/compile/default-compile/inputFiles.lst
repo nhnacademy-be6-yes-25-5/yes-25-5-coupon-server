@@ -18,7 +18,7 @@
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/application/service/queue/Queue.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/advice/GlobalRestControllerAdvice.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/EurekaConfig.java
-/Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/QueryDSLConfig.java
+/Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/SchedulerConfig.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/config/SecurityConfig.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/ApplicationException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/CouponPolicyBookServiceException.java
@@ -27,6 +27,7 @@
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/CouponPolicyTagServiceException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/CouponServiceException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/DefaultException.java
+/Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/FeignClientException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/JwtException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/UserCouponServiceException.java
 /Users/imchaelyeong/Desktop/yes-25-5-coupon-server/src/main/java/com/nhnacademy/couponapi/common/exception/payload/ErrorStatus.java

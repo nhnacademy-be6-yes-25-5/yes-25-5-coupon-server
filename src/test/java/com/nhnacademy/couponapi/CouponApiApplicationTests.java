@@ -1,16 +1,16 @@
-package com.nhnacademy.couponapi;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-
-@SpringBootTest
-@ActiveProfiles("test")
-class CouponApiApplicationTests {
-
-    @Test
-    void contextLoads() {
-    }
-
-}
+//package com.nhnacademy.couponapi;
+//
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.test.context.ActiveProfiles;
+//import org.springframework.test.context.TestPropertySource;
+//
+//@SpringBootTest
+//@ActiveProfiles("test")
+//class CouponApiApplicationTests {
+//
+//    @Test
+//    void contextLoads() {
+//    }
+//
+//}

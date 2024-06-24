@@ -24,6 +24,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t my-app-ci .
+          docker build --no-cache -t my-app
 
       - name: Run Maven tests in Docker
         run: |
