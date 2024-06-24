@@ -61,7 +61,7 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t coupon-app-ci .
+            docker build -t coupon-app.
             docker stop coupon-app || true
             docker rm coupon-app || true
             docker run -d -p 8080:8080 --name coupon-app \
@@ -69,7 +69,7 @@ jobs:
               -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
               -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
               -e BOOK_USER_SERVER=${BOOK_USER_SERVER} \
-              coupon-app-ci
+              coupon-app
           EOF
 
       - name: Send Deployment Status to Dooray
