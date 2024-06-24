@@ -61,7 +61,7 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t coupon-app.
+            docker build -t coupon-app .
             docker stop coupon-app || true
             docker rm coupon-app || true
             docker run -d -p 8080:8080 --name coupon-app \
