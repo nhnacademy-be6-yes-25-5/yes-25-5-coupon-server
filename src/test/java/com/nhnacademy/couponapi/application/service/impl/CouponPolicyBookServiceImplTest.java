@@ -2,7 +2,6 @@ package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.adapter.BookAdapter;
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
-import com.nhnacademy.couponapi.common.exception.CouponPolicyBookServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
@@ -79,7 +78,7 @@ public class CouponPolicyBookServiceImplTest {
     @Test
     public void testCreateCouponPolicyBook() throws Exception {
         when(couponPolicyService.findCouponPolicyEntityById(1L)).thenReturn(couponPolicy);
-        doReturn(null).when(bookAdapter).getBookById(1L);
+        doReturn(null).when(bookAdapter).findByBookId(1L);
         when(couponPolicyBookRepository.save(any(CouponPolicyBook.class))).thenReturn(couponPolicyBook);
 
         CouponPolicyBookResponseDTO result = couponPolicyBookService.createCouponPolicyBook(requestDTO);
@@ -92,7 +91,7 @@ public class CouponPolicyBookServiceImplTest {
     public void testUpdateCouponPolicyBook() throws Exception {
         when(couponPolicyBookRepository.findById(1L)).thenReturn(Optional.of(couponPolicyBook));
         when(couponPolicyService.findCouponPolicyEntityById(1L)).thenReturn(couponPolicy);
-        doReturn(null).when(bookAdapter).getBookById(1L);
+        doReturn(null).when(bookAdapter).findByBookId(1L);
         when(couponPolicyBookRepository.save(any(CouponPolicyBook.class))).thenReturn(couponPolicyBook);
 
         CouponPolicyBookResponseDTO result = couponPolicyBookService.updateCouponPolicyBook(1L, requestDTO);
