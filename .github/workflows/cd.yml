@@ -61,7 +61,7 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t my-app .
+            docker buildx build --tag my-app-ci .
             docker stop my-app || true
             docker rm my-app || true
             docker run -d -p 8080:8080 --name my-app \
@@ -69,7 +69,7 @@ jobs:
               -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
               -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
               -e BOOK_USER_SERVER=${BOOK_USER_SERVER} \
-              my-app
+              my-app-ci
           EOF
 
       - name: Send Deployment Status to Dooray
