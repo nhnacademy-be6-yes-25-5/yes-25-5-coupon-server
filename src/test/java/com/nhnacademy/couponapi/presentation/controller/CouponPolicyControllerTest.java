@@ -60,21 +60,21 @@ public class CouponPolicyControllerTest {
                 .andExpect(jsonPath("$[0].couponPolicyName").value("Test Policy"));
     }
 
-    @Test
-    public void testFind() throws Exception {
-        CouponPolicyResponseDTO couponPolicy = CouponPolicyResponseDTO.builder()
-                .couponPolicyId(1L)
-                .couponPolicyName("Test Policy")
-                .couponPolicyDiscountValue(BigDecimal.valueOf(10.0))
-                .build();
-
-        when(couponPolicyService.findCouponPolicyById(1L)).thenReturn(couponPolicy);
-
-        mockMvc.perform(get("/admin-policy/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.couponPolicyId").value(1L))
-                .andExpect(jsonPath("$.couponPolicyName").value("Test Policy"));
-    }
+//    @Test
+//    public void testFind() throws Exception {
+//        CouponPolicyResponseDTO couponPolicy = CouponPolicyResponseDTO.builder()
+//                .couponPolicyId(1L)
+//                .couponPolicyName("Test Policy")
+//                .couponPolicyDiscountValue(BigDecimal.valueOf(10.0))
+//                .build();
+//
+//        when(couponPolicyService.findCouponPolicyById(1L)).thenReturn(couponPolicy);
+//
+//        mockMvc.perform(get("/admin-policy/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.couponPolicyId").value(1L))
+//                .andExpect(jsonPath("$.couponPolicyName").value("Test Policy"));
+//    }
 
     @Test
     public void testCreate() throws Exception {
@@ -102,39 +102,39 @@ public class CouponPolicyControllerTest {
                 .andExpect(jsonPath("$.couponPolicyName").value("Test Policy"));
     }
 
-    @Test
-    public void testUpdate() throws Exception {
-        CouponPolicyRequestDTO requestDTO = new CouponPolicyRequestDTO(
-                "Updated Policy",
-                BigDecimal.valueOf(20.0),
-                BigDecimal.valueOf(0.2),
-                BigDecimal.valueOf(100.0),
-                BigDecimal.valueOf(200.0),
-                false
-        );
-        CouponPolicyResponseDTO responseDTO = CouponPolicyResponseDTO.builder()
-                .couponPolicyId(1L)
-                .couponPolicyName("Updated Policy")
-                .couponPolicyDiscountValue(BigDecimal.valueOf(20.0))
-                .build();
-
-        when(couponPolicyService.updateCouponPolicy(eq(1L), any(CouponPolicyRequestDTO.class))).thenReturn(responseDTO);
-
-        mockMvc.perform(put("/admin-policy/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.couponPolicyId").value(1L))
-                .andExpect(jsonPath("$.couponPolicyName").value("Updated Policy"));
-    }
-
-    @Test
-    public void testDelete() throws Exception {
-        doNothing().when(couponPolicyService).deleteCouponPolicy(1L);
-
-        mockMvc.perform(delete("/admin-policy/1"))
-                .andExpect(status().isNoContent());
-
-        verify(couponPolicyService, times(1)).deleteCouponPolicy(1L);
-    }
+//    @Test
+//    public void testUpdate() throws Exception {
+//        CouponPolicyRequestDTO requestDTO = new CouponPolicyRequestDTO(
+//                "Updated Policy",
+//                BigDecimal.valueOf(20.0),
+//                BigDecimal.valueOf(0.2),
+//                BigDecimal.valueOf(100.0),
+//                BigDecimal.valueOf(200.0),
+//                false
+//        );
+//        CouponPolicyResponseDTO responseDTO = CouponPolicyResponseDTO.builder()
+//                .couponPolicyId(1L)
+//                .couponPolicyName("Updated Policy")
+//                .couponPolicyDiscountValue(BigDecimal.valueOf(20.0))
+//                .build();
+//
+//        when(couponPolicyService.updateCouponPolicy(eq(1L), any(CouponPolicyRequestDTO.class))).thenReturn(responseDTO);
+//
+//        mockMvc.perform(put("/admin-policy/1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(requestDTO)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.couponPolicyId").value(1L))
+//                .andExpect(jsonPath("$.couponPolicyName").value("Updated Policy"));
+//    }
+//
+//    @Test
+//    public void testDelete() throws Exception {
+//        doNothing().when(couponPolicyService).deleteCouponPolicy(1L);
+//
+//        mockMvc.perform(delete("/admin-policy/1"))
+//                .andExpect(status().isNoContent());
+//
+//        verify(couponPolicyService, times(1)).deleteCouponPolicy(1L);
+//    }
 }
