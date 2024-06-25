@@ -5,6 +5,8 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponse
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,4 +24,10 @@ public class UserCouponController {
     public List<CouponUserListResponseDTO> findUserCoupons(@RequestParam("userId") Long userId) {
         return userCouponService.findUserCoupons(userId);
     }
+
+//    @PostMapping("/issue-birthday/{userId}")
+//    public ResponseEntity<Void> issueBirthdayCouponForUser(@PathVariable Long userId) {
+//        userCouponService.issueBirthdayCouponForUser(userId);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    } 특정사용자에게 생일쿠폰 발급 -> 테스트용
 }

@@ -45,3 +45,9 @@ Content-Type: application/json
 # 5. CouponPolicy 삭제
 DELETE http://localhost:8081/coupon-policies/2
 Content-Type: application/json
+
+
+#### 특정사용자에게 생일쿠폰발급(테스트용) Issue Birthday Coupon for a User
+#POST http://localhost:8080/user-coupons/issue-birthday/31
+#Accept: application/json
+#Content-Type: application/json

@@ -83,6 +83,34 @@ public class UserCouponServiceImpl implements UserCouponService {
                 });
     }
 
+//    @Override // 생일쿠폰 테스트용
+//    public void issueBirthdayCouponForUser(Long userId) {
+//        UserResponseDTO user;
+//        try {
+//            user = userAdapter.getUserById(userId);  // 특정 사용자 조회
+//        } catch (Exception e) {
+//            throw new FeignClientException(
+//                    ErrorStatus.toErrorStatus("Failed to retrieve user from user service", 500, LocalDateTime.now())
+//            );
+//        }
+//
+//        LocalDate currentDate = LocalDate.now();
+//        LocalDate birthDate = user.userBirth().toInstant()
+//                .atZone(ZoneId.systemDefault())
+//                .toLocalDate();
+//
+//        if (birthDate.getMonthValue() == currentDate.getMonthValue()) {
+//            boolean success = issueCouponWithRetry(() -> couponService.issueBirthdayCoupon(user.userId()));
+//            if (!success) {
+//                logger.error("Failed to issue birthday coupon for user {}", user.userId());
+//            } else {
+//                logger.info("Issued birthday coupon for user {}", user.userId());
+//            }
+//        } else {
+//            logger.info("User {} does not have a birthday this month", user.userId());
+//        }
+//    }
+
     @Override
     public void issueWelcomeCoupon(Long userId) {
         boolean success = issueCouponWithRetry(() -> couponService.issueWelcomeCoupon(userId));

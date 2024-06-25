@@ -69,4 +69,16 @@ public class CouponController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<List<CouponUserListResponseDTO>> getCouponsByBookId(@PathVariable("bookId") Long bookId) {
+        List<CouponUserListResponseDTO> coupons = couponService.getCouponsByBookId(bookId);
+        return ResponseEntity.ok(coupons);
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<CouponUserListResponseDTO>> getCouponsByCategoryIds(@RequestParam List<Long> categoryIds) {
+        List<CouponUserListResponseDTO> coupons = couponService.getCouponsByCategoryIds(categoryIds);
+        return ResponseEntity.ok(coupons);
+    }
+
 }
