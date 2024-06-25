@@ -5,6 +5,8 @@ import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
+import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
+import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
+    private final CouponPolicyBookRepository couponPolicyBookRepository;
+    private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
     private final CouponPolicyService couponPolicyService;
 
     @Override
@@ -145,6 +150,24 @@ public class CouponServiceImpl implements CouponService {
 
         Coupon savedCoupon = couponRepository.save(coupon);
         return toResponseDTO(savedCoupon);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId) {
+        return couponPolicyBookRepository.findByBookId(bookId).stream()
+                .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
+                .map(this::toUserListResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds) {
+        return couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds).stream()
+                .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
+                .map(this::toUserListResponseDTO)
+                .collect(Collectors.toList());
     }
 
     private String createCouponCode() {

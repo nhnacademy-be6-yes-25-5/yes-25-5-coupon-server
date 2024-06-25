@@ -17,4 +17,6 @@ public interface CouponService {
     Coupon findCouponEntityById(Long id);
     CouponResponseDTO issueBirthdayCoupon(Long userId);
     CouponResponseDTO issueWelcomeCoupon(Long userId);
+    List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId);
+    List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds);
 }
