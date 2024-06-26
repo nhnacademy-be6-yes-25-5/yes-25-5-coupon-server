@@ -1,19 +1,22 @@
 package com.nhnacademy.couponapi.presentation.dto.request;
 
+import com.nhnacademy.couponapi.validation.EitherOr;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
+@EitherOr
 public record CouponPolicyRequestDTO(
 
         @NotEmpty(message = "Coupon policy name cannot be null")
         String couponPolicyName,
 
-        @NotNull(message = "Coupon policy discount value cannot be null")
+        @Nullable
         BigDecimal couponPolicyDiscountValue,
 
-        @NotNull(message = "Coupon policy rate cannot be null")
+        @Nullable
         BigDecimal couponPolicyRate,
 
         @NotNull(message = "Coupon policy minimum order amount cannot be null")
