@@ -46,6 +46,8 @@ spring:
   application:
     name: coupon-server
 logging:
+  file:
+    path: ${user.home}/logs/${spring.application.name}
   level:
     org.springframework.amqp.rabbit.listener: debug
     org.hibernate.orm.jdbc.bind: trace
