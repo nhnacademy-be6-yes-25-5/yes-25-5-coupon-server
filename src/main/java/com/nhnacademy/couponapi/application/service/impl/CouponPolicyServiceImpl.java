@@ -26,7 +26,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     @Transactional(readOnly = true)
     public List<CouponPolicyResponseDTO> findAllCouponPolicies() {
         return couponPolicyRepository.findAll().stream()
-                .map(this::toResponseDTO)
+                .map(CouponPolicyResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +39,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                         ErrorStatus.toErrorStatus("Coupon policy not found by id", 404, LocalDateTime.now())
                 ));
 
-        return toResponseDTO(couponPolicy);
+        return CouponPolicyResponseDTO.fromEntity(couponPolicy);
     } // 클라이언트에게 응답하기 위해 CouponPolicyResponseDTO로 변환
 
     @Override
@@ -66,7 +66,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
             CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
-            return toResponseDTO(savedCouponPolicy);
+            return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
         } catch (Exception e) {
             throw new CouponPolicyServiceException(
                     ErrorStatus.toErrorStatus("Coupon Policy creation failed", 500, LocalDateTime.now())
@@ -93,7 +93,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
             CouponPolicy savedCouponPolicy = couponPolicyRepository.save(updatedCouponPolicy);
 
-            return toResponseDTO(savedCouponPolicy);
+            return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
         } catch (Exception e) {
             throw new CouponPolicyServiceException(
                     ErrorStatus.toErrorStatus("Coupon Policy update failed", 500, LocalDateTime.now())
@@ -111,20 +111,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                     ErrorStatus.toErrorStatus("Coupon Policy delete failed", 500, LocalDateTime.now())
             );
         }
-    }
-
-    private CouponPolicyResponseDTO toResponseDTO(CouponPolicy couponPolicy) {
-        return CouponPolicyResponseDTO.builder()
-                .couponPolicyId(couponPolicy.getCouponPolicyId())
-                .couponPolicyName(couponPolicy.getCouponPolicyName())
-                .couponPolicyDiscountValue(couponPolicy.getCouponPolicyDiscountValue())
-                .couponPolicyCreatedAt(couponPolicy.getCouponPolicyCreatedAt())
-                .couponPolicyUpdatedAt(couponPolicy.getCouponPolicyUpdatedAt())
-                .couponPolicyRate(couponPolicy.getCouponPolicyRate())
-                .couponPolicyMinOrderAmount(couponPolicy.getCouponPolicyMinOrderAmount())
-                .couponPolicyMaxAmount(couponPolicy.getCouponPolicyMaxAmount())
-                .couponPolicyDiscountType(couponPolicy.isCouponPolicyDiscountType())
-                .build();
     }
 
 }

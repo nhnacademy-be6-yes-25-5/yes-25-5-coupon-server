@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,7 +35,7 @@ public class CouponServiceImpl implements CouponService {
     @Transactional(readOnly = true)
     public List<CouponUserListResponseDTO> findAllCoupons() {
         return couponRepository.findAll().stream()
-                .map(this::toUserListResponseDTO)
+                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +46,7 @@ public class CouponServiceImpl implements CouponService {
                 .orElseThrow(() -> new CouponServiceException(
                         ErrorStatus.toErrorStatus("Coupon not found by id", 404, LocalDateTime.now())
                 ));
-        return toResponseDTO(coupon);
+        return CouponResponseDTO.fromEntity(coupon);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CouponServiceImpl implements CouponService {
             }
 
             Coupon savedCoupon = couponRepository.save(couponBuilder.build());
-            return toResponseDTO(savedCoupon);
+            return CouponResponseDTO.fromEntity(savedCoupon);
         } catch (Exception e) {
             throw new CouponServiceException(
                     ErrorStatus.toErrorStatus("Coupon could not be created", 500, LocalDateTime.now())
@@ -97,7 +96,7 @@ public class CouponServiceImpl implements CouponService {
             }
 
             Coupon updatedCoupon = couponRepository.save(couponBuilder.build());
-            return toResponseDTO(updatedCoupon);
+            return CouponResponseDTO.fromEntity(updatedCoupon);
         } catch (Exception e) {
             throw new CouponServiceException(
                     ErrorStatus.toErrorStatus("Coupon could not be updated", 500, LocalDateTime.now())
@@ -131,7 +130,7 @@ public class CouponServiceImpl implements CouponService {
                 .build();
 
         Coupon savedCoupon = couponRepository.save(coupon);
-        return toResponseDTO(savedCoupon);
+        return CouponResponseDTO.fromEntity(savedCoupon);
     }
 
     @Override
@@ -149,7 +148,7 @@ public class CouponServiceImpl implements CouponService {
                 .build();
 
         Coupon savedCoupon = couponRepository.save(coupon);
-        return toResponseDTO(savedCoupon);
+        return CouponResponseDTO.fromEntity(savedCoupon);
     }
 
     @Override
@@ -157,7 +156,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId) {
         return couponPolicyBookRepository.findByBookId(bookId).stream()
                 .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
-                .map(this::toUserListResponseDTO)
+                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
                 .collect(Collectors.toList());
     }
 
@@ -166,7 +165,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds) {
         return couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds).stream()
                 .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
-                .map(this::toUserListResponseDTO)
+                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
                 .collect(Collectors.toList());
     }
 
@@ -174,31 +173,4 @@ public class CouponServiceImpl implements CouponService {
         return UUID.randomUUID().toString();
     }
 
-    private CouponResponseDTO toResponseDTO(Coupon coupon) {
-        return CouponResponseDTO.builder()
-                .couponId(coupon.getCouponId())
-                .couponName(coupon.getCouponName())
-                .couponCode(coupon.getCouponCode())
-                .couponExpiredAt(coupon.getCouponExpiredAt())
-                .couponCreatedAt(coupon.getCouponCreatedAt())
-                .couponPolicyId(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyId() : null)
-                .build();
-    }
-
-    private CouponUserListResponseDTO toUserListResponseDTO(Coupon coupon) {
-        return CouponUserListResponseDTO.builder()
-                .userCouponId(1L)
-                .userId(4L)
-                .couponId(coupon.getCouponId())
-                .couponName(coupon.getCouponName())
-                .couponCode(coupon.getCouponCode())
-                .couponPolicyDiscountValue(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyDiscountValue() : null)
-                .couponPolicyRate(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyRate() : null)
-                .couponPolicyMinOrderAmount(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMinOrderAmount() : null)
-                .couponPolicyMaxAmount(coupon.getCouponPolicy() != null ? coupon.getCouponPolicy().getCouponPolicyMaxAmount() : null)
-                .couponCreatedAt(coupon.getCouponCreatedAt())
-                .couponExpiredAt(coupon.getCouponExpiredAt())
-                .userCouponUsedAt(new Date())
-                .build();
-    }
 }

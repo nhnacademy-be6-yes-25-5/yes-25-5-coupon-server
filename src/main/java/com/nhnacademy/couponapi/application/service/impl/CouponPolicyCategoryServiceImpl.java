@@ -31,7 +31,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Transactional(readOnly = true)
     public List<CouponPolicyCategoryResponseDTO> findAllCouponPolicyCategories() {
         return couponPolicyCategoryRepository.findAll().stream()
-                .map(this::toResponseDTO)
+                .map(CouponPolicyCategoryResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -44,7 +44,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                         ErrorStatus.toErrorStatus("Coupon policy category by id", 404, LocalDateTime.now())
                 ));
 
-        return toResponseDTO(couponPolicyCategory);
+        return CouponPolicyCategoryResponseDTO.fromEntity(couponPolicyCategory);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .build();
             CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
-            return toResponseDTO(savedCouponPolicyCategory);
+            return CouponPolicyCategoryResponseDTO.fromEntity(savedCouponPolicyCategory);
         } catch (Exception e) {
             throw new CouponPolicyCategoryServiceException(
                     ErrorStatus.toErrorStatus("Coupon policy category creation failed", 500, LocalDateTime.now())
@@ -80,7 +80,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
             couponPolicyCategory.updateCategoryId(requestDTO.categoryId());
             CouponPolicyCategory updatedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
-            return toResponseDTO(updatedCouponPolicyCategory);
+            return CouponPolicyCategoryResponseDTO.fromEntity(updatedCouponPolicyCategory);
         } catch (Exception e) {
             throw new CouponPolicyCategoryServiceException(
                     ErrorStatus.toErrorStatus("Coupon policy category update failed", 500, LocalDateTime.now())
@@ -98,14 +98,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     ErrorStatus.toErrorStatus("Coupon policy category delete failed", 500, LocalDateTime.now())
             );
         }
-    }
-
-    private CouponPolicyCategoryResponseDTO toResponseDTO(CouponPolicyCategory couponPolicyCategory) {
-        return CouponPolicyCategoryResponseDTO.builder()
-                .couponPolicyCategoryId(couponPolicyCategory.getCouponPolicyCategoryId())
-                .couponPolicyId(couponPolicyCategory.getCouponPolicy().getCouponPolicyId())
-                .categoryId(couponPolicyCategory.getCategoryId())
-                .build();
     }
 
 }
