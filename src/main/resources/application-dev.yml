@@ -46,6 +46,8 @@ spring:
   application:
     name: coupon-server
 logging:
+  file:
+    path: ${user.dir}/logs/${spring.application.name}
   level:
     org.springframework.amqp.rabbit.listener: debug
     org.hibernate.orm.jdbc.bind: trace
@@ -59,6 +61,7 @@ eureka:
     registerWithEureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
 
 jwt:
   secret: this-is-secret-key-yeah-ho-hu-yea-yes-hi-bye

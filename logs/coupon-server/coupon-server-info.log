@@ -1,0 +1,42 @@
+2024-06-26 12:54:26.407 [main] INFO  c.n.couponapi.CouponApiApplication - Starting CouponApiApplication using Java 21.0.2 with PID 77218 (/Users/imchaelyeong/Desktop/yes-25-5-coupon-server/target/classes started by imchaelyeong in /Users/imchaelyeong/Desktop/yes-25-5-coupon-server)
+2024-06-26 12:54:26.408 [main] INFO  c.n.couponapi.CouponApiApplication - The following 1 profile is active: "dev"
+2024-06-26 12:54:26.810 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-06-26 12:54:26.882 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 66 ms. Found 5 JPA repository interfaces.
+2024-06-26 12:54:27.013 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=af197125-b957-3760-96a1-0e43f9156b84
+2024-06-26 12:54:27.182 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2024-06-26 12:54:27.188 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-06-26 12:54:27.188 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+2024-06-26 12:54:27.221 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-06-26 12:54:27.221 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 798 ms
+2024-06-26 12:54:27.335 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-06-26 12:54:27.350 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-06-26 12:54:27.478 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-06-26 12:54:27.495 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-06-26 12:54:27.776 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@55cc4c61
+2024-06-26 12:54:27.777 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-06-26 12:54:28.286 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-06-26 12:54:28.499 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-06-26 12:54:28.897 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-06-26 12:54:29.237 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@106c4a72, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3d2e1d18, org.springframework.security.web.context.SecurityContextHolderFilter@6654e105, org.springframework.security.web.header.HeaderWriterFilter@461f295c, org.springframework.web.filter.CorsFilter@12b9d405, org.springframework.security.web.authentication.logout.LogoutFilter@72288b38, com.nhnacademy.couponapi.common.filter.JwtFilter@25f7cc38, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2cef4321, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6a8a54f5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@402d443d, org.springframework.security.web.access.ExceptionTranslationFilter@7b3b763d, org.springframework.security.web.access.intercept.AuthorizationFilter@63f9c2cd]
+2024-06-26 12:54:29.465 [main] INFO  o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
+2024-06-26 12:54:29.512 [main] INFO  o.s.c.n.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2024-06-26 12:54:29.531 [main] INFO  c.netflix.discovery.DiscoveryClient - Initializing Eureka in region us-east-1
+2024-06-26 12:54:29.533 [main] INFO  c.n.d.s.r.aws.ConfigClusterResolver - Resolving eureka endpoints via configuration
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Disable delta property : false
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Single vip registry refresh property : null
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Force full registry fetch : false
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Application is null : false
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Registered Applications size is zero : true
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Application version is -1: true
+2024-06-26 12:54:29.543 [main] INFO  c.netflix.discovery.DiscoveryClient - Getting all instance registry info from the eureka server
+2024-06-26 12:54:29.681 [main] INFO  c.netflix.discovery.DiscoveryClient - The response status is 200
+2024-06-26 12:54:29.683 [main] INFO  c.netflix.discovery.DiscoveryClient - Starting heartbeat executor: renew interval is: 30
+2024-06-26 12:54:29.683 [main] INFO  c.n.discovery.InstanceInfoReplicator - InstanceInfoReplicator onDemand update allowed rate per min is 4
+2024-06-26 12:54:29.685 [main] INFO  c.netflix.discovery.DiscoveryClient - Discovery Client initialized at timestamp 1719374069685 with initial instances count: 1
+2024-06-26 12:54:29.687 [main] INFO  o.s.c.n.e.s.EurekaServiceRegistry - Registering application COUPON-SERVER with eureka with status UP
+2024-06-26 12:54:29.687 [main] INFO  c.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1719374069687, current=UP, previous=STARTING]
+2024-06-26 12:54:29.688 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_COUPON-SERVER/172.20.160.173:coupon-server:8081: registering service...
+2024-06-26 12:54:29.696 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2024-06-26 12:54:29.696 [main] INFO  o.s.c.n.e.s.EurekaAutoServiceRegistration - Updating port to 8081
+2024-06-26 12:54:29.710 [main] INFO  c.n.couponapi.CouponApiApplication - Started CouponApiApplication in 3.537 seconds (process running for 3.928)
+2024-06-26 12:54:29.712 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.netflix.discovery.DiscoveryClient - DiscoveryClient_COUPON-SERVER/172.20.160.173:coupon-server:8081 - registration status: 204

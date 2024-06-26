@@ -31,7 +31,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     @Transactional(readOnly = true)
     public List<CouponPolicyBookResponseDTO> findAllCouponPolicyBooks() {
         return couponPolicyBookRepository.findAll().stream()
-                .map(this::toResponseDTO)
+                .map(CouponPolicyBookResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -44,7 +44,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                         ErrorStatus.toErrorStatus("Coupon policy book not found", 404, LocalDateTime.now())
                 ));
 
-        return toResponseDTO(couponPolicyBook);
+        return CouponPolicyBookResponseDTO.fromEntity(couponPolicyBook);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                     .build();
             CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
-            return toResponseDTO(savedCouponPolicyBook);
+            return CouponPolicyBookResponseDTO.fromEntity(savedCouponPolicyBook);
         } catch (Exception e) {
             throw new CouponPolicyBookServiceException(
                     ErrorStatus.toErrorStatus("Error creating CouponPolicyBook", 500, LocalDateTime.now())
@@ -80,7 +80,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
             couponPolicyBook.updateBookId(requestDTO.bookId());
             CouponPolicyBook updatedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
-            return toResponseDTO(updatedCouponPolicyBook);
+            return CouponPolicyBookResponseDTO.fromEntity(updatedCouponPolicyBook);
         } catch (Exception e) {
             throw new CouponPolicyBookServiceException(
                     ErrorStatus.toErrorStatus("Error updating CouponPolicyBook", 500, LocalDateTime.now())
@@ -98,14 +98,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                     ErrorStatus.toErrorStatus("Error deleting CouponPolicyBook", 500, LocalDateTime.now())
             );
         }
-    }
-
-    private CouponPolicyBookResponseDTO toResponseDTO(CouponPolicyBook couponPolicyBook) {
-        return CouponPolicyBookResponseDTO.builder()
-                .couponPolicyBookId(couponPolicyBook.getCouponPolicyBookId())
-                .couponPolicyId(couponPolicyBook.getCouponPolicy().getCouponPolicyId())
-                .bookId(couponPolicyBook.getBookId())
-                .build();
     }
 
 }

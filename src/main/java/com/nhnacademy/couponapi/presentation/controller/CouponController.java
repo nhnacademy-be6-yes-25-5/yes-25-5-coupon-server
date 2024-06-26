@@ -77,8 +77,7 @@ public class CouponController {
 
     @GetMapping("/categories")
     public ResponseEntity<List<CouponUserListResponseDTO>> getCouponsByCategoryIds(@RequestParam List<Long> categoryIds) {
-        List<CouponUserListResponseDTO> coupons = couponService.getCouponsByCategoryIds(categoryIds);
-        return ResponseEntity.ok(coupons);
+        return ResponseEntity.ok(couponService.getCouponsByCategoryIds(categoryIds));
     }
 
 }

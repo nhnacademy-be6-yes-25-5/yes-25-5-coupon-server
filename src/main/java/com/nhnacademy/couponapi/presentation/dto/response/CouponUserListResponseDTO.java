@@ -1,5 +1,6 @@
 package com.nhnacademy.couponapi.presentation.dto.response;
 
+import com.nhnacademy.couponapi.persistence.domain.UserCoupon;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -21,5 +22,22 @@ public record CouponUserListResponseDTO(
         BigDecimal couponPolicyMaxAmount,
         Date couponCreatedAt,
         Date couponExpiredAt,
-        Date userCouponUsedAt
-) {}
+        Date userCouponUsedAt) {
+
+    public static CouponUserListResponseDTO fromEntity(UserCoupon userCoupon) {
+        return new CouponUserListResponseDTO(
+                userCoupon.getUserCouponId(),
+                userCoupon.getUserId(),
+                userCoupon.getCoupon().getCouponId(),
+                userCoupon.getCoupon().getCouponName(),
+                userCoupon.getCoupon().getCouponCode(),
+                userCoupon.getCoupon().getCouponPolicy().getCouponPolicyDiscountValue(),
+                userCoupon.getCoupon().getCouponPolicy().getCouponPolicyRate(),
+                userCoupon.getCoupon().getCouponPolicy().getCouponPolicyMinOrderAmount(),
+                userCoupon.getCoupon().getCouponPolicy().getCouponPolicyMaxAmount(),
+                userCoupon.getCoupon().getCouponCreatedAt(),
+                userCoupon.getCoupon().getCouponExpiredAt(),
+                userCoupon.getUserCouponUsedAt()
+        );
+    }
+}

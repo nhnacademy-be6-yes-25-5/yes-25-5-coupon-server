@@ -38,4 +38,15 @@ public class Coupon {
         this.validTo = validTo;
         this.couponPolicy = couponPolicy;
     }
+
+    public UserCoupon toUserCoupon() {
+        return UserCoupon.builder()
+                .userCouponId(null)
+                .userId(null)
+                .coupon(this)
+                .userCouponUsedAt(null)
+                .couponStatus(UserCoupon.CouponStatus.ACTIVE)
+                .couponType("DEFAULT")
+                .build();
+    }
 }

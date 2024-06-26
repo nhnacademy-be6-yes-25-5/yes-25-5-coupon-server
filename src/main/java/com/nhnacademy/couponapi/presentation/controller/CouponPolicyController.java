@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin-policy")
+@RequestMapping("/coupons/policy")
 public class CouponPolicyController {
 
     private final CouponPolicyService couponPolicyService;
@@ -45,7 +45,7 @@ public class CouponPolicyController {
      * @return 생성된 CouponPolicyResponseDTO 객체를 포함하는 ResponseEntity.
      */
     @Operation(summary = "쿠폰 정책 생성", description = "새로운 쿠폰 정책을 생성합니다.")
-    @PostMapping("/coupon")
+    @PostMapping("/create")
     public ResponseEntity<CouponPolicyResponseDTO> create(@RequestBody @Valid CouponPolicyRequestDTO couponPolicyRequestDTO) {
         log.info("Creating new coupon policy with request: {}", couponPolicyRequestDTO);
         CouponPolicyResponseDTO createdCouponPolicy = couponPolicyService.createCouponPolicy(couponPolicyRequestDTO);
