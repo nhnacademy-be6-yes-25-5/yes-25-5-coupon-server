@@ -55,6 +55,8 @@ logging:
 server:
   port: 8080
 eureka:
+  instance:
+    hostname: ${EUREKA_SERVER_HOSTNAME}
   client:
     enabled: true
     fetchRegistry: true
