@@ -4,10 +4,13 @@ import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
+import com.nhnacademy.couponapi.persistence.domain.UserCoupon;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
+import com.nhnacademy.couponapi.persistence.repository.UserCouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.ReadOrderUserCouponResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,15 +19,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -37,6 +39,9 @@ public class CouponServiceImplTest {
 
     @Mock
     private CouponPolicyService couponPolicyService;
+
+    @Mock
+    private UserCouponRepository userCouponRepository;
 
     @InjectMocks
     private CouponServiceImpl couponService;
@@ -135,5 +140,142 @@ public class CouponServiceImplTest {
         couponService.deleteCoupon(1L);
 
         verify(couponRepository, times(1)).deleteById(1L);
+    }
+
+    @Test //할인금액이 더 큰 쿠폰을 반환하는 테스트
+    void testFindBestCoupon() {
+        Long userId = 1L;
+        BigDecimal orderAmount = new BigDecimal("50000");
+
+        CouponPolicy policy1 = CouponPolicy.builder()
+                .couponPolicyId(1L)
+                .couponPolicyName("Policy 1")
+                .couponPolicyDiscountValue(new BigDecimal("5000"))
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyMinOrderAmount(new BigDecimal("20000"))
+                .couponPolicyMaxAmount(new BigDecimal("10000"))
+                .couponPolicyDiscountType(true)
+                .build();
+
+        CouponPolicy policy2 = CouponPolicy.builder()
+                .couponPolicyId(2L)
+                .couponPolicyName("Policy 2")
+                .couponPolicyDiscountValue(new BigDecimal("10000"))
+                .couponPolicyRate(new BigDecimal("0.20"))
+                .couponPolicyMinOrderAmount(new BigDecimal("30000"))
+                .couponPolicyMaxAmount(new BigDecimal("15000"))
+                .couponPolicyDiscountType(false)
+                .build();
+
+        Coupon coupon1 = Coupon.builder()
+                .couponId(1L)
+                .couponName("Coupon 1")
+                .couponCode("CODE1")
+                .couponExpiredAt(new Date())
+                .couponPolicy(policy1)
+                .build();
+
+        Coupon coupon2 = Coupon.builder()
+                .couponId(2L)
+                .couponName("Coupon 2")
+                .couponCode("CODE2")
+                .couponExpiredAt(new Date())
+                .couponPolicy(policy2)
+                .build();
+
+        UserCoupon userCoupon1 = UserCoupon.builder()
+                .userCouponId(1L)
+                .userId(userId)
+                .coupon(coupon1)
+                .couponStatus(UserCoupon.CouponStatus.ACTIVE)
+                .build();
+
+        UserCoupon userCoupon2 = UserCoupon.builder()
+                .userCouponId(2L)
+                .userId(userId)
+                .coupon(coupon2)
+                .couponStatus(UserCoupon.CouponStatus.ACTIVE)
+                .build();
+
+        List<UserCoupon> userCoupons = Arrays.asList(userCoupon1, userCoupon2);
+
+        when(userCouponRepository.findByUserId(userId)).thenReturn(userCoupons);
+
+        ReadOrderUserCouponResponse response = couponService.findBestCoupon(userId, orderAmount);
+
+        assertEquals(coupon2.getCouponId(), response.couponId());
+        assertEquals(new BigDecimal("10000"), response.discountAmount());
+
+        verify(userCouponRepository, times(1)).findByUserId(userId);
+    }
+
+    @Test //할인금액이 같을때 만료일자가 더 가까운 쿠폰을 반환하는 테스트
+    void testFindBestCoupon_SameDiscountAmount() {
+        Long userId = 1L;
+        BigDecimal orderAmount = new BigDecimal("50000");
+
+        CouponPolicy policy1 = CouponPolicy.builder()
+                .couponPolicyId(1L)
+                .couponPolicyName("Policy 1")
+                .couponPolicyDiscountValue(new BigDecimal("5000"))
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyMinOrderAmount(new BigDecimal("20000"))
+                .couponPolicyMaxAmount(new BigDecimal("10000"))
+                .couponPolicyDiscountType(true)
+                .build();
+
+        CouponPolicy policy2 = CouponPolicy.builder()
+                .couponPolicyId(2L)
+                .couponPolicyName("Policy 2")
+                .couponPolicyDiscountValue(new BigDecimal("5000")) // 동일한 할인 금액
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyMinOrderAmount(new BigDecimal("20000"))
+                .couponPolicyMaxAmount(new BigDecimal("10000"))
+                .couponPolicyDiscountType(true)
+                .build();
+
+        Date closerExpirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24); // 1일 후 만료
+        Date fartherExpirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48); // 2일 후 만료
+
+        Coupon coupon1 = Coupon.builder()
+                .couponId(1L)
+                .couponName("Coupon 1")
+                .couponCode("CODE1")
+                .couponExpiredAt(closerExpirationDate)
+                .couponPolicy(policy1)
+                .build();
+
+        Coupon coupon2 = Coupon.builder()
+                .couponId(2L)
+                .couponName("Coupon 2")
+                .couponCode("CODE2")
+                .couponExpiredAt(fartherExpirationDate)
+                .couponPolicy(policy2)
+                .build();
+
+        UserCoupon userCoupon1 = UserCoupon.builder()
+                .userCouponId(1L)
+                .userId(userId)
+                .coupon(coupon1)
+                .couponStatus(UserCoupon.CouponStatus.ACTIVE)
+                .build();
+
+        UserCoupon userCoupon2 = UserCoupon.builder()
+                .userCouponId(2L)
+                .userId(userId)
+                .coupon(coupon2)
+                .couponStatus(UserCoupon.CouponStatus.ACTIVE)
+                .build();
+
+        List<UserCoupon> userCoupons = Arrays.asList(userCoupon1, userCoupon2);
+
+        when(userCouponRepository.findByUserId(userId)).thenReturn(userCoupons);
+
+        ReadOrderUserCouponResponse response = couponService.findBestCoupon(userId, orderAmount);
+
+        assertEquals(coupon1.getCouponId(), response.couponId()); // 만료일자가 더 가까운 쿠폰 선택
+        assertEquals(new BigDecimal("5000.00"), response.discountAmount());
+
+        verify(userCouponRepository, times(1)).findByUserId(userId);
     }
 }

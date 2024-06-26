@@ -4,7 +4,9 @@ import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.ReadOrderUserCouponResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CouponService {
@@ -19,4 +21,5 @@ public interface CouponService {
     CouponResponseDTO issueWelcomeCoupon(Long userId);
     List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId);
     List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds);
+    ReadOrderUserCouponResponse findBestCoupon(Long userId, BigDecimal orderAmount);
 }
