@@ -1,6 +1,6 @@
 package com.nhnacademy.couponapi.common.config;
 
-import com.nhnacademy.couponapi.common.filter.JwtFilter;
+import com.nhnacademy.couponapi.common.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
