@@ -6,15 +6,18 @@ import com.nhnacademy.couponapi.application.service.UserCouponService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.ReadOrderUserCouponResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Coupon API", description = "쿠폰 관리 API")
@@ -78,6 +81,13 @@ public class CouponController {
     @GetMapping("/categories")
     public ResponseEntity<List<CouponUserListResponseDTO>> getCouponsByCategoryIds(@RequestParam List<Long> categoryIds) {
         return ResponseEntity.ok(couponService.getCouponsByCategoryIds(categoryIds));
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<ReadOrderUserCouponResponse> getBestCoupon(@RequestParam BigDecimal orderAmount) {
+        Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReadOrderUserCouponResponse response = couponService.findBestCoupon(userId, orderAmount);
+        return ResponseEntity.ok(response);
     }
 
 }

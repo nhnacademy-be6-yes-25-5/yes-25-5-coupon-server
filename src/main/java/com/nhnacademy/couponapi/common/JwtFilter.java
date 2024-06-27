@@ -65,11 +65,10 @@
 //}
 
 
-package com.nhnacademy.couponapi.common.filter;
+package com.nhnacademy.couponapi.common;
 
 import com.nhnacademy.couponapi.common.exception.JwtException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
-import com.nhnacademy.couponapi.common.provider.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

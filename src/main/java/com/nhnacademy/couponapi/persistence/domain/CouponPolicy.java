@@ -20,8 +20,21 @@ public class CouponPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponPolicyId;
+
+    @Column(nullable = false)
     private String couponPolicyName;
+
     private BigDecimal couponPolicyDiscountValue;
+
+    private BigDecimal couponPolicyRate;
+
+    @Column(nullable = false)
+    private BigDecimal couponPolicyMinOrderAmount;
+
+    @Column(nullable = false)
+    private BigDecimal couponPolicyMaxAmount;
+
+    private boolean couponPolicyDiscountType;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -30,12 +43,8 @@ public class CouponPolicy {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date couponPolicyUpdatedAt;
-    private BigDecimal couponPolicyRate;
-    private BigDecimal couponPolicyMinOrderAmount;
-    private BigDecimal couponPolicyMaxAmount;
-    private boolean couponPolicyDiscountType;
 
-    @OneToMany(mappedBy = "couponPolicy")
+    @OneToMany(mappedBy = "couponPolicy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Coupon> coupons;
 
     @Builder
@@ -53,5 +62,4 @@ public class CouponPolicy {
         this.couponPolicyDiscountType = couponPolicyDiscountType;
         this.coupons = coupons;
     }
-
 }

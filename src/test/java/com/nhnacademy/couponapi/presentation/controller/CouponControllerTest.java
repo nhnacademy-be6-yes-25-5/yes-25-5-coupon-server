@@ -1,29 +1,32 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.application.service.UserCouponService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.ReadOrderUserCouponResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CouponControllerTest {
@@ -31,111 +34,160 @@ public class CouponControllerTest {
     @Mock
     private CouponService couponService;
 
+    @Mock
+    private UserCouponService userCouponService;
+
     @InjectMocks
     private CouponController couponController;
 
-    private MockMvc mockMvc;
-
-    private ObjectMapper objectMapper;
+    private CouponRequestDTO couponRequestDTO;
+    private CouponResponseDTO couponResponseDTO;
+    private CouponUserListResponseDTO couponUserListResponseDTO;
+    private ReadOrderUserCouponResponse readOrderUserCouponResponse;
 
     @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(couponController).build();
-        objectMapper = new ObjectMapper();
-    }
-
-    @Test
-    public void testFindAll() throws Exception {
-        CouponUserListResponseDTO coupon = CouponUserListResponseDTO.builder()
+    void setUp() {
+        couponRequestDTO = new CouponRequestDTO("Test Coupon", "TEST123", new Date(), 1L);
+        couponResponseDTO = CouponResponseDTO.builder()
                 .couponId(1L)
                 .couponName("Test Coupon")
                 .couponCode("TEST123")
-                .couponCreatedAt(new Date())
                 .couponExpiredAt(new Date())
+                .couponCreatedAt(new Date())
+                .couponPolicyId(1L)
                 .build();
-        List<CouponUserListResponseDTO> coupons = Collections.singletonList(coupon);
 
-        when(couponService.findAllCoupons()).thenReturn(coupons);
-
-        mockMvc.perform(get("/coupons"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].couponId").value(1L));
-    }
-
-    @Test
-    public void testFind() throws Exception {
-        CouponResponseDTO coupon = CouponResponseDTO.builder()
+        couponUserListResponseDTO = CouponUserListResponseDTO.builder()
+                .userCouponId(1L)
+                .userId(1L)
                 .couponId(1L)
                 .couponName("Test Coupon")
                 .couponCode("TEST123")
+                .couponPolicyDiscountValue(new BigDecimal("10.00"))
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyMinOrderAmount(new BigDecimal("50.00"))
+                .couponPolicyMaxAmount(new BigDecimal("100.00"))
                 .couponCreatedAt(new Date())
                 .couponExpiredAt(new Date())
+                .userCouponUsedAt(new Date())
                 .build();
 
-        when(couponService.findCouponById(1L)).thenReturn(coupon);
-
-        mockMvc.perform(get("/coupons/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.couponId").value(1L));
+        readOrderUserCouponResponse = new ReadOrderUserCouponResponse(1L, new BigDecimal("10.00"));
     }
 
     @Test
-    public void testCreate() throws Exception {
-        CouponRequestDTO requestDTO = new CouponRequestDTO(
-                "Test Coupon",
-                "TEST123",
-                new Date(),
-                1L
-        );
-        CouponResponseDTO responseDTO = CouponResponseDTO.builder()
-                .couponId(1L)
-                .couponName("Test Coupon")
-                .couponCode("TEST123")
-                .couponCreatedAt(new Date())
-                .couponExpiredAt(new Date())
-                .build();
+    public void testFindAll() {
+        when(couponService.findAllCoupons()).thenReturn(List.of(couponUserListResponseDTO));
 
-        when(couponService.createCoupon(any(CouponRequestDTO.class))).thenReturn(responseDTO);
+        ResponseEntity<List<CouponUserListResponseDTO>> response = couponController.findAll();
 
-        mockMvc.perform(post("/coupons")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.couponId").value(1L));
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).hasSize(1);
+        assertThat(response.getBody().get(0).couponId()).isEqualTo(1L);
+
+        verify(couponService, times(1)).findAllCoupons();
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        CouponRequestDTO requestDTO = new CouponRequestDTO(
-                "Updated Coupon",
-                "UPD123",
-                new Date(),
-                1L
-        );
-        CouponResponseDTO responseDTO = CouponResponseDTO.builder()
-                .couponId(1L)
-                .couponName("Updated Coupon")
-                .couponCode("UPD123")
-                .couponCreatedAt(new Date())
-                .couponExpiredAt(new Date())
-                .build();
+    public void testFind() {
+        when(couponService.findCouponById(anyLong())).thenReturn(couponResponseDTO);
 
-        when(couponService.updateCoupon(eq(1L), any(CouponRequestDTO.class))).thenReturn(responseDTO);
+        ResponseEntity<CouponResponseDTO> response = couponController.find(1L);
 
-        mockMvc.perform(put("/coupons/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.couponId").value(1L));
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().couponId()).isEqualTo(1L);
+
+        verify(couponService, times(1)).findCouponById(1L);
     }
 
     @Test
-    public void testDelete() throws Exception {
-        doNothing().when(couponService).deleteCoupon(1L);
+    public void testCreate() {
+        when(couponService.createCoupon(any(CouponRequestDTO.class))).thenReturn(couponResponseDTO);
 
-        mockMvc.perform(delete("/coupons/1"))
-                .andExpect(status().isNoContent());
+        ResponseEntity<CouponResponseDTO> response = couponController.create(couponRequestDTO);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().couponId()).isEqualTo(1L);
+
+        verify(couponService, times(1)).createCoupon(couponRequestDTO);
+    }
+
+    @Test
+    public void testUpdate() {
+        when(couponService.updateCoupon(anyLong(), any(CouponRequestDTO.class))).thenReturn(couponResponseDTO);
+
+        ResponseEntity<CouponResponseDTO> response = couponController.update(1L, couponRequestDTO);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().couponId()).isEqualTo(1L);
+
+        verify(couponService, times(1)).updateCoupon(eq(1L), any(CouponRequestDTO.class));
+    }
+
+    @Test
+    public void testDelete() {
+        doNothing().when(couponService).deleteCoupon(anyLong());
+
+        ResponseEntity<Void> response = couponController.delete(1L);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         verify(couponService, times(1)).deleteCoupon(1L);
     }
+
+    @Test
+    public void testIssueWelcomeCoupon() {
+        doNothing().when(userCouponService).issueWelcomeCoupon(anyLong());
+
+        ResponseEntity<Void> response = couponController.issueWelcomeCoupon(1L);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        verify(userCouponService, times(1)).issueWelcomeCoupon(1L);
+    }
+
+    @Test
+    public void testGetCouponsByBookId() {
+        when(couponService.getCouponsByBookId(anyLong())).thenReturn(List.of(couponUserListResponseDTO));
+
+        ResponseEntity<List<CouponUserListResponseDTO>> response = couponController.getCouponsByBookId(1L);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).hasSize(1);
+        assertThat(response.getBody().get(0).couponId()).isEqualTo(1L);
+
+        verify(couponService, times(1)).getCouponsByBookId(1L);
+    }
+
+    @Test
+    public void testGetCouponsByCategoryIds() {
+        when(couponService.getCouponsByCategoryIds(anyList())).thenReturn(List.of(couponUserListResponseDTO));
+
+        ResponseEntity<List<CouponUserListResponseDTO>> response = couponController.getCouponsByCategoryIds(List.of(1L, 2L));
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).hasSize(1);
+        assertThat(response.getBody().get(0).couponId()).isEqualTo(1L);
+
+        verify(couponService, times(1)).getCouponsByCategoryIds(anyList());
+    }
+
+//    @Test
+//    public void testGetBestCoupon() {
+//        Authentication authentication = mock(Authentication.class);
+//        SecurityContext securityContext = mock(SecurityContext.class);
+//        when(securityContext.getAuthentication()).thenReturn(authentication);
+//        SecurityContextHolder.setContext(securityContext);
+//
+//        when(authentication.getPrincipal()).thenReturn(1L);
+//        when(couponService.findBestCoupon(anyLong(), any(BigDecimal.class))).thenReturn(readOrderUserCouponResponse);
+//
+////        ResponseEntity<ReadOrderUserCouponResponse> response = couponController.getBestCoupon(new BigDecimal("100.00"));
+//
+////        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+////        assertThat(response.getBody().couponId()).isEqualTo(1L);
+////        assertThat(response.getBody().discountAmount()).isEqualTo(new BigDecimal("10.00"));
+//
+//        verify(couponService, times(1)).findBestCoupon(eq(1L), any(BigDecimal.class));
+//    }
 }

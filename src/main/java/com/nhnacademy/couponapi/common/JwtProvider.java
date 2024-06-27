@@ -1,4 +1,4 @@
-package com.nhnacademy.couponapi.common.provider;
+package com.nhnacademy.couponapi.common;
 
 import com.nhnacademy.couponapi.common.exception.JwtException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
