@@ -2,11 +2,13 @@ package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.adapter.UserAdapter;
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.common.exception.FeignClientException;
 import com.nhnacademy.couponapi.common.exception.UserCouponServiceException;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.UserCoupon;
 import com.nhnacademy.couponapi.persistence.repository.UserCouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.UserResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,5 +92,28 @@ public class UserCouponServiceImplTest {
         assertThrows(UserCouponServiceException.class, () -> {
             userCouponService.deleteUserCoupon(1L);
         });
+    }
+
+    @Test
+    public void testIssueBirthdayCoupons_Exception() {
+        when(userAdapter.findAllUsers()).thenThrow(new RuntimeException("Feign client exception"));
+
+        assertThrows(FeignClientException.class, () -> {
+            userCouponService.issueBirthdayCoupons();
+        });
+    }
+
+    @Test
+    public void testIssueWelcomeCoupon_WithRetry_Exception() {
+        doThrow(new RuntimeException("Service exception"))
+                .doThrow(new RuntimeException("Service exception"))
+                .doThrow(new RuntimeException("Service exception"))
+                .when(couponService).issueWelcomeCoupon(anyLong());
+
+        assertThrows(FeignClientException.class, () -> {
+            userCouponService.issueWelcomeCoupon(1L);
+        });
+
+        verify(couponService, times(3)).issueWelcomeCoupon(1L);
     }
 }

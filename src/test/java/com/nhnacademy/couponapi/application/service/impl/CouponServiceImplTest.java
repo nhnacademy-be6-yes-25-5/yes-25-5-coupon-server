@@ -113,6 +113,15 @@ public class CouponServiceImplTest {
     }
 
     @Test
+    public void testCreateCoupon_Exception() {
+        when(couponPolicyService.findCouponPolicyEntityById(1L)).thenThrow(new RuntimeException("Service exception"));
+
+        assertThrows(CouponServiceException.class, () -> {
+            couponService.createCoupon(requestDTO);
+        });
+    }
+
+    @Test
     public void testUpdateCoupon() {
         when(couponRepository.findById(1L)).thenReturn(Optional.of(coupon));
         when(couponPolicyService.findCouponPolicyEntityById(1L)).thenReturn(couponPolicy);
@@ -134,6 +143,16 @@ public class CouponServiceImplTest {
     }
 
     @Test
+    public void testUpdateCoupon_Exception() {
+        when(couponRepository.findById(1L)).thenReturn(Optional.of(coupon));
+        when(couponPolicyService.findCouponPolicyEntityById(1L)).thenThrow(new RuntimeException("Service exception"));
+
+        assertThrows(CouponServiceException.class, () -> {
+            couponService.updateCoupon(1L, requestDTO);
+        });
+    }
+
+    @Test
     public void testDeleteCoupon() {
         doNothing().when(couponRepository).deleteById(1L);
 
@@ -142,8 +161,37 @@ public class CouponServiceImplTest {
         verify(couponRepository, times(1)).deleteById(1L);
     }
 
-    @Test //할인금액이 더 큰 쿠폰을 반환하는 테스트
-    void testFindBestCoupon() {
+    @Test
+    public void testDeleteCoupon_Exception() {
+        doThrow(new RuntimeException("Repository exception")).when(couponRepository).deleteById(1L);
+
+        assertThrows(CouponServiceException.class, () -> {
+            couponService.deleteCoupon(1L);
+        });
+    }
+
+    @Test
+    public void testIssueBirthdayCoupon() {
+        when(couponRepository.save(any(Coupon.class))).thenReturn(coupon);
+
+        CouponResponseDTO result = couponService.issueBirthdayCoupon(1L);
+
+        assertThat(result.couponName()).isEqualTo("Test Coupon");
+        verify(couponRepository, times(1)).save(any(Coupon.class));
+    }
+
+    @Test
+    public void testIssueWelcomeCoupon() {
+        when(couponRepository.save(any(Coupon.class))).thenReturn(coupon);
+
+        CouponResponseDTO result = couponService.issueWelcomeCoupon(1L);
+
+        assertThat(result.couponName()).isEqualTo("Test Coupon");
+        verify(couponRepository, times(1)).save(any(Coupon.class));
+    }
+
+    @Test
+    public void testFindBestCoupon() {
         Long userId = 1L;
         BigDecimal orderAmount = new BigDecimal("50000");
 
