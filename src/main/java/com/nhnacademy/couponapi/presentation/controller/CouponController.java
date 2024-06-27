@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,7 +84,8 @@ public class CouponController {
     }
 
     @GetMapping("/best")
-    public ResponseEntity<ReadOrderUserCouponResponse> getBestCoupon(@RequestParam Long userId, @RequestParam BigDecimal orderAmount) {
+    public ResponseEntity<ReadOrderUserCouponResponse> getBestCoupon(@RequestParam BigDecimal orderAmount) {
+        Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReadOrderUserCouponResponse response = couponService.findBestCoupon(userId, orderAmount);
         return ResponseEntity.ok(response);
     }
