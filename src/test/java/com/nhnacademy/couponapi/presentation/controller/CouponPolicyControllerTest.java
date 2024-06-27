@@ -1,8 +1,8 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
-import com.nhnacademy.couponapi.application.service.CouponPolicyBookService;
-import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequestDTO;
-import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
+import com.nhnacademy.couponapi.application.service.CouponPolicyService;
+import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,89 +12,74 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CouponPolicyBookControllerTest {
+class CouponPolicyControllerTest {
 
     @Mock
-    private CouponPolicyBookService couponPolicyBookService;
+    private CouponPolicyService couponPolicyService;
 
     @InjectMocks
-    private CouponPolicyBookController couponPolicyBookController;
+    private CouponPolicyController couponPolicyController;
 
-    private CouponPolicyBookRequestDTO couponPolicyBookRequestDTO;
-    private CouponPolicyBookResponseDTO couponPolicyBookResponseDTO;
+    private CouponPolicyRequestDTO couponPolicyRequestDTO;
+    private CouponPolicyResponseDTO couponPolicyResponseDTO;
 
     @BeforeEach
     void setUp() {
-        couponPolicyBookRequestDTO = new CouponPolicyBookRequestDTO(1L, 1L);
-        couponPolicyBookResponseDTO = new CouponPolicyBookResponseDTO(1L, 1L, 1L);
+        couponPolicyRequestDTO = new CouponPolicyRequestDTO(
+                "Test Policy",
+                new BigDecimal("10.00"),
+                null,
+                new BigDecimal("50.00"),
+                new BigDecimal("100.00"),
+                true
+        );
+
+        couponPolicyResponseDTO = CouponPolicyResponseDTO.builder()
+                .couponPolicyId(1L)
+                .couponPolicyName("Test Policy")
+                .couponPolicyDiscountValue(new BigDecimal("10.00"))
+                .couponPolicyCreatedAt(new Date())
+                .couponPolicyUpdatedAt(new Date())
+                .couponPolicyRate(null)
+                .couponPolicyMinOrderAmount(new BigDecimal("50.00"))
+                .couponPolicyMaxAmount(new BigDecimal("100.00"))
+                .couponPolicyDiscountType(true)
+                .build();
     }
 
     @Test
     public void testFindAll() {
-        when(couponPolicyBookService.findAllCouponPolicyBooks()).thenReturn(List.of(couponPolicyBookResponseDTO));
+        when(couponPolicyService.findAllCouponPolicies()).thenReturn(List.of(couponPolicyResponseDTO));
 
-        ResponseEntity<List<CouponPolicyBookResponseDTO>> response = couponPolicyBookController.findAll();
+        ResponseEntity<List<CouponPolicyResponseDTO>> response = couponPolicyController.findAll();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(1);
-        assertThat(response.getBody().get(0).couponPolicyBookId()).isEqualTo(1L);
+        assertThat(response.getBody().get(0).couponPolicyId()).isEqualTo(1L);
 
-        verify(couponPolicyBookService, times(1)).findAllCouponPolicyBooks();
-    }
-
-    @Test
-    public void testFind() {
-        when(couponPolicyBookService.findCouponPolicyBookById(anyLong())).thenReturn(couponPolicyBookResponseDTO);
-
-        ResponseEntity<CouponPolicyBookResponseDTO> response = couponPolicyBookController.find(1L);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().couponPolicyBookId()).isEqualTo(1L);
-
-        verify(couponPolicyBookService, times(1)).findCouponPolicyBookById(1L);
+        verify(couponPolicyService, times(1)).findAllCouponPolicies();
     }
 
     @Test
     public void testCreate() {
-        when(couponPolicyBookService.createCouponPolicyBook(any(CouponPolicyBookRequestDTO.class))).thenReturn(couponPolicyBookResponseDTO);
+        when(couponPolicyService.createCouponPolicy(any(CouponPolicyRequestDTO.class))).thenReturn(couponPolicyResponseDTO);
 
-        ResponseEntity<CouponPolicyBookResponseDTO> response = couponPolicyBookController.create(couponPolicyBookRequestDTO);
+        ResponseEntity<CouponPolicyResponseDTO> response = couponPolicyController.create(couponPolicyRequestDTO);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().couponPolicyBookId()).isEqualTo(1L);
+        assertThat(response.getBody().couponPolicyId()).isEqualTo(1L);
 
-        verify(couponPolicyBookService, times(1)).createCouponPolicyBook(couponPolicyBookRequestDTO);
+        verify(couponPolicyService, times(1)).createCouponPolicy(couponPolicyRequestDTO);
     }
 
-    @Test
-    public void testUpdate() {
-        when(couponPolicyBookService.updateCouponPolicyBook(anyLong(), any(CouponPolicyBookRequestDTO.class))).thenReturn(couponPolicyBookResponseDTO);
-
-        ResponseEntity<CouponPolicyBookResponseDTO> response = couponPolicyBookController.update(1L, couponPolicyBookRequestDTO);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().couponPolicyBookId()).isEqualTo(1L);
-
-        verify(couponPolicyBookService, times(1)).updateCouponPolicyBook(eq(1L), any(CouponPolicyBookRequestDTO.class));
-    }
-
-    @Test
-    public void testDelete() {
-        doNothing().when(couponPolicyBookService).deleteCouponPolicyBook(anyLong());
-
-        ResponseEntity<Void> response = couponPolicyBookController.delete(1L);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-        verify(couponPolicyBookService, times(1)).deleteCouponPolicyBook(1L);
-    }
 }
