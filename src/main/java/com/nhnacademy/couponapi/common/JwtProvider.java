@@ -14,10 +14,12 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtProvider {
 
+    private static final String ISSUER = "coupon-api";
     private final SecretKey secretKey;
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {
@@ -38,6 +40,12 @@ public class JwtProvider {
                 );
             }
 
+            if (!claims.getIssuer().equals(ISSUER)) {
+                throw new JwtException(
+                        ErrorStatus.toErrorStatus("토큰의 발행자가 일치하지 않습니다.", 401, LocalDateTime.now())
+                );
+            }
+
             return true;
         } catch (SignatureException e) {
             throw new JwtException(
@@ -46,12 +54,23 @@ public class JwtProvider {
         }
     }
 
-    public Long getUserIdFromToken(String token) {
+    public String getUserNameFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("customerId", Long.class);
+                .getSubject();
     }
 
+    public List<String> getRolesFromToken(String token) {
+        List<?> roles = (List<?>) Jwts.parserBuilder().setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("roles");
+
+        return roles.stream()
+                .map(Object::toString)
+                .toList();
+    }
 }
