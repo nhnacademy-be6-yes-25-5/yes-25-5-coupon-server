@@ -158,15 +158,15 @@ public class CouponServiceImpl implements CouponService {
         Coupon savedCoupon = couponRepository.save(coupon);
         return CouponResponseDTO.fromEntity(savedCoupon);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId) {
-        return couponPolicyBookRepository.findByBookId(bookId).stream()
-                .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
-                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
-                .collect(Collectors.toList());
-    }
+//
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId) {
+//        return couponPolicyBookRepository.findByBookId(bookId).stream()
+//                .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
+//                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     @Transactional(readOnly = true)
