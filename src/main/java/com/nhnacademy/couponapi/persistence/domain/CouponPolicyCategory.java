@@ -25,6 +25,9 @@ public class CouponPolicyCategory {
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
+    @Column(name = "category_name", nullable = false)
+    private Long categoryName;
+
     @Builder
     public CouponPolicyCategory(Long couponPolicyCategoryId, CouponPolicy couponPolicy, Long categoryId) {
         this.couponPolicyCategoryId = couponPolicyCategoryId;

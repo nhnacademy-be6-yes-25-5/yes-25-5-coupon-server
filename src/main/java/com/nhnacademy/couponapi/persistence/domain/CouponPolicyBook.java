@@ -1,17 +1,13 @@
 package com.nhnacademy.couponapi.persistence.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "coupon_policy_book")
-@SuperBuilder(toBuilder = true)
 public class CouponPolicyBook {
 
     @Id
@@ -25,22 +21,14 @@ public class CouponPolicyBook {
     @Column(name = "book_id", nullable = false)
     private Long bookId;
 
+    @Column(name = "book_name")
+    private String bookName;
+
     @Builder
-    public CouponPolicyBook(Long couponPolicyBookId, CouponPolicy couponPolicy, Long bookId) {
+    public CouponPolicyBook(Long couponPolicyBookId, CouponPolicy couponPolicy, Long bookId, String bookName) {
         this.couponPolicyBookId = couponPolicyBookId;
         this.couponPolicy = couponPolicy;
         this.bookId = bookId;
-    }
-
-    public CouponPolicyBook updateCouponPolicy(CouponPolicy couponPolicy) {
-        return this.toBuilder()
-                .couponPolicy(couponPolicy)
-                .build();
-    }
-
-    public CouponPolicyBook updateBookId(Long bookId) {
-        return this.toBuilder()
-                .bookId(bookId)
-                .build();
+        this.bookName = bookName;
     }
 }
