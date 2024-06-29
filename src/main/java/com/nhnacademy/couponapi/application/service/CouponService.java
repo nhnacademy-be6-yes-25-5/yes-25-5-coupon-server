@@ -20,6 +20,6 @@ public interface CouponService {
     CouponResponseDTO issueBirthdayCoupon(Long userId);
     CouponResponseDTO issueWelcomeCoupon(Long userId);
 //    List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId);
-    List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds);
+//    List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds);
     ReadOrderUserCouponResponse findBestCoupon(Long userId, BigDecimal orderAmount);
 }

@@ -1,17 +1,13 @@
 package com.nhnacademy.couponapi.persistence.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "coupon_policy_category")
-@SuperBuilder(toBuilder = true)
 public class CouponPolicyCategory {
 
     @Id
@@ -25,25 +21,14 @@ public class CouponPolicyCategory {
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
-    @Column(name = "category_name", nullable = false)
-    private Long categoryName;
+    @Column(name = "category_name")
+    private String categoryName;
 
     @Builder
-    public CouponPolicyCategory(Long couponPolicyCategoryId, CouponPolicy couponPolicy, Long categoryId) {
+    public CouponPolicyCategory(Long couponPolicyCategoryId, CouponPolicy couponPolicy, Long categoryId, String categoryName) {
         this.couponPolicyCategoryId = couponPolicyCategoryId;
         this.couponPolicy = couponPolicy;
         this.categoryId = categoryId;
-    }
-
-    public CouponPolicyCategory updateCouponPolicy(CouponPolicy couponPolicy) {
-        return this.toBuilder()
-                .couponPolicy(couponPolicy)
-                .build();
-    }
-
-    public CouponPolicyCategory updateCategoryId(Long categoryId) {
-        return this.toBuilder()
-                .categoryId(categoryId)
-                .build();
+        this.categoryName = categoryName;
     }
 }
