@@ -1,6 +1,5 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
-import com.nhnacademy.couponapi.application.service.UserCouponService;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

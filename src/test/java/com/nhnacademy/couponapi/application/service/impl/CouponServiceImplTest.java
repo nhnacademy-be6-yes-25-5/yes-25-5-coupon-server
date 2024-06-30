@@ -10,7 +10,6 @@ import com.nhnacademy.couponapi.persistence.repository.UserCouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponUserListResponseDTO;
-import com.nhnacademy.couponapi.presentation.dto.response.ReadOrderUserCouponResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
