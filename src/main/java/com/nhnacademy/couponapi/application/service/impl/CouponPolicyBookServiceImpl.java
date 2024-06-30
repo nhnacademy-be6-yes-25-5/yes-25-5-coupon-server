@@ -1,7 +1,6 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponPolicyBookService;
-import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.common.exception.CouponPolicyBookServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -9,7 +8,6 @@ import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequestDTO;
-import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
     private final CouponPolicyBookRepository couponPolicyBookRepository;
-    private final CouponPolicyService couponPolicyService;
     private final CouponPolicyRepository couponPolicyRepository;
 
     @Override
