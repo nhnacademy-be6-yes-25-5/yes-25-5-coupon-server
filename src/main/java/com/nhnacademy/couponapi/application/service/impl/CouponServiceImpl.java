@@ -1,12 +1,9 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
-import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
-import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +18,6 @@ import java.time.LocalDateTime;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
-    private final CouponPolicyBookRepository couponPolicyBookRepository;
-    private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
-    private final CouponPolicyService couponPolicyService;
 
     @Override
     @Transactional(readOnly = true)
