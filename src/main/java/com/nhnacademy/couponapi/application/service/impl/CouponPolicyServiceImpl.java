@@ -1,6 +1,7 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
+import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.common.exception.CouponPolicyServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     private final CouponPolicyRepository couponPolicyRepository;
+    private final CouponCreationUtil couponCreationUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -33,14 +35,12 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     @Override
     @Transactional(readOnly = true)
     public CouponPolicyResponseDTO findCouponPolicyById(Long id) {
-
         CouponPolicy couponPolicy = couponPolicyRepository.findById(id)
                 .orElseThrow(() -> new CouponPolicyServiceException(
                         ErrorStatus.toErrorStatus("Coupon policy not found by id", 404, LocalDateTime.now())
                 ));
-
         return CouponPolicyResponseDTO.fromEntity(couponPolicy);
-    } // 클라이언트에게 응답하기 위해 CouponPolicyResponseDTO로 변환
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -49,11 +49,10 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                 .orElseThrow(() -> new CouponPolicyServiceException(
                         ErrorStatus.toErrorStatus("Coupon policy not found by id", 404, LocalDateTime.now())
                 ));
-    } // 서비스 레이어나 다른 비즈니스 로직에서 직접 엔티티가 필요할 때 사용
+    }
 
     @Override
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
-
         try {
             CouponPolicy couponPolicy = CouponPolicy.builder()
                     .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
@@ -66,6 +65,8 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
             CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
+            couponCreationUtil.createCoupon(savedCouponPolicy);
+
             return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
         } catch (Exception e) {
             throw new CouponPolicyServiceException(
@@ -76,7 +77,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     @Override
     public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO couponPolicyRequestDTO) {
-
         try {
             CouponPolicy existingCouponPolicy = couponPolicyRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("CouponPolicy not found"));
@@ -103,7 +103,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     @Override
     public void deleteCouponPolicy(Long id) {
-
         try {
             couponPolicyRepository.deleteById(id);
         } catch (Exception e) {
@@ -112,5 +111,4 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
             );
         }
     }
-
 }

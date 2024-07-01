@@ -35,24 +35,4 @@ public class CouponPolicyBookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicyBook);
     }
 
-//    @Operation(summary = "도서에 관한 쿠폰 정책 조회", description = "특정 도서 ID를 가진 도서에 관한 쿠폰 정책을 조회합니다.")
-//    @GetMapping("/{id}")
-//    public ResponseEntity<CouponPolicyResponseDTO> find(@PathVariable Long id) {
-//        CouponPolicyResponseDTO couponPolicyBook = couponPolicyBookService.findCouponPolicyBookById(id);
-//        return ResponseEntity.ok(couponPolicyBook);
-//    }
-//
-//    @Operation(summary = "특정 도서 쿠폰 정책 업데이트", description = "특정 ID를 가진 도서에 관한 쿠폰 정책을 업데이트합니다.")
-//    @PutMapping("/{id}")
-//    public ResponseEntity<CouponPolicyResponseDTO> update(@PathVariable @Valid Long id, @RequestBody CouponPolicyBookRequestDTO requestDTO) {
-//        CouponPolicyResponseDTO updatedCouponPolicyBook = couponPolicyBookService.updateCouponPolicyBook(id, requestDTO);
-//        return ResponseEntity.ok(updatedCouponPolicyBook);
-//    }
-//
-//    @Operation(summary = "특정 도서에 관한 쿠폰 정책 삭제", description = "특정 ID를 가진 도서 쿠폰 정책을 삭제합니다.")
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> delete(@PathVariable Long id) {
-//        couponPolicyBookService.deleteCouponPolicyBook(id);
-//        return ResponseEntity.noContent().build();
-//    }
 }

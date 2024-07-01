@@ -1,6 +1,7 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponPolicyCategoryService;
+import com.nhnacademy.couponapi.application.service.impl.CouponCreationUtil;
 import com.nhnacademy.couponapi.common.exception.CouponPolicyCategoryServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -8,7 +9,6 @@ import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyCategoryRequestDTO;
-import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
     private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
     private final CouponPolicyRepository couponPolicyRepository;
+    private final CouponCreationUtil couponCreationUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,12 +59,16 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .build();
             CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
+            // 쿠폰 생성
+            couponCreationUtil.createCoupon(savedCouponPolicy);
+
             return CouponPolicyCategoryResponseDTO.builder()
                     .couponPolicyCategoryId(savedCouponPolicyCategory.getCouponPolicyCategoryId())
                     .categoryId(savedCouponPolicyCategory.getCategoryId())
                     .categoryName(savedCouponPolicyCategory.getCategoryName())
                     .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyCategory.getCouponPolicy()))
                     .build();
+
         } catch (Exception e) {
             String errorMessage = "An unexpected error occurred while creating CouponPolicyCategory.";
             System.err.println(errorMessage);

@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
-
     private final CouponPolicyBookRepository couponPolicyBookRepository;
     private final CouponPolicyRepository couponPolicyRepository;
+    private final CouponCreationUtil couponCreationUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -56,12 +56,16 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                     .build();
             CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
+            // 쿠폰 생성
+            couponCreationUtil.createCoupon(savedCouponPolicy);
+
             return CouponPolicyBookResponseDTO.builder()
                     .couponPolicyBookId(savedCouponPolicyBook.getCouponPolicyBookId())
                     .bookId(savedCouponPolicyBook.getBookId())
                     .bookName(savedCouponPolicyBook.getBookName())
                     .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyBook.getCouponPolicy()))
                     .build();
+
         } catch (Exception e) {
             String errorMessage = "An unexpected error occurred while creating CouponPolicyBook.";
             System.err.println(errorMessage);
@@ -71,49 +75,4 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
             );
         }
     }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public CouponPolicyResponseDTO findCouponPolicyBookById(Long id) {
-//
-//        CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
-//                .orElseThrow(() -> new CouponPolicyBookServiceException(
-//                        ErrorStatus.toErrorStatus("Coupon policy book not found", 404, LocalDateTime.now())
-//                ));
-//        String bookName = bookAdapter.findByBookId(couponPolicyBook.getBookId()).getBookName();
-//        return CouponPolicyResponseDTO.fromEntity(couponPolicyBook.getCouponPolicy(), bookName, null);
-//    }
-//
-//    @Override
-//    public CouponPolicyResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO) {
-//
-//        try {
-//            CouponPolicyBook couponPolicyBook = couponPolicyBookRepository.findById(id)
-//                    .orElseThrow(() -> new CouponPolicyBookServiceException(
-//                            ErrorStatus.toErrorStatus("Coupon policy book not found by id", 404, LocalDateTime.now())));
-//            CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(requestDTO.couponPolicyId());
-//            Long bookId = bookAdapter.findByBookName(requestDTO.bookName()).getBookId();
-//            couponPolicyBook.updateCouponPolicy(couponPolicy);
-//            couponPolicyBook.updateBookId(bookId);
-//            CouponPolicyBook updatedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
-//
-//            return CouponPolicyResponseDTO.fromEntity(updatedCouponPolicyBook.getCouponPolicy(), requestDTO.bookName(), null);
-//        } catch (Exception e) {
-//            throw new CouponPolicyBookServiceException(
-//                    ErrorStatus.toErrorStatus("Error updating CouponPolicyBook", 500, LocalDateTime.now())
-//            );
-//        }
-//    }
-//
-//    @Override
-//    public void deleteCouponPolicyBook(Long id) {
-//
-//        try {
-//            couponPolicyBookRepository.deleteById(id);
-//        } catch (Exception e) {
-//            throw new CouponPolicyBookServiceException(
-//                    ErrorStatus.toErrorStatus("Error deleting CouponPolicyBook", 500, LocalDateTime.now())
-//            );
-//        }
-//    }
 }
