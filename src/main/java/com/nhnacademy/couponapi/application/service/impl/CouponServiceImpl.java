@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * {@link CouponService}의 구현 클래스입니다.
+ * 이 클래스는 쿠폰의 생성 기능을 제공합니다.
+ */
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -19,16 +23,13 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public CouponResponseDTO findCouponById(Long id) {
-        Coupon coupon = couponRepository.findById(id)
-                .orElseThrow(() -> new CouponServiceException(
-                        ErrorStatus.toErrorStatus("Coupon not found by id", 404, LocalDateTime.now())
-                ));
-        return CouponResponseDTO.fromEntity(coupon);
-    }
-
+    /**
+     * 새로운 쿠폰을 생성합니다.
+     *
+     * @param coupon 생성할 쿠폰 정보
+     * @return 생성된 쿠폰의 정보
+     * @throws CouponServiceException 쿠폰 생성 중 예외 발생 시
+     */
     @Override
     public CouponResponseDTO createCoupon(Coupon coupon) {
         try {
@@ -36,7 +37,7 @@ public class CouponServiceImpl implements CouponService {
             return CouponResponseDTO.fromEntity(savedCoupon);
         } catch (Exception e) {
             throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus("Coupon could not be created", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("쿠폰을 생성할 수 없습니다", 500, LocalDateTime.now())
             );
         }
     }
