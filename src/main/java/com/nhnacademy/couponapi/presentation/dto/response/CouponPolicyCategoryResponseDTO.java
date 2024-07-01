@@ -1,6 +1,5 @@
 package com.nhnacademy.couponapi.presentation.dto.response;
 
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import lombok.Builder;
 

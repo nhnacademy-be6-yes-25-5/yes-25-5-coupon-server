@@ -9,8 +9,5 @@ public interface CouponPolicyBookService {
 
     List<CouponPolicyBookResponseDTO> findAllCouponPolicyBooks();
     CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO);
-    //    CouponPolicyResponseDTO findCouponPolicyBookById(Long id);
-//    CouponPolicyResponseDTO updateCouponPolicyBook(Long id, CouponPolicyBookRequestDTO requestDTO);
-//    void deleteCouponPolicyBook(Long id);
 
 }
