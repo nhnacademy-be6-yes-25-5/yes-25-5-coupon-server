@@ -1,7 +1,7 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.application.service.CouponPolicyService;
+import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -29,15 +28,6 @@ public class CouponServiceImpl implements CouponService {
     private final CouponPolicyBookRepository couponPolicyBookRepository;
     private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
     private final CouponPolicyService couponPolicyService;
-//    private final UserCouponRepository userCouponRepository;
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<CouponUserListResponseDTO> findAllCoupons() {
-//        return couponRepository.findAll().stream()
-//                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -59,19 +49,9 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO) {
+    public CouponResponseDTO createCoupon(Coupon coupon) {
         try {
-            Coupon.CouponBuilder couponBuilder = Coupon.builder()
-                    .couponName(couponRequestDTO.couponName())
-                    .couponCode(couponRequestDTO.couponCode())
-                    .couponExpiredAt(couponRequestDTO.couponExpiredAt());
-            //쿠폰 발급 구현할떄 만료일자 지정하기 ex) 생성일자로부터 2달
-
-            if (couponRequestDTO.couponPolicyId() != null) {
-                couponBuilder.couponPolicy(couponPolicyService.findCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
-            }
-
-            Coupon savedCoupon = couponRepository.save(couponBuilder.build());
+            Coupon savedCoupon = couponRepository.save(coupon);
             return CouponResponseDTO.fromEntity(savedCoupon);
         } catch (Exception e) {
             throw new CouponServiceException(
@@ -93,7 +73,8 @@ public class CouponServiceImpl implements CouponService {
                     .couponExpiredAt(couponRequestDTO.couponExpiredAt());
 
             if (couponRequestDTO.couponPolicyId() != null) {
-                couponBuilder.couponPolicy(couponPolicyService.findCouponPolicyEntityById(couponRequestDTO.couponPolicyId()));
+                CouponPolicy couponPolicy = couponPolicyService.findCouponPolicyEntityById(couponRequestDTO.couponPolicyId());
+                couponBuilder.couponPolicy(couponPolicy);
             }
 
             Coupon updatedCoupon = couponRepository.save(couponBuilder.build());
@@ -116,90 +97,7 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
-    @Override
-    @Transactional
-    public CouponResponseDTO issueBirthdayCoupon(Long userId) {
-        Date now = new Date();
-        Date validTo = new Date(now.getTime() + 30L * 24 * 60 * 60 * 1000); // 30일 유효
-
-        Coupon coupon = Coupon.builder()
-                .couponName("생일 쿠폰")
-                .couponCode(createCouponCode())
-                .validFrom(now)
-                .validTo(validTo)
-                .couponCreatedAt(now)
-                .build();
-
-        Coupon savedCoupon = couponRepository.save(coupon);
-        return CouponResponseDTO.fromEntity(savedCoupon);
-    }
-
-    @Override
-    @Transactional
-    public CouponResponseDTO issueWelcomeCoupon(Long userId) {
-        Date now = new Date();
-        Date validTo = new Date(now.getTime() + 60L * 24 * 60 * 60 * 1000); // 60일 유효
-
-        Coupon coupon = Coupon.builder()
-                .couponName("웰컴 쿠폰")
-                .couponCode(createCouponCode())
-                .validFrom(now)
-                .validTo(validTo)
-                .couponCreatedAt(now)
-                .build();
-
-        Coupon savedCoupon = couponRepository.save(coupon);
-        return CouponResponseDTO.fromEntity(savedCoupon);
-    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId) {
-//        return couponPolicyBookRepository.findByBookId(bookId).stream()
-//                .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
-//                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds) {
-//        return couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds).stream()
-//                .flatMap(policy -> policy.getCouponPolicy().getCoupons().stream())
-//                .map(coupon -> CouponUserListResponseDTO.fromEntity(coupon.toUserCoupon()))
-//                .collect(Collectors.toList());
-//    }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public ReadOrderUserCouponResponse findBestCoupon(Long userId, BigDecimal orderAmount) {
-//        List<UserCoupon> userCoupons = userCouponRepository.findByUserId(userId).stream()
-//                .filter(userCoupon -> userCoupon.getCouponStatus() == UserCoupon.CouponStatus.ACTIVE)
-//                .filter(userCoupon -> userCoupon.getCoupon().getCouponPolicy().getCouponPolicyMinOrderAmount().compareTo(orderAmount) <= 0)
-//                .toList();
-//
-//        UserCoupon bestCoupon = userCoupons.stream()
-//                .max(Comparator.comparing((UserCoupon userCoupon) -> calculateDiscount(userCoupon.getCoupon(), orderAmount))
-//                        .thenComparing(userCoupon -> userCoupon.getCoupon().getCouponExpiredAt(), Comparator.reverseOrder()))
-//                .orElseThrow(() -> new CouponServiceException(
-//                        ErrorStatus.toErrorStatus("사용할수있는 쿠폰이 없습니다.", 404, LocalDateTime.now())
-//                ));
-//
-//        return new ReadOrderUserCouponResponse(bestCoupon.getCoupon().getCouponId(), calculateDiscount(bestCoupon.getCoupon(), orderAmount));
-//    }
-
-    private BigDecimal calculateDiscount(Coupon coupon, BigDecimal orderAmount) {
-        CouponPolicy policy = coupon.getCouponPolicy();
-        if (policy.isCouponPolicyDiscountType()) { // 할인율
-            BigDecimal discount = orderAmount.multiply(policy.getCouponPolicyRate());
-            return discount.compareTo(policy.getCouponPolicyMaxAmount()) > 0 ? policy.getCouponPolicyMaxAmount() : discount;
-        } else { // 할인금액
-            return policy.getCouponPolicyDiscountValue();
-        }
-    }
-
     private String createCouponCode() {
         return UUID.randomUUID().toString();
     }
-
 }

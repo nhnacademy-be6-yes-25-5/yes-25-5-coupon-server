@@ -8,12 +8,14 @@ public interface CouponService {
 
 //    List<CouponUserListResponseDTO> findAllCoupons();
     CouponResponseDTO findCouponById(Long id);
-    CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO);
+//    CouponResponseDTO createCoupon(CouponRequestDTO couponRequestDTO);
     CouponResponseDTO updateCoupon(Long id, CouponRequestDTO couponRequestDTO);
     void deleteCoupon(Long id);
     Coupon findCouponEntityById(Long id);
-    CouponResponseDTO issueBirthdayCoupon(Long userId);
-    CouponResponseDTO issueWelcomeCoupon(Long userId);
+    CouponResponseDTO createCoupon(Coupon coupon);
+
+//    CouponResponseDTO issueBirthdayCoupon(Long userId);
+//    CouponResponseDTO issueWelcomeCoupon(Long userId);
 //    List<CouponUserListResponseDTO> getCouponsByBookId(Long bookId);
 //    List<CouponUserListResponseDTO> getCouponsByCategoryIds(List<Long> categoryIds);
 //    ReadOrderUserCouponResponse findBestCoupon(Long userId, BigDecimal orderAmount);
