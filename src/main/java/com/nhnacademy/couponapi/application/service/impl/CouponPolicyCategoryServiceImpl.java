@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * {@link CouponPolicyCategoryService}의 구현 클래스입니다.
+ * 이 클래스는 카테고리별 쿠폰 정책의 생성 및 조회 기능을 제공합니다.
+ */
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -27,6 +31,11 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     private final CouponPolicyRepository couponPolicyRepository;
     private final CouponCreationUtil couponCreationUtil;
 
+    /**
+     * 모든 카테고리 쿠폰 정책을 조회합니다.
+     *
+     * @return 모든 카테고리 쿠폰 정책 목록
+     */
     @Override
     @Transactional(readOnly = true)
     public List<CouponPolicyCategoryResponseDTO> findAllCouponPolicyCategories() {
@@ -35,26 +44,33 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 새로운 카테고리 쿠폰 정책을 생성합니다.
+     *
+     * @param requestDTO 카테고리 쿠폰 정책 생성에 필요한 정보가 담긴 DTO
+     * @return 생성된 카테고리 쿠폰 정책 정보
+     * @throws CouponPolicyCategoryServiceException 카테고리 쿠폰 정책 생성 중 예외 발생 시
+     */
     @Override
     @Transactional
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
         try {
             // 쿠폰 정책 생성
             CouponPolicy couponPolicy = CouponPolicy.builder()
-                    .couponPolicyName(requestDTO.getCouponPolicyName())
-                    .couponPolicyDiscountValue(requestDTO.getCouponPolicyDiscountValue())
-                    .couponPolicyRate(requestDTO.getCouponPolicyRate())
-                    .couponPolicyMinOrderAmount(requestDTO.getCouponPolicyMinOrderAmount())
-                    .couponPolicyMaxAmount(requestDTO.getCouponPolicyMaxAmount())
-                    .couponPolicyDiscountType(requestDTO.isCouponPolicyDiscountType())
+                    .couponPolicyName(requestDTO.couponPolicyName())
+                    .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
+                    .couponPolicyRate(requestDTO.couponPolicyRate())
+                    .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
+                    .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
+                    .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
                     .build();
             CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
             // 카테고리 쿠폰 정책 생성
             CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
                     .couponPolicy(savedCouponPolicy)
-                    .categoryId(requestDTO.getCategoryId())
-                    .categoryName(requestDTO.getCategoryName())
+                    .categoryId(requestDTO.categoryId())
+                    .categoryName(requestDTO.categoryName())
                     .build();
             CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
@@ -69,11 +85,11 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .build();
 
         } catch (Exception e) {
-            String errorMessage = "An unexpected error occurred while creating CouponPolicyCategory.";
+            String errorMessage = "카테고리 쿠폰 정책 생성 중 예상치 못한 오류가 발생했습니다.";
             System.err.println(errorMessage);
             e.printStackTrace();
             throw new CouponPolicyCategoryServiceException(
-                    ErrorStatus.toErrorStatus("Category coupon policy does not saved", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 저장 실패", 500, LocalDateTime.now())
             );
         }
     }

@@ -52,5 +52,4 @@ public class CouponPolicyController {
         log.info("Created coupon policy: {}", createdCouponPolicy);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCouponPolicy);
     }
-
 }

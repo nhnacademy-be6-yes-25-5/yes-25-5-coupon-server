@@ -5,6 +5,5 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 
 public interface CouponService {
 
-    CouponResponseDTO findCouponById(Long id);
     CouponResponseDTO createCoupon(Coupon coupon);
 }

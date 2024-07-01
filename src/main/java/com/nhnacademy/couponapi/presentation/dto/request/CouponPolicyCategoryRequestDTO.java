@@ -2,32 +2,29 @@ package com.nhnacademy.couponapi.presentation.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Getter
-public class CouponPolicyCategoryRequestDTO {
-
+public record CouponPolicyCategoryRequestDTO(
         @NotEmpty(message = "Coupon policy name cannot be null")
-        private String couponPolicyName;
+        String couponPolicyName,
 
-        private BigDecimal couponPolicyDiscountValue;
+        BigDecimal couponPolicyDiscountValue,
 
-        private BigDecimal couponPolicyRate;
+        BigDecimal couponPolicyRate,
 
         @NotNull(message = "Coupon policy minimum order amount cannot be null")
-        private BigDecimal couponPolicyMinOrderAmount;
+        BigDecimal couponPolicyMinOrderAmount,
 
         @NotNull(message = "Coupon policy maximum amount cannot be null")
-        private BigDecimal couponPolicyMaxAmount;
+        BigDecimal couponPolicyMaxAmount,
 
         @NotNull(message = "Coupon policy discount type cannot be null")
-        private boolean couponPolicyDiscountType;
+        boolean couponPolicyDiscountType,
 
-        @NotEmpty(message = "Book name cannot be null")
-        private String categoryName;
+        @NotEmpty(message = "Category name cannot be null")
+        String categoryName,
 
-        @NotNull(message = "Book ID cannot be null")
-        private Long categoryId;
-}
+        @NotNull(message = "Category ID cannot be null")
+        Long categoryId
+) {}
