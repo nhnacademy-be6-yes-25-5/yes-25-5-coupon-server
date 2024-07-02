@@ -11,6 +11,7 @@ import java.util.Date;
 @Getter
 @Builder
 public class BookDetailCouponResponseDTO {
+    private final Long couponId;
     private final String couponName;
     private final Date couponExpiredAt;
     private final String couponPolicyName;
@@ -20,6 +21,7 @@ public class BookDetailCouponResponseDTO {
     public static BookDetailCouponResponseDTO fromEntity(Coupon coupon) {
         CouponPolicy policy = coupon.getCouponPolicy();
         return BookDetailCouponResponseDTO.builder()
+                .couponId(coupon.getCouponId())
                 .couponName(coupon.getCouponName())
                 .couponExpiredAt(coupon.getCouponExpiredAt())
                 .couponPolicyName(policy != null ? policy.getCouponPolicyName() : null)

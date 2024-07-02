@@ -39,6 +39,7 @@ public class CouponController {
         List<Coupon> coupons = couponService.getCouponsByBookIdAndCategoryIds(bookId, categoryIds);
         return coupons.stream()
                 .map(coupon -> BookDetailCouponResponseDTO.builder()
+                        .couponId(coupon.getCouponId())
                         .couponName(coupon.getCouponName())
                         .couponExpiredAt(coupon.getCouponExpiredAt())
                         .couponPolicyName(coupon.getCouponPolicy().getCouponPolicyName())
