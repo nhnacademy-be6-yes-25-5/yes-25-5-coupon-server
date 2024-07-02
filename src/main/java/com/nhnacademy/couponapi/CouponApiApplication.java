@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 
-@EnableFeignClients(basePackages = "com.nhnacademy.couponapi.application.adapter")
+@EnableFeignClients(basePackages = "com.nhnacademy.couponapi.infrastructure.adapter")
 @SpringBootApplication
 public class CouponApiApplication {
 
