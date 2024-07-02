@@ -52,7 +52,7 @@ public class CouponController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/expired")
+    @PostMapping("/expired")
     public ExpiredCouponUserResponse getCouponExpiredDate(@RequestParam Long couponId) {
         Date couponExpiredAt = couponService.getCouponExpiredDate(couponId);
         return new ExpiredCouponUserResponse(couponExpiredAt);
