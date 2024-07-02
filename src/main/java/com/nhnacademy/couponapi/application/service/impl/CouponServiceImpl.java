@@ -1,6 +1,7 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
 import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -71,6 +73,12 @@ public class CouponServiceImpl implements CouponService {
         }
 
         return couponRepository.findByCouponPolicyIn(couponPolicies);
+    }
+
+    public Date getCouponExpiredDate(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new CouponNotFoundException("Coupon not found with id: " + couponId));
+        return coupon.getCouponExpiredAt();
     }
 
 }

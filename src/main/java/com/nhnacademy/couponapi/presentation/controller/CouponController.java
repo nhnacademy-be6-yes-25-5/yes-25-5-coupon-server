@@ -3,12 +3,15 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,4 +51,11 @@ public class CouponController {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("/expired")
+    public ExpiredCouponUserResponse getCouponExpiredDate(@RequestParam Long couponId) {
+        Date couponExpiredAt = couponService.getCouponExpiredDate(couponId);
+        return new ExpiredCouponUserResponse(couponExpiredAt);
+    }
+
 }
