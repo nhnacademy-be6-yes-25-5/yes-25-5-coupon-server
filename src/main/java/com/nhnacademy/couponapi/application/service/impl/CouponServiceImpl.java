@@ -51,6 +51,13 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
+    /**
+     * 도서 ID와 카테고리 ID 목록에 해당하는 쿠폰들을 조회합니다.
+     *
+     * @param bookId      도서 ID
+     * @param categoryIds 카테고리 ID 목록
+     * @return 조회된 쿠폰 목록
+     */
     public List<Coupon> getCouponsByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
         List<CouponPolicyBook> bookPolicies = couponPolicyBookRepository.findByBookId(bookId);
         List<CouponPolicyCategory> categoryPolicies = couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds);
