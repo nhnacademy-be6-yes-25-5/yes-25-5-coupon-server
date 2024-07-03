@@ -13,6 +13,7 @@ import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepos
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +80,14 @@ public class CouponServiceImpl implements CouponService {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CouponNotFoundException("Coupon not found with id: " + couponId));
         return coupon.getCouponExpiredAt();
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void deleteExpiredCoupons() {
+        Date now = new Date();
+        couponRepository.deleteByCouponExpiredAtBefore(now);
     }
 
 }

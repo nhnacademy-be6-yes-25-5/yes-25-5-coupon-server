@@ -47,10 +47,17 @@ public class CouponPolicy {
     @OneToMany(mappedBy = "couponPolicy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Coupon> coupons;
 
+    @OneToMany(mappedBy = "couponPolicy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CouponPolicyBook> couponPolicyBooks;
+
+    @OneToMany(mappedBy = "couponPolicy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CouponPolicyCategory> couponPolicyCategories;
+
     @Builder
     public CouponPolicy(Long couponPolicyId, String couponPolicyName, BigDecimal couponPolicyDiscountValue, Date couponPolicyCreatedAt,
                         Date couponPolicyUpdatedAt, BigDecimal couponPolicyRate, BigDecimal couponPolicyMinOrderAmount,
-                        BigDecimal couponPolicyMaxAmount, boolean couponPolicyDiscountType, List<Coupon> coupons) {
+                        BigDecimal couponPolicyMaxAmount, boolean couponPolicyDiscountType, List<Coupon> coupons,
+                        List<CouponPolicyBook> couponPolicyBooks, List<CouponPolicyCategory> couponPolicyCategories) {
         this.couponPolicyId = couponPolicyId;
         this.couponPolicyName = couponPolicyName;
         this.couponPolicyDiscountValue = couponPolicyDiscountValue;
@@ -61,5 +68,8 @@ public class CouponPolicy {
         this.couponPolicyMaxAmount = couponPolicyMaxAmount;
         this.couponPolicyDiscountType = couponPolicyDiscountType;
         this.coupons = coupons;
+        this.couponPolicyBooks = couponPolicyBooks;
+        this.couponPolicyCategories = couponPolicyCategories;
     }
+
 }
