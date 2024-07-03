@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class CouponController {
      * @return 조회된 쿠폰 목록
      */
     @GetMapping
-    @Operation(summary = "Get Coupons by Book ID and Category IDs", description = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰들을 조회합니다.")
+    @Operation(summary = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰 조회", description = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰들을 조회합니다.")
     public List<BookDetailCouponResponseDTO> getCoupons(
             @Parameter(description = "도서 ID", required = true) @RequestParam Long bookId,
             @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds) {
@@ -52,10 +51,16 @@ public class CouponController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 쿠폰의 만료 날짜를 조회합니다.
+     *
+     * @param couponId 쿠폰 ID
+     * @return 만료 날짜를 포함한 응답 객체
+     */
     @PostMapping("/expired")
-    public ExpiredCouponUserResponse getCouponExpiredDate(@RequestParam Long couponId) {
+    @Operation(summary = "쿠폰 만료 날짜 조회", description = "쿠폰의 만료 날짜를 조회합니다.")
+    public ExpiredCouponUserResponse getCouponExpiredDate(@Parameter(description = "쿠폰 ID", required = true) @RequestParam Long couponId) {
         Date couponExpiredAt = couponService.getCouponExpiredDate(couponId);
         return new ExpiredCouponUserResponse(couponExpiredAt);
     }
-
 }

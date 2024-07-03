@@ -5,6 +5,8 @@ import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepositor
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
+import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
+import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -53,18 +55,6 @@ class CouponServiceImplTest {
         verify(couponRepository, times(1)).save(any(Coupon.class));
     }
 
-//    @Test
-//    void testCreateCoupon_Exception() {
-//        Coupon coupon = createCoupon();
-//        when(couponRepository.save(any(Coupon.class))).thenThrow(new RuntimeException("Error"));
-//
-//        Exception exception = assertThrows(CouponServiceException.class, () ->
-//                couponService.createCoupon(coupon));
-//
-//        assertEquals("쿠폰을 생성할 수 없습니다", exception.getMessage());
-//        verify(couponRepository, times(1)).save(any(Coupon.class));
-//    }
-
     @Test
     void testGetCouponsByBookIdAndCategoryIds() {
         Long bookId = 1L;
@@ -87,6 +77,39 @@ class CouponServiceImplTest {
         assertNotNull(coupons);
         assertEquals(1, coupons.size());
         assertEquals(coupon.getCouponId(), coupons.get(0).getCouponId());
+    }
+
+    @Test
+    void testGetCouponExpiredDate() {
+        Long couponId = 1L;
+        Coupon coupon = createCouponWithId(couponId);
+        when(couponRepository.findById(couponId)).thenReturn(java.util.Optional.of(coupon));
+
+        Date expiredDate = couponService.getCouponExpiredDate(couponId);
+
+        assertNotNull(expiredDate);
+        assertEquals(coupon.getCouponExpiredAt(), expiredDate);
+        verify(couponRepository, times(1)).findById(couponId);
+    }
+
+    @Test
+    void testGetCouponExpiredDate_CouponNotFoundException() {
+        Long couponId = 1L;
+        when(couponRepository.findById(couponId)).thenReturn(java.util.Optional.empty());
+
+        Exception exception = assertThrows(CouponNotFoundException.class, () ->
+                couponService.getCouponExpiredDate(couponId));
+
+        assertEquals("Coupon not found with id: " + couponId, exception.getMessage());
+        verify(couponRepository, times(1)).findById(couponId);
+    }
+
+    @Test
+    void testDeleteExpiredCoupons() {
+        Date now = new Date();
+        couponService.deleteExpiredCoupons();
+
+        verify(couponRepository, times(1)).deleteByCouponExpiredAtBefore(now);
     }
 
     private Coupon createCoupon() {

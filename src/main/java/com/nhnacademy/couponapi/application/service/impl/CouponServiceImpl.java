@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * {@link CouponService}의 구현 클래스입니다.
- * 이 클래스는 쿠폰의 생성 기능을 제공합니다.
+ * 이 클래스는 쿠폰의 생성 및 조회 기능을 제공합니다.
  */
 @RequiredArgsConstructor
 @Transactional
@@ -76,12 +76,22 @@ public class CouponServiceImpl implements CouponService {
         return couponRepository.findByCouponPolicyIn(couponPolicies);
     }
 
+    /**
+     * 쿠폰의 만료 날짜를 조회합니다.
+     *
+     * @param couponId 쿠폰 ID
+     * @return 쿠폰의 만료 날짜
+     * @throws CouponNotFoundException 주어진 ID에 해당하는 쿠폰이 없는 경우
+     */
     public Date getCouponExpiredDate(Long couponId) {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CouponNotFoundException("Coupon not found with id: " + couponId));
         return coupon.getCouponExpiredAt();
     }
 
+    /**
+     * 만료된 쿠폰들을 삭제합니다. 이 메서드는 매일 자정에 실행됩니다.
+     */
     @Override
     @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
@@ -89,5 +99,4 @@ public class CouponServiceImpl implements CouponService {
         Date now = new Date();
         couponRepository.deleteByCouponExpiredAtBefore(now);
     }
-
 }
