@@ -25,14 +25,11 @@ public class JwtFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-        FilterChain filterChain) throws IOException, ServletException {
+                         FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String path = request.getServletPath();
 
-        if ("/users".equals(path) || "/users/sign-up".equals(path) ||
-                "/users/find/email".equals(path) || "/user/find/password".equals(path) ||
-            path.equals("/books/{bookId:\\d+}")
-        ) {
+        if (path.equals("/coupon/modal") || path.matches("/coupons/books/\\d+/coupons")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -46,7 +43,7 @@ public class JwtFilter extends GenericFilterBean {
             JwtUserDetails jwtUserDetails = JwtUserDetails.of(userName, role, token);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                jwtUserDetails, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                    jwtUserDetails, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
             );
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -62,7 +59,7 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         throw new JwtException(
-            ErrorStatus.toErrorStatus("헤더에서 토큰을 찾을 수 없습니다.", 401, LocalDateTime.now())
+                ErrorStatus.toErrorStatus("헤더에서 토큰을 찾을 수 없습니다.", 401, LocalDateTime.now())
         );
     }
 }

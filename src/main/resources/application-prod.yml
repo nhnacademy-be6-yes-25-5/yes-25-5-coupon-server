@@ -24,6 +24,11 @@ spring:
     url: jdbc:mysql://133.186.241.167:3306/be6_yes255_coupon
     username: be6_yes255
     password: ${YES25_5_MYSQL_PASSWORD}
+    dbcp2:
+      max-total: 10
+      max-idle: 5
+      min-idle: 2
+      max-wait-millis: 10000
   jpa:
     open-in-view: false
     show-sql: true
@@ -65,7 +70,11 @@ eureka:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVER_HOSTNAME}:${EUREKA_SERVER_PORT}/eureka/
 
-
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
 
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
