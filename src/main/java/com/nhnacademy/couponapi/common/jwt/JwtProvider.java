@@ -1,4 +1,4 @@
-package com.nhnacademy.couponapi.common;
+package com.nhnacademy.couponapi.common.jwt;
 
 import com.nhnacademy.couponapi.common.exception.JwtException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
@@ -14,12 +14,11 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtProvider {
 
-    private static final String ISSUER = "coupon-api";
+    private static final String ISSUER = "auth-server";
     private final SecretKey secretKey;
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {
@@ -28,21 +27,15 @@ public class JwtProvider {
 
     public boolean isValidToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKey)
+            Jws<Claims> claimJets = Jwts.parserBuilder().setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
 
-            Claims claims = claimsJws.getBody();
+            Claims claims = claimJets.getBody();
 
             if (claims.getExpiration().before(new Date())) {
                 throw new JwtException(
                         ErrorStatus.toErrorStatus("토큰의 유효시간이 지났습니다.", 401, LocalDateTime.now())
-                );
-            }
-
-            if (!claims.getIssuer().equals(ISSUER)) {
-                throw new JwtException(
-                        ErrorStatus.toErrorStatus("토큰의 발행자가 일치하지 않습니다.", 401, LocalDateTime.now())
                 );
             }
 
@@ -54,23 +47,21 @@ public class JwtProvider {
         }
     }
 
-    public String getUserNameFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    public Long getUserNameFromToken(String token) {
+        return Long.valueOf((Integer) Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .get("customerId"));
     }
 
-    public List<String> getRolesFromToken(String token) {
-        List<?> roles = (List<?>) Jwts.parserBuilder().setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("roles");
-
-        return roles.stream()
-                .map(Object::toString)
-                .toList();
+    public String getRolesFromToken(String token) {
+        return (String) Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .get("userRole");
     }
 }
