@@ -1,10 +1,12 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
 import com.nhnacademy.couponapi.infrastructure.adapter.BookAdapter;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -66,5 +68,29 @@ class CouponControllerTest {
         assertEquals("Policy Name", response.get(0).getCouponPolicyName());
         assertEquals(new BigDecimal("10.00"), response.get(0).getCouponPolicyDiscountValue());
         assertEquals(new BigDecimal("0.10"), response.get(0).getCouponPolicyRate());
+    }
+
+    @Test
+    void testGetCouponExpiredDate() {
+        Long couponId = 1L;
+        Date expiredDate = new Date();
+
+        when(couponService.getCouponExpiredDate(anyLong())).thenReturn(expiredDate);
+
+        ExpiredCouponUserResponse response = couponController.getCouponExpiredDate(couponId);
+
+        assertNotNull(response);
+        assertEquals(expiredDate, response.couponExpiredAt());
+    }
+
+    @Test
+    void testGetCouponExpiredDate_CouponNotFoundException() {
+        Long couponId = 1L;
+
+        when(couponService.getCouponExpiredDate(anyLong())).thenThrow(new CouponNotFoundException("Coupon not found with id: " + couponId));
+
+        Exception exception = assertThrows(CouponNotFoundException.class, () -> couponController.getCouponExpiredDate(couponId));
+
+        assertEquals("Coupon not found with id: " + couponId, exception.getMessage());
     }
 }

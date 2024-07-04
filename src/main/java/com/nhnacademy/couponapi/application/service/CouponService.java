@@ -11,4 +11,5 @@ public interface CouponService {
     CouponResponseDTO createCoupon(Coupon coupon);
     List<Coupon> getCouponsByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds);
     Date getCouponExpiredDate(Long couponId);
+    void deleteExpiredCoupons();
 }

@@ -1,29 +1,41 @@
 package com.nhnacademy.couponapi.common.exception.payload;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.Builder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-
 import java.time.LocalDateTime;
 
-@Builder
-public record ErrorStatus(String message, int status,
-                          @JsonSerialize(using = LocalDateTimeSerializer.class)
-                          @JsonDeserialize(using = LocalDateTimeDeserializer.class) LocalDateTime timestamp) {
+public class ErrorStatus {
+    private String message;
+    private int status;
+    private LocalDateTime timestamp;
 
-    public static ErrorStatus toErrorStatus(String message, int status, LocalDateTime timeStamp) {
-        return ErrorStatus.builder()
-            .message(message)
-            .status(status)
-            .timestamp(timeStamp)
-            .build();
+    public ErrorStatus(String message, int status, LocalDateTime timestamp) {
+        this.message = message;
+        this.status = status;
+        this.timestamp = timestamp;
     }
 
-    public HttpStatusCode toHttpStatus() {
-        return HttpStatus.valueOf(status);
+    // 기존 메서드들
+
+    // toHttpStatus 메서드 추가
+    public HttpStatus toHttpStatus() {
+        return HttpStatus.valueOf(this.status);
+    }
+
+    // Getter 메서드들
+    public String getMessage() {
+        return message;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    // toErrorStatus 메서드 추가
+    public static ErrorStatus toErrorStatus(String message, int status, LocalDateTime timestamp) {
+        return new ErrorStatus(message, status, timestamp);
     }
 }

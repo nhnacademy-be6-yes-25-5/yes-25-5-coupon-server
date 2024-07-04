@@ -65,7 +65,7 @@ eureka:
 
 
 jwt:
-  secret: this-is-secret-key-yeah-ho-hu-yea-yes-hi-bye
+  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 
 # 각 서버별 api 호출 코드를 수정합니다.
 api:
