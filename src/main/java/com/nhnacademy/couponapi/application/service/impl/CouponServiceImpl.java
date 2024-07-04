@@ -99,4 +99,10 @@ public class CouponServiceImpl implements CouponService {
         Date now = new Date();
         couponRepository.deleteByCouponExpiredAtBefore(now);
     }
+
+    @Override
+    public List<Coupon> getCouponsInfo(List<Long> couponIdList) {
+        return couponRepository.findAllById(couponIdList);
+    }
+
 }

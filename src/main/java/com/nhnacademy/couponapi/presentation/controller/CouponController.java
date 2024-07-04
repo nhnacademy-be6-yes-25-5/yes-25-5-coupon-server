@@ -3,6 +3,7 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,4 +64,23 @@ public class CouponController {
         Date couponExpiredAt = couponService.getCouponExpiredDate(couponId);
         return new ExpiredCouponUserResponse(couponExpiredAt);
     }
+
+    @GetMapping("/info")
+    public List<CouponInfoResponse> getCouponsInfo(@RequestParam List<Long> couponIdList) {
+        return couponService.getCouponsInfo(couponIdList)
+                .stream()
+                .map(coupon -> CouponInfoResponse.builder()
+                        .couponId(coupon.getCouponId())
+                        .couponName(coupon.getCouponName())
+                        .couponMinAmount(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount())
+                        .couponMaxAmount(coupon.getCouponPolicy().getCouponPolicyMaxAmount())
+                        .couponDiscountAmount(coupon.getCouponPolicy().getCouponPolicyDiscountValue().longValue())
+                        .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate().intValue())
+                        .couponCreatedAt(coupon.getCouponCreatedAt())
+                        .couponCode(coupon.getCouponCode())
+                        .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }
