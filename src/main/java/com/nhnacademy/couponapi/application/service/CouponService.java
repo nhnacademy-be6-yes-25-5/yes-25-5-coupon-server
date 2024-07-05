@@ -12,4 +12,5 @@ public interface CouponService {
     List<Coupon> getCouponsByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds);
     Date getCouponExpiredDate(Long couponId);
     void deleteExpiredCoupons();
+    List<Coupon> getCouponsInfo(List<Long> couponIdList);
 }
