@@ -82,3 +82,5 @@ jwt:
 # 배포 환경에서의 각 서버별 api 호출 코드를 환경변수에 등록합니다. 원격서버에도 등록되었는지 확인해주세요..
 api:
   books-users: ${BOOK_USER_SERVER}
+  coupon: ${COUPON_SERVER}
+  auth : ${AUTH_SERVER}
