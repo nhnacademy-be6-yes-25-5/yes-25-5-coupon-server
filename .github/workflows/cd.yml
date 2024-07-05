@@ -62,6 +62,7 @@ jobs:
           EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
           EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
           BOOK_USER_SERVER: ${{ secrets.BOOK_USER_SERVER }}
+          AUTH_SERVER: ${{ secrets.AUTH_SERVER }}
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
@@ -78,6 +79,7 @@ jobs:
               -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
               -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
               -e BOOK_USER_SERVER=${BOOK_USER_SERVER} \
+              -e AUTH_SERVER=${AUTH_SERVER} \
               coupon-app
           EOF
 
