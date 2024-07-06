@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @DataJpaTest
+@ActiveProfiles("test")
 @Transactional
 class CouponRepositoryTest {
 
