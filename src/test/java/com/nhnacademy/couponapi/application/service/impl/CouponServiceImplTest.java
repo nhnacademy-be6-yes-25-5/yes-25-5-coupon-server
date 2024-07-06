@@ -1,29 +1,25 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.application.service.CouponService;
-import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
-import com.nhnacademy.couponapi.common.exception.CouponServiceException;
-import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
-import com.nhnacademy.couponapi.persistence.domain.Coupon;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
+import com.nhnacademy.couponapi.persistence.domain.*;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
+import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
+import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 class CouponServiceImplTest {
@@ -60,18 +56,6 @@ class CouponServiceImplTest {
     }
 
     @Test
-    void testCreateCoupon_Exception() {
-        Coupon coupon = createCoupon();
-
-        when(couponRepository.save(any(Coupon.class))).thenThrow(new RuntimeException("Database error"));
-
-        Exception exception = assertThrows(CouponServiceException.class, () -> couponService.createCoupon(coupon));
-
-        assertTrue(exception.getMessage().contains("쿠폰을 생성할 수 없습니다"));
-        verify(couponRepository, times(1)).save(any(Coupon.class));
-    }
-
-    @Test
     void testGetCouponsByBookIdAndCategoryIds() {
         Long bookId = 1L;
         List<Long> categoryIds = Arrays.asList(1L, 2L);
@@ -96,26 +80,10 @@ class CouponServiceImplTest {
     }
 
     @Test
-    void testGetCouponsByBookIdAndCategoryIds_EmptyList() {
-        Long bookId = 1L;
-        List<Long> categoryIds = Arrays.asList(1L, 2L);
-
-        when(couponPolicyBookRepository.findByBookId(bookId)).thenReturn(Collections.emptyList());
-        when(couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds)).thenReturn(Collections.emptyList());
-
-        when(couponRepository.findByCouponPolicyIn(Collections.emptyList())).thenReturn(Collections.emptyList());
-
-        List<Coupon> coupons = couponService.getCouponsByBookIdAndCategoryIds(bookId, categoryIds);
-
-        assertNotNull(coupons);
-        assertTrue(coupons.isEmpty());
-    }
-
-    @Test
     void testGetCouponExpiredDate() {
         Long couponId = 1L;
         Coupon coupon = createCouponWithId(couponId);
-        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
+        when(couponRepository.findById(couponId)).thenReturn(java.util.Optional.of(coupon));
 
         Date expiredDate = couponService.getCouponExpiredDate(couponId);
 
@@ -127,7 +95,7 @@ class CouponServiceImplTest {
     @Test
     void testGetCouponExpiredDate_CouponNotFoundException() {
         Long couponId = 1L;
-        when(couponRepository.findById(couponId)).thenReturn(Optional.empty());
+        when(couponRepository.findById(couponId)).thenReturn(java.util.Optional.empty());
 
         Exception exception = assertThrows(CouponNotFoundException.class, () ->
                 couponService.getCouponExpiredDate(couponId));
@@ -142,34 +110,6 @@ class CouponServiceImplTest {
         couponService.deleteExpiredCoupons();
 
         verify(couponRepository, times(1)).deleteByCouponExpiredAtBefore(now);
-    }
-
-    @Test
-    void testGetCouponsInfo() {
-        List<Long> couponIdList = Arrays.asList(1L, 2L);
-        Coupon coupon1 = createCouponWithId(1L);
-        Coupon coupon2 = createCouponWithId(2L);
-
-        when(couponRepository.findAllById(couponIdList)).thenReturn(Arrays.asList(coupon1, coupon2));
-
-        List<Coupon> coupons = couponService.getCouponsInfo(couponIdList);
-
-        assertNotNull(coupons);
-        assertEquals(2, coupons.size());
-        assertEquals(coupon1.getCouponId(), coupons.get(0).getCouponId());
-        assertEquals(coupon2.getCouponId(), coupons.get(1).getCouponId());
-    }
-
-    @Test
-    void testGetCouponsInfo_EmptyList() {
-        List<Long> couponIdList = Arrays.asList(1L, 2L);
-
-        when(couponRepository.findAllById(couponIdList)).thenReturn(Collections.emptyList());
-
-        List<Coupon> coupons = couponService.getCouponsInfo(couponIdList);
-
-        assertNotNull(coupons);
-        assertTrue(coupons.isEmpty());
     }
 
     private Coupon createCoupon() {

@@ -11,7 +11,6 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "coupon")
 public class Coupon {
 
     @Id
