@@ -71,19 +71,19 @@ class CouponPolicyCategoryServiceImplTest {
         verify(couponCreationUtil, times(1)).createCoupon(any(CouponPolicy.class));
     }
 
-//    @Test
-//    void testCreateCouponPolicyCategory_Exception() {
-//        CouponPolicyCategoryRequestDTO requestDTO = createCouponPolicyCategoryRequestDTO();
-//        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new RuntimeException("Error"));
-//
-//        Exception exception = assertThrows(CouponPolicyCategoryServiceException.class, () ->
-//                couponPolicyCategoryService.createCouponPolicyCategory(requestDTO));
-//
-//        assertEquals("카테고리 쿠폰 정책 저장 실패", exception.getMessage());
-//        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
-//        verify(couponPolicyCategoryRepository, never()).save(any(CouponPolicyCategory.class));
-//        verify(couponCreationUtil, never()).createCoupon(any(CouponPolicy.class));
-//    }
+    @Test
+    void testCreateCouponPolicyCategory_Exception() {
+        CouponPolicyCategoryRequestDTO requestDTO = createCouponPolicyCategoryRequestDTO();
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new RuntimeException("Error"));
+
+        Exception exception = assertThrows(CouponPolicyCategoryServiceException.class, () ->
+                couponPolicyCategoryService.createCouponPolicyCategory(requestDTO));
+
+        assertTrue(exception.getMessage().contains("카테고리 쿠폰 정책 저장 실패"));
+        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
+        verify(couponPolicyCategoryRepository, never()).save(any(CouponPolicyCategory.class));
+        verify(couponCreationUtil, never()).createCoupon(any(CouponPolicy.class));
+    }
 
     private CouponPolicy createCouponPolicy() {
         return CouponPolicy.builder()

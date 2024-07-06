@@ -7,6 +7,7 @@ import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +73,19 @@ class CouponControllerTest {
     }
 
     @Test
+    void testGetCoupons_EmptyList() {
+        Long bookId = 1L;
+        List<Long> categoryIds = Arrays.asList(1L, 2L);
+
+        when(couponService.getCouponsByBookIdAndCategoryIds(anyLong(), anyList())).thenReturn(Collections.emptyList());
+
+        List<BookDetailCouponResponseDTO> response = couponController.getCoupons(bookId, categoryIds);
+
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
     void testGetCouponExpiredDate() {
         Long couponId = 1L;
         Date expiredDate = new Date();
@@ -92,5 +107,51 @@ class CouponControllerTest {
         Exception exception = assertThrows(CouponNotFoundException.class, () -> couponController.getCouponExpiredDate(couponId));
 
         assertEquals("Coupon not found with id: " + couponId, exception.getMessage());
+    }
+
+    @Test
+    void testGetCouponsInfo() {
+        List<Long> couponIdList = Arrays.asList(1L, 2L);
+
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .couponPolicyId(1L)
+                .couponPolicyName("Policy Name")
+                .couponPolicyDiscountValue(new BigDecimal("10.00"))
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyMinOrderAmount(new BigDecimal("50.00"))
+                .couponPolicyMaxAmount(new BigDecimal("100.00"))
+                .couponPolicyDiscountType(true)
+                .build();
+
+        Coupon coupon = Coupon.builder()
+                .couponId(1L)
+                .couponName("Coupon Name")
+                .couponCreatedAt(new Date())
+                .couponCode("ABC123")
+                .couponPolicy(couponPolicy)
+                .build();
+
+        when(couponService.getCouponsInfo(anyList())).thenReturn(Arrays.asList(coupon));
+
+        List<CouponInfoResponse> response = couponController.getCouponsInfo(couponIdList);
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals("Coupon Name", response.get(0).couponName());
+        assertEquals(new BigDecimal("50.00"), response.get(0).couponMinAmount());
+        assertEquals(new BigDecimal("100.00"), response.get(0).couponMaxAmount());
+        assertEquals("ABC123", response.get(0).couponCode());
+    }
+
+    @Test
+    void testGetCouponsInfo_EmptyList() {
+        List<Long> couponIdList = Arrays.asList(1L, 2L);
+
+        when(couponService.getCouponsInfo(anyList())).thenReturn(Collections.emptyList());
+
+        List<CouponInfoResponse> response = couponController.getCouponsInfo(couponIdList);
+
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 }
