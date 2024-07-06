@@ -1,6 +1,6 @@
 spring:
   rabbitmq:
-    host: 133.186.153.195
+    host: localhost
     port: 5672
     listener:
       simple:
@@ -16,8 +16,8 @@ spring:
         initial-interval: 1000
         max-attempts: 3
         multiplier: 1.5
-    username: yes255
-    password: yes255
+    username: guest
+    password: guest
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
