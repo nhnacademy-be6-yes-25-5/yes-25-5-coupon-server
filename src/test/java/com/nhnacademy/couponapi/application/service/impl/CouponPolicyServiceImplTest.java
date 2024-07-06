@@ -1,6 +1,5 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.common.exception.CouponPolicyServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
