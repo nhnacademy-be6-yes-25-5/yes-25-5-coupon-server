@@ -65,8 +65,15 @@ public class CouponController {
         return new ExpiredCouponUserResponse(couponExpiredAt);
     }
 
+    /**
+     * 쿠폰 정보들을 조회합니다.
+     *
+     * @param couponIdList 쿠폰 ID 목록
+     * @return 쿠폰 정보 목록
+     */
     @GetMapping("/info")
-    public List<CouponInfoResponse> getCouponsInfo(@RequestParam List<Long> couponIdList) {
+    @Operation(summary = "쿠폰 정보 조회", description = "쿠폰 ID 목록에 해당하는 쿠폰들의 정보를 조회합니다.")
+    public List<CouponInfoResponse> getCouponsInfo(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
         return couponService.getCouponsInfo(couponIdList)
                 .stream()
                 .map(coupon -> CouponInfoResponse.builder()
@@ -82,5 +89,4 @@ public class CouponController {
                         .build())
                 .collect(Collectors.toList());
     }
-
 }

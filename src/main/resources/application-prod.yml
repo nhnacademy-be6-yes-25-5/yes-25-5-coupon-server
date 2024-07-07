@@ -52,9 +52,9 @@ eureka:
 
 springdoc:
   api-docs:
-    path: /v3/api-docs
+    path: /coupons/v3/api-docs
   swagger-ui:
-    path: /swagger-ui.html
+    path: /coupons/swagger-ui.html
 
 jwt:
   secret: ${JWT_SECRET}
