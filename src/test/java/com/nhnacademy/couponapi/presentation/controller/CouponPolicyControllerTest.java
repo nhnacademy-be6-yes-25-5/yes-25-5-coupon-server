@@ -57,10 +57,9 @@ class CouponPolicyControllerTest {
 
     @Test
     void testCreate() throws Exception {
-        // Adjusted to meet EitherOr validation requirements
         CouponPolicyRequestDTO requestDTO = new CouponPolicyRequestDTO(
                 "Test Policy",
-                BigDecimal.valueOf(10.00), // Provide only couponPolicyDiscountValue
+                BigDecimal.valueOf(10.00),
                 null, // No couponPolicyRate
                 BigDecimal.valueOf(50.00),
                 BigDecimal.valueOf(100.00),
@@ -82,7 +81,7 @@ class CouponPolicyControllerTest {
         return new CouponPolicyRequestDTO(
                 "Test Policy",
                 BigDecimal.valueOf(10.00),
-                null, // Only provide one of the fields to pass EitherOr validation
+                null,
                 BigDecimal.valueOf(50.00),
                 BigDecimal.valueOf(100.00),
                 true

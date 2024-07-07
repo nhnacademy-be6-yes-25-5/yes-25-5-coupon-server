@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "coupon_policy")
 public class CouponPolicy {
 
     @Id

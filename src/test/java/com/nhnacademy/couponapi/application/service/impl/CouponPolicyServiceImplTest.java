@@ -1,6 +1,5 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.common.exception.CouponPolicyServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
@@ -61,19 +60,6 @@ class CouponPolicyServiceImplTest {
         verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
         verify(couponCreationUtil, times(1)).createCoupon(any(CouponPolicy.class));
     }
-
-//    @Test
-//    void testCreateCouponPolicy_Exception() {
-//        CouponPolicyRequestDTO requestDTO = createCouponPolicyRequestDTO();
-//        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new RuntimeException("Error"));
-//
-//        Exception exception = assertThrows(CouponPolicyServiceException.class, () ->
-//                couponPolicyService.createCouponPolicy(requestDTO));
-//
-//        assertEquals("쿠폰 정책 생성 실패", exception.getMessage());
-//        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
-//        verify(couponCreationUtil, never()).createCoupon(any(CouponPolicy.class));
-//    }
 
     private CouponPolicy createCouponPolicy() {
         return CouponPolicy.builder()
