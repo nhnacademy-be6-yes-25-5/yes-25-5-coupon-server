@@ -89,7 +89,7 @@ class CouponRepositoryTest {
 
     @Test
     void testDeleteByCouponExpiredAtBefore() {
-        Date now = new Date(System.currentTimeMillis() + 40L * 24 * 60 * 60 * 1000); // Future date to ensure coupon is deleted
+        Date now = new Date(System.currentTimeMillis() + 40L * 24 * 60 * 60 * 1000);
         couponRepository.deleteByCouponExpiredAtBefore(now);
 
         Optional<Coupon> deletedCoupon = couponRepository.findById(coupon.getCouponId());
