@@ -9,7 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +20,8 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Component
@@ -28,14 +29,24 @@ public class JwtFilter extends GenericFilterBean {
     private final JwtProvider jwtProvider;
     private final AuthAdaptor authAdaptor;
 
+    private static final List<String> EXCLUDE_URLS = Arrays.asList(
+            "/coupons/swagger-ui.html",
+            "/coupons/swagger-ui/index.html",
+            "/coupons/v3/api-docs",
+            "/coupons/v3/api-docs",
+            "/coupons/swagger-ui",
+            "/coupons",
+            "/coupons/expired",
+            "/coupons/info"
+    );
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String path = request.getServletPath();
 
-        if ((path.matches("/coupons") || path.matches("/coupons/expired") ||
-                path.matches("/coupons/swagger-ui.html") || path.matches("/coupons/info"))&& StringUtils.isEmpty(request.getHeader("Authorization"))) {
+        if (isExcludedUrl(path) && StringUtils.isEmpty(request.getHeader("Authorization"))) {
             filterChain.doFilter(request, servletResponse);
             return;
         }
@@ -58,6 +69,10 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private boolean isExcludedUrl(String path) {
+        return EXCLUDE_URLS.stream().anyMatch(excludeUrl -> path.startsWith(excludeUrl));
     }
 
     private String getToken(HttpServletRequest request) {
