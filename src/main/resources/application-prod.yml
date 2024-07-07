@@ -57,7 +57,7 @@ springdoc:
     path: /swagger-ui.html
 
 jwt:
-  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+  secret: ${JWT_SECRET}
 api:
   books-users: ${BOOK_USER_SERVER}
   coupon: ${COUPON_SERVER}
