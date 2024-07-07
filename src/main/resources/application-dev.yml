@@ -68,6 +68,11 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   gateway: http://localhost:8085
 
+springdoc:
+  api-docs:
+    path: /coupons/v3/api-docs
+  swagger-ui:
+    path: /coupons/swagger-ui.html
 
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
