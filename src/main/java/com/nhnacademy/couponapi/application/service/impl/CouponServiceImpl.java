@@ -100,6 +100,12 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.deleteByCouponExpiredAtBefore(now);
     }
 
+    /**
+     * 쿠폰 ID 목록에 해당하는 쿠폰들을 조회합니다.
+     *
+     * @param couponIdList 쿠폰 ID 목록
+     * @return 조회된 쿠폰 목록
+     */
     @Override
     public List<Coupon> getCouponsInfo(List<Long> couponIdList) {
         return couponRepository.findAllById(couponIdList);

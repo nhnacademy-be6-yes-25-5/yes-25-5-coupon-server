@@ -22,6 +22,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers("/coupons/swagger-ui.html", "/coupons/swagger-ui/**", "/coupons/v3/api-docs/**").permitAll() // Swagger 접근 허용
                                 .requestMatchers("/coupon/modal", "/coupons/books/*/coupons", "/coupons", "/coupons/info", "/coupons/expired").permitAll() // 비회원 접근 허용
                                 .requestMatchers("/coupons/policy").authenticated() // 회원 접근 허용
                                 .anyRequest().authenticated()); // 그 외 요청은 인증 필요
