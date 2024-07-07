@@ -34,7 +34,8 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String path = request.getServletPath();
 
-        if ((path.matches("/coupons") || path.matches("/coupons/expired") || path.matches("/coupons/info"))&& StringUtils.isEmpty(request.getHeader("Authorization"))) {
+        if ((path.matches("/coupons") || path.matches("/coupons/expired") ||
+                path.matches("/coupons/swagger-ui.html") || path.matches("/coupons/info"))&& StringUtils.isEmpty(request.getHeader("Authorization"))) {
             filterChain.doFilter(request, servletResponse);
             return;
         }
