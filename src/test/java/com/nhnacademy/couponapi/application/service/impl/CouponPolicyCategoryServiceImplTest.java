@@ -40,13 +40,13 @@ class CouponPolicyCategoryServiceImplTest {
     }
 
     @Test
-    void testFindAllCouponPolicyCategories() {
+    void testGetAllCouponPolicyCategories() {
         CouponPolicy couponPolicy = createCouponPolicy();
         CouponPolicyCategory couponPolicyCategory = createCouponPolicyCategory(couponPolicy);
 
         when(couponPolicyCategoryRepository.findAll()).thenReturn(Collections.singletonList(couponPolicyCategory));
 
-        List<CouponPolicyCategoryResponseDTO> response = couponPolicyCategoryService.findAllCouponPolicyCategories();
+        List<CouponPolicyCategoryResponseDTO> response = couponPolicyCategoryService.getAllCouponPolicyCategories();
 
         assertEquals(1, response.size());
         verify(couponPolicyCategoryRepository, times(1)).findAll();

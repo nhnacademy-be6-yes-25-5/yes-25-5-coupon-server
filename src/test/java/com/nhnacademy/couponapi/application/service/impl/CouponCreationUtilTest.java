@@ -32,7 +32,7 @@ public class CouponCreationUtilTest {
     }
 
     @Test
-    public void testCreateCoupon() {
+    void testCreateCoupon() {
         // given
         CouponPolicy couponPolicy = CouponPolicy.builder()
                 .couponPolicyName("Test Policy")

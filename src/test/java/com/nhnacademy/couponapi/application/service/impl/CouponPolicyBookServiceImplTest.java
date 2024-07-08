@@ -1,6 +1,5 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.common.exception.CouponPolicyBookServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
@@ -41,13 +40,13 @@ class CouponPolicyBookServiceImplTest {
     }
 
     @Test
-    void testFindAllCouponPolicyBooks() {
+    void testGetAllCouponPolicyBooks() {
         CouponPolicy couponPolicy = createCouponPolicy();
         CouponPolicyBook couponPolicyBook = createCouponPolicyBook(couponPolicy);
 
         when(couponPolicyBookRepository.findAll()).thenReturn(Collections.singletonList(couponPolicyBook));
 
-        List<CouponPolicyBookResponseDTO> response = couponPolicyBookService.findAllCouponPolicyBooks();
+        List<CouponPolicyBookResponseDTO> response = couponPolicyBookService.getAllCouponPolicyBooks();
 
         assertEquals(1, response.size());
         verify(couponPolicyBookRepository, times(1)).findAll();

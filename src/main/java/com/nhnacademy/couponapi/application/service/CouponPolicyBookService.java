@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CouponPolicyBookService {
 
-    List<CouponPolicyBookResponseDTO> findAllCouponPolicyBooks();
+    List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks();
     CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO);
 
 }

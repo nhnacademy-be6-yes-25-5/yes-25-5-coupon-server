@@ -9,8 +9,8 @@ import java.util.List;
 public interface CouponService {
 
     CouponResponseDTO createCoupon(Coupon coupon);
-    List<Coupon> getCouponsByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds);
+    List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds);
     Date getCouponExpiredDate(Long couponId);
-    void deleteExpiredCoupons();
-    List<Coupon> getCouponsInfo(List<Long> couponIdList);
+    void removeExpiredCoupons();
+    List<Coupon> getAllByCouponIdList(List<Long> couponIdList);
 }

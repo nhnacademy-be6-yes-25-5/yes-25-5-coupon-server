@@ -39,7 +39,7 @@ public class CouponController {
     public List<BookDetailCouponResponseDTO> getCoupons(
             @Parameter(description = "도서 ID", required = true) @RequestParam Long bookId,
             @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds) {
-        List<Coupon> coupons = couponService.getCouponsByBookIdAndCategoryIds(bookId, categoryIds);
+        List<Coupon> coupons = couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds);
         return coupons.stream()
                 .map(coupon -> BookDetailCouponResponseDTO.builder()
                         .couponId(coupon.getCouponId())
@@ -73,8 +73,8 @@ public class CouponController {
      */
     @GetMapping("/info")
     @Operation(summary = "쿠폰 정보 조회", description = "쿠폰 ID 목록에 해당하는 쿠폰들의 정보를 조회합니다.")
-    public List<CouponInfoResponse> getCouponsInfo(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
-        return couponService.getCouponsInfo(couponIdList)
+    public List<CouponInfoResponse> getAllByCouponIdList(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
+        return couponService.getAllByCouponIdList(couponIdList)
                 .stream()
                 .map(coupon -> CouponInfoResponse.builder()
                         .couponId(coupon.getCouponId())

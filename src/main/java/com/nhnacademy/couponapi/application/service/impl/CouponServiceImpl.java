@@ -61,7 +61,7 @@ public class CouponServiceImpl implements CouponService {
      * @param categoryIds 카테고리 ID 목록
      * @return 조회된 쿠폰 목록
      */
-    public List<Coupon> getCouponsByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
+    public List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
         List<CouponPolicyBook> bookPolicies = couponPolicyBookRepository.findByBookId(bookId);
         List<CouponPolicyCategory> categoryPolicies = couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds);
 
@@ -95,7 +95,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
-    public void deleteExpiredCoupons() {
+    public void removeExpiredCoupons() {
         Date now = new Date();
         couponRepository.deleteByCouponExpiredAtBefore(now);
     }
@@ -107,7 +107,7 @@ public class CouponServiceImpl implements CouponService {
      * @return 조회된 쿠폰 목록
      */
     @Override
-    public List<Coupon> getCouponsInfo(List<Long> couponIdList) {
+    public List<Coupon> getAllByCouponIdList(List<Long> couponIdList) {
         return couponRepository.findAllById(couponIdList);
     }
 

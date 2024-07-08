@@ -11,12 +11,13 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequest
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * {@link CouponPolicyBookService}의 구현 클래스입니다.
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
+    private static final Logger log = LoggerFactory.getLogger(CouponPolicyBookServiceImpl.class);
     private final CouponPolicyBookRepository couponPolicyBookRepository;
     private final CouponPolicyRepository couponPolicyRepository;
     private final CouponCreationUtil couponCreationUtil;
@@ -37,10 +39,10 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyBookResponseDTO> findAllCouponPolicyBooks() {
+    public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
         return couponPolicyBookRepository.findAll().stream()
                 .map(CouponPolicyBookResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -84,8 +86,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
 
         } catch (Exception e) {
             String errorMessage = "도서 쿠폰 정책 저장 실패";
-            System.err.println(errorMessage);
-            e.printStackTrace();
+            log.error(errorMessage, e);
             throw new CouponPolicyBookServiceException(
                     ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
             );

@@ -34,10 +34,10 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyResponseDTO> findAllCouponPolicies() {
+    public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
         return couponPolicyRepository.findAll().stream()
                 .map(CouponPolicyResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

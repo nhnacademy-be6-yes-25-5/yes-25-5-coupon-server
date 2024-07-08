@@ -72,7 +72,7 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     private boolean isExcludedUrl(String path) {
-        return EXCLUDE_URLS.stream().anyMatch(excludeUrl -> path.startsWith(excludeUrl));
+        return EXCLUDE_URLS.stream().anyMatch(path::startsWith);
     }
 
     private String getToken(HttpServletRequest request) {

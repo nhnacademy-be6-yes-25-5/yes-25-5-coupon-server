@@ -11,12 +11,13 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyCategoryReq
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * {@link CouponPolicyCategoryService}의 구현 클래스입니다.
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryService {
 
+    private static final Logger log = LoggerFactory.getLogger(CouponPolicyCategoryServiceImpl.class);
     private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
     private final CouponPolicyRepository couponPolicyRepository;
     private final CouponCreationUtil couponCreationUtil;
@@ -38,10 +40,10 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
      */
     @Override
     @Transactional(readOnly = true)
-    public List<CouponPolicyCategoryResponseDTO> findAllCouponPolicyCategories() {
+    public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
         return couponPolicyCategoryRepository.findAll().stream()
                 .map(CouponPolicyCategoryResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -86,8 +88,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
 
         } catch (Exception e) {
             String errorMessage = "카테고리 쿠폰 정책 생성 중 예상치 못한 오류가 발생했습니다.";
-            System.err.println(errorMessage);
-            e.printStackTrace();
+            log.error(errorMessage, e);
             throw new CouponPolicyCategoryServiceException(
                     ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 저장 실패", 500, LocalDateTime.now())
             );
