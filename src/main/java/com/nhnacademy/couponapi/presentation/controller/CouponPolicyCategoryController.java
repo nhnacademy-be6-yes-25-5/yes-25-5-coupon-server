@@ -31,8 +31,8 @@ public class CouponPolicyCategoryController {
      */
     @Operation(summary = "특정 카테고리에 관한 모든 쿠폰 정책 조회", description = "특정 카테고리에 관한 모든 쿠폰 정책 목록을 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<CouponPolicyCategoryResponseDTO>> findAll() {
-        List<CouponPolicyCategoryResponseDTO> couponPolicyCategories = couponPolicyCategoryService.findAllCouponPolicyCategories();
+    public ResponseEntity<List<CouponPolicyCategoryResponseDTO>> getAll() {
+        List<CouponPolicyCategoryResponseDTO> couponPolicyCategories = couponPolicyCategoryService.getAllCouponPolicyCategories();
         return ResponseEntity.ok(couponPolicyCategories);
     }
 

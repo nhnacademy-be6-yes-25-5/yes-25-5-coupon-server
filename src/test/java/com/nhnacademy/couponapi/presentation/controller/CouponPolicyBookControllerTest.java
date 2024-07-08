@@ -48,7 +48,7 @@ class CouponPolicyBookControllerTest {
         CouponPolicyBookResponseDTO responseDTO = createCouponPolicyBookResponseDTO();
         List<CouponPolicyBookResponseDTO> responseList = Collections.singletonList(responseDTO);
 
-        when(couponPolicyBookService.findAllCouponPolicyBooks()).thenReturn(responseList);
+        when(couponPolicyBookService.getAllCouponPolicyBooks()).thenReturn(responseList);
 
         mockMvc.perform(get("/coupons/policy/books"))
                 .andExpect(status().isOk())

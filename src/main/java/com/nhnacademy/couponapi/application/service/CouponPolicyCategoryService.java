@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CouponPolicyCategoryService {
 
-    List<CouponPolicyCategoryResponseDTO> findAllCouponPolicyCategories();
+    List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories();
     CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO);
 }

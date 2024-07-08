@@ -48,7 +48,7 @@ class CouponPolicyCategoryControllerTest {
         CouponPolicyCategoryResponseDTO responseDTO = createCouponPolicyCategoryResponseDTO();
         List<CouponPolicyCategoryResponseDTO> responseList = Collections.singletonList(responseDTO);
 
-        when(couponPolicyCategoryService.findAllCouponPolicyCategories()).thenReturn(responseList);
+        when(couponPolicyCategoryService.getAllCouponPolicyCategories()).thenReturn(responseList);
 
         mockMvc.perform(get("/coupons/policy/categories"))
                 .andExpect(status().isOk())

@@ -40,7 +40,7 @@ class CouponPolicyServiceImplTest {
 
         when(couponPolicyRepository.findAll()).thenReturn(Collections.singletonList(couponPolicy));
 
-        List<CouponPolicyResponseDTO> response = couponPolicyService.findAllCouponPolicies();
+        List<CouponPolicyResponseDTO> response = couponPolicyService.getAllCouponPolicies();
 
         assertEquals(1, response.size());
         verify(couponPolicyRepository, times(1)).findAll();

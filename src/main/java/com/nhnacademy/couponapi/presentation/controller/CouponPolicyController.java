@@ -33,8 +33,8 @@ public class CouponPolicyController {
      */
     @Operation(summary = "모든 쿠폰 정책 조회", description = "모든 쿠폰 정책 목록을 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<CouponPolicyResponseDTO>> findAll() {
-        List<CouponPolicyResponseDTO> couponPolicies = couponPolicyService.findAllCouponPolicies();
+    public ResponseEntity<List<CouponPolicyResponseDTO>> getAll() {
+        List<CouponPolicyResponseDTO> couponPolicies = couponPolicyService.getAllCouponPolicies();
         return ResponseEntity.ok(couponPolicies);
     }
 

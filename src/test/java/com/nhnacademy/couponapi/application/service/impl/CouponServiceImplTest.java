@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,7 +71,7 @@ class CouponServiceImplTest {
 
         when(couponRepository.findByCouponPolicyIn(couponPolicies)).thenReturn(Collections.singletonList(coupon));
 
-        List<Coupon> coupons = couponService.getCouponsByBookIdAndCategoryIds(bookId, categoryIds);
+        List<Coupon> coupons = couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds);
 
         assertNotNull(coupons);
         assertEquals(1, coupons.size());
@@ -107,7 +106,7 @@ class CouponServiceImplTest {
     @Test
     void testDeleteExpiredCoupons() {
         Date now = new Date();
-        couponService.deleteExpiredCoupons();
+        couponService.removeExpiredCoupons();
 
         verify(couponRepository, times(1)).deleteByCouponExpiredAtBefore(now);
     }
