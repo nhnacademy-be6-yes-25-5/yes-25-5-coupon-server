@@ -12,6 +12,7 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookRespon
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +40,17 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     @Override
     @Transactional(readOnly = true)
     public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
-        return couponPolicyBookRepository.findAll().stream()
-                .map(CouponPolicyBookResponseDTO::fromEntity)
-                .toList();
+        try {
+            return couponPolicyBookRepository.findAll().stream()
+                    .map(CouponPolicyBookResponseDTO::fromEntity)
+                    .toList();
+        } catch (DataAccessException e) {
+            String errorMessage = "도서 쿠폰 정책 조회 실패";
+            log.error(errorMessage, e);
+            throw new CouponPolicyBookServiceException(
+                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
+            );
+        }
     }
 
     /**
@@ -51,6 +60,7 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
      * @return 도서에 대해 생성된 쿠폰 정책 정보
      * @throws CouponPolicyBookServiceException 도서에 대한 쿠폰 정책 생성 중 예외 발생 시
      */
+    @Override
     @Transactional
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
         try {
@@ -83,8 +93,14 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                     .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyBook.getCouponPolicy()))
                     .build();
 
+        } catch (DataAccessException e) {
+            String errorMessage = "도서 쿠폰 정책 저장 실패 - 데이터베이스 오류";
+            log.error(errorMessage, e);
+            throw new CouponPolicyBookServiceException(
+                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
+            );
         } catch (Exception e) {
-            String errorMessage = "도서 쿠폰 정책 저장 실패";
+            String errorMessage = "도서 쿠폰 정책 저장 실패 - 알 수 없는 오류";
             log.error(errorMessage, e);
             throw new CouponPolicyBookServiceException(
                     ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())

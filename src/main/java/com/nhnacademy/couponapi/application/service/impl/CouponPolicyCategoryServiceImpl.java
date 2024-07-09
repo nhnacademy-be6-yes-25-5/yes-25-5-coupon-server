@@ -12,6 +12,7 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryRe
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +41,23 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Override
     @Transactional(readOnly = true)
     public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
-        return couponPolicyCategoryRepository.findAll().stream()
-                .map(CouponPolicyCategoryResponseDTO::fromEntity)
-                .toList();
+        try {
+            return couponPolicyCategoryRepository.findAll().stream()
+                    .map(CouponPolicyCategoryResponseDTO::fromEntity)
+                    .toList();
+        } catch (DataAccessException e) {
+            String errorMessage = "카테고리 쿠폰 정책 조회 중 데이터베이스 오류가 발생했습니다.";
+            log.error(errorMessage, e);
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
+            );
+        } catch (Exception e) {
+            String errorMessage = "카테고리 쿠폰 정책 조회 중 예상치 못한 오류가 발생했습니다.";
+            log.error(errorMessage, e);
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
+            );
+        }
     }
 
     /**
@@ -56,6 +71,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Transactional
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
         try {
+            // 쿠폰 정책 생성
             CouponPolicy couponPolicy = CouponPolicy.builder()
                     .couponPolicyName(requestDTO.couponPolicyName())
                     .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
@@ -66,6 +82,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .build();
             CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
+            // 카테고리 쿠폰 정책 생성
             CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
                     .couponPolicy(savedCouponPolicy)
                     .categoryId(requestDTO.categoryId())
@@ -73,6 +90,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .build();
             CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
+            // 쿠폰 생성
             couponCreationUtil.createCoupon(savedCouponPolicy);
 
             return CouponPolicyCategoryResponseDTO.builder()
@@ -82,11 +100,17 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                     .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyCategory.getCouponPolicy()))
                     .build();
 
-        } catch (Exception e) {
-            String errorMessage = "카테고리 쿠폰 정책 생성 중 예상치 못한 오류가 발생했습니다.";
+        } catch (DataAccessException e) {
+            String errorMessage = "카테고리 쿠폰 정책 저장 중 데이터베이스 오류가 발생했습니다.";
             log.error(errorMessage, e);
             throw new CouponPolicyCategoryServiceException(
-                    ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 저장 실패", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
+            );
+        } catch (Exception e) {
+            String errorMessage = "카테고리 쿠폰 정책 저장 중 예상치 못한 오류가 발생했습니다.";
+            log.error(errorMessage, e);
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
             );
         }
     }

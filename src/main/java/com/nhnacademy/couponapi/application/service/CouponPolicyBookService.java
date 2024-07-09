@@ -8,5 +8,4 @@ import java.util.List;
 public interface CouponPolicyBookService {
     List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks();
     CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO);
-
 }
