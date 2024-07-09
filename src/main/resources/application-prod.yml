@@ -1,4 +1,7 @@
 spring:
+  profiles: prod
+  logHost: 133.186.153.195
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://133.186.241.167:3306/be6_yes255_coupon
@@ -9,6 +12,7 @@ spring:
       max-idle: 5
       min-idle: 2
       max-wait-millis: 10000
+
   jpa:
     open-in-view: false
     show-sql: true
@@ -22,14 +26,17 @@ spring:
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
+
   data:
     redis:
       host: 133.186.241.167
       port: 6379
       database: 34
       password: ${YES25_5_REDIS_PASSWORD}
+
   application:
     name: coupon-server
+
 logging:
   file:
     path: ${user.home}/logs/${spring.application.name}
@@ -37,8 +44,10 @@ logging:
     org.springframework.amqp.rabbit.listener: debug
     org.hibernate.orm.jdbc.bind: trace
     org.springframework.transaction.interceptor: trace
+
 server:
   port: 8080
+
 eureka:
   gateway: http://133.186.153.195:8085
   instance:
@@ -58,7 +67,8 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
+
 api:
   books-users: ${BOOK_USER_SERVER}
   coupon: ${COUPON_SERVER}
-  auth : ${AUTH_SERVER}
+  auth: ${AUTH_SERVER}

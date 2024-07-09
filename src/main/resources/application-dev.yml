@@ -1,4 +1,6 @@
 spring:
+  profiles: dev
+  logHost: localhost
   rabbitmq:
     host: localhost
     port: 5672
@@ -29,6 +31,7 @@ spring:
       max-idle: 5
       min-idle: 2
       max-wait-millis: 10000
+
   jpa:
     open-in-view: false
     show-sql: true
@@ -42,14 +45,17 @@ spring:
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
+
   data:
     redis:
       host: 133.186.241.167
       port: 6379
       database: 34
       password: ${YES25_5_REDIS_PASSWORD}
+
   application:
     name: coupon-server
+
 logging:
   file:
     path: ${user.dir}/logs/${spring.application.name}
@@ -57,8 +63,10 @@ logging:
     org.springframework.amqp.rabbit.listener: debug
     org.hibernate.orm.jdbc.bind: trace
     org.springframework.transaction.interceptor: trace
+
 server:
   port: 8081
+
 eureka:
   client:
     enabled: true
