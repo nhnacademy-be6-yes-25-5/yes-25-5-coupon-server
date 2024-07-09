@@ -6,7 +6,6 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryRe
 import java.util.List;
 
 public interface CouponPolicyCategoryService {
-
     List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories();
     CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO);
 }

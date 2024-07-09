@@ -11,8 +11,7 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequest
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +22,11 @@ import java.util.List;
  * {@link CouponPolicyBookService}의 구현 클래스입니다.
  * 이 클래스는 도서에 대한 쿠폰 정책의 생성 및 조회 기능을 제공합니다.
  */
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
-    private static final Logger log = LoggerFactory.getLogger(CouponPolicyBookServiceImpl.class);
     private final CouponPolicyBookRepository couponPolicyBookRepository;
     private final CouponPolicyRepository couponPolicyRepository;
     private final CouponCreationUtil couponCreationUtil;
