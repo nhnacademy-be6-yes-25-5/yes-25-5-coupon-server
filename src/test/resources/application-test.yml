@@ -30,3 +30,6 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
   gateway: http://localhost:8085
+
+jwt:
+  secret: ${TEST_JWT_SECRET}

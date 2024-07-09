@@ -1,5 +1,6 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
+import com.nhnacademy.couponapi.common.exception.CouponPolicyCategoryServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -53,6 +55,30 @@ class CouponPolicyCategoryServiceImplTest {
     }
 
     @Test
+    void testGetAllCouponPolicyCategoriesWithDatabaseException() {
+        when(couponPolicyCategoryRepository.findAll()).thenThrow(new DataAccessException("DB error") {});
+
+        CouponPolicyCategoryServiceException exception = assertThrows(CouponPolicyCategoryServiceException.class, () -> {
+            couponPolicyCategoryService.getAllCouponPolicyCategories();
+        });
+
+        assertEquals("카테고리 쿠폰 정책 조회 중 데이터베이스 오류가 발생했습니다.", exception.getErrorStatus().getMessage());
+        verify(couponPolicyCategoryRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetAllCouponPolicyCategoriesWithUnknownException() {
+        when(couponPolicyCategoryRepository.findAll()).thenThrow(new RuntimeException("Unknown error"));
+
+        CouponPolicyCategoryServiceException exception = assertThrows(CouponPolicyCategoryServiceException.class, () -> {
+            couponPolicyCategoryService.getAllCouponPolicyCategories();
+        });
+
+        assertEquals("카테고리 쿠폰 정책 조회 중 예상치 못한 오류가 발생했습니다.", exception.getErrorStatus().getMessage());
+        verify(couponPolicyCategoryRepository, times(1)).findAll();
+    }
+
+    @Test
     void testCreateCouponPolicyCategory() {
         CouponPolicyCategoryRequestDTO requestDTO = createCouponPolicyCategoryRequestDTO();
         CouponPolicy couponPolicy = createCouponPolicy();
@@ -68,6 +94,37 @@ class CouponPolicyCategoryServiceImplTest {
         verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
         verify(couponPolicyCategoryRepository, times(1)).save(any(CouponPolicyCategory.class));
         verify(couponCreationUtil, times(1)).createCoupon(any(CouponPolicy.class));
+    }
+
+    @Test
+    void testCreateCouponPolicyCategoryWithDatabaseException() {
+        CouponPolicyCategoryRequestDTO requestDTO = createCouponPolicyCategoryRequestDTO();
+
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new DataAccessException("DB error") {
+        });
+
+        CouponPolicyCategoryServiceException exception = assertThrows(CouponPolicyCategoryServiceException.class, () -> {
+            couponPolicyCategoryService.createCouponPolicyCategory(requestDTO);
+        });
+
+        assertEquals("카테고리 쿠폰 정책 저장 중 데이터베이스 오류가 발생했습니다.", exception.getErrorStatus().getMessage());
+        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
+        verify(couponPolicyCategoryRepository, times(0)).save(any(CouponPolicyCategory.class));
+    }
+
+    @Test
+    void testCreateCouponPolicyCategoryWithUnknownException() {
+        CouponPolicyCategoryRequestDTO requestDTO = createCouponPolicyCategoryRequestDTO();
+
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new RuntimeException("Unknown error"));
+
+        CouponPolicyCategoryServiceException exception = assertThrows(CouponPolicyCategoryServiceException.class, () -> {
+            couponPolicyCategoryService.createCouponPolicyCategory(requestDTO);
+        });
+
+        assertEquals("카테고리 쿠폰 정책 저장 중 예상치 못한 오류가 발생했습니다.", exception.getErrorStatus().getMessage());
+        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
+        verify(couponPolicyCategoryRepository, times(0)).save(any(CouponPolicyCategory.class));
     }
 
     private CouponPolicy createCouponPolicy() {

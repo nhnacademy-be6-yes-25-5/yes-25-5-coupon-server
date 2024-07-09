@@ -1,5 +1,6 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
+import com.nhnacademy.couponapi.common.exception.CouponPolicyBookServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -53,6 +55,18 @@ class CouponPolicyBookServiceImplTest {
     }
 
     @Test
+    void testGetAllCouponPolicyBooksWithDatabaseException() {
+        when(couponPolicyBookRepository.findAll()).thenThrow(new DataAccessException("DB error") {});
+
+        CouponPolicyBookServiceException exception = assertThrows(CouponPolicyBookServiceException.class, () -> {
+            couponPolicyBookService.getAllCouponPolicyBooks();
+        });
+
+        assertEquals("도서 쿠폰 정책 조회 실패", exception.getErrorStatus().getMessage());
+        verify(couponPolicyBookRepository, times(1)).findAll();
+    }
+
+    @Test
     void testCreateCouponPolicyBook() {
         CouponPolicyBookRequestDTO requestDTO = createCouponPolicyBookRequestDTO();
         CouponPolicy couponPolicy = createCouponPolicy();
@@ -68,6 +82,36 @@ class CouponPolicyBookServiceImplTest {
         verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
         verify(couponPolicyBookRepository, times(1)).save(any(CouponPolicyBook.class));
         verify(couponCreationUtil, times(1)).createCoupon(any(CouponPolicy.class));
+    }
+
+    @Test
+    void testCreateCouponPolicyBookWithDatabaseException() {
+        CouponPolicyBookRequestDTO requestDTO = createCouponPolicyBookRequestDTO();
+
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new DataAccessException("DB error") {});
+
+        CouponPolicyBookServiceException exception = assertThrows(CouponPolicyBookServiceException.class, () -> {
+            couponPolicyBookService.createCouponPolicyBook(requestDTO);
+        });
+
+        assertEquals("도서 쿠폰 정책 저장 실패 - 데이터베이스 오류", exception.getErrorStatus().getMessage());
+        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
+        verify(couponPolicyBookRepository, times(0)).save(any(CouponPolicyBook.class));
+    }
+
+    @Test
+    void testCreateCouponPolicyBookWithUnknownException() {
+        CouponPolicyBookRequestDTO requestDTO = createCouponPolicyBookRequestDTO();
+
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenThrow(new RuntimeException("Unknown error"));
+
+        CouponPolicyBookServiceException exception = assertThrows(CouponPolicyBookServiceException.class, () -> {
+            couponPolicyBookService.createCouponPolicyBook(requestDTO);
+        });
+
+        assertEquals("도서 쿠폰 정책 저장 실패 - 알 수 없는 오류", exception.getErrorStatus().getMessage());
+        verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
+        verify(couponPolicyBookRepository, times(0)).save(any(CouponPolicyBook.class));
     }
 
     private CouponPolicy createCouponPolicy() {
