@@ -9,12 +9,13 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * {@link CouponPolicyService}의 구현 클래스입니다.
@@ -37,23 +38,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     @Override
     @Transactional(readOnly = true)
     public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
-        try {
-            return couponPolicyRepository.findAll().stream()
-                    .map(CouponPolicyResponseDTO::fromEntity)
-                    .toList();
-        } catch (DataAccessException e) {
-            String errorMessage = "쿠폰 정책 조회 중 데이터베이스 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponPolicyServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        } catch (Exception e) {
-            String errorMessage = "쿠폰 정책 조회 중 예상치 못한 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponPolicyServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return couponPolicyRepository.findAll().stream()
+                .map(CouponPolicyResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -65,34 +52,22 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
      */
     @Override
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
-        try {
-            CouponPolicy couponPolicy = CouponPolicy.builder()
-                    .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
-                    .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
-                    .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
-                    .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
-                    .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
-                    .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
-                    .build();
+        CouponPolicy couponPolicy = Optional.ofNullable(CouponPolicy.builder()
+                        .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                        .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                        .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                        .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                        .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                        .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
+                        .build())
+                .orElseThrow(() -> new CouponPolicyServiceException(
+                        ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+                ));
 
-            CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
-            couponCreationUtil.createCoupon(savedCouponPolicy);
+        couponCreationUtil.createCoupon(savedCouponPolicy);
 
-            return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
-        } catch (DataAccessException e) {
-            String errorMessage = "쿠폰 정책 저장 중 데이터베이스 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponPolicyServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        } catch (Exception e) {
-            String errorMessage = "쿠폰 정책 생성 중 예상치 못한 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponPolicyServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
     }
-
 }

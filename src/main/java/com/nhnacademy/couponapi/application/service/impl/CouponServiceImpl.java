@@ -1,8 +1,8 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.common.exception.CouponCreationException;
 import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
-import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@link CouponService}의 구현 클래스입니다.
@@ -42,20 +43,12 @@ public class CouponServiceImpl implements CouponService {
      *
      * @param coupon 생성할 쿠폰 정보
      * @return 생성된 쿠폰의 정보
-     * @throws CouponServiceException 쿠폰 생성 중 예외 발생 시
      */
     @Override
     public CouponResponseDTO createCoupon(Coupon coupon) {
-        try {
-            Coupon savedCoupon = couponRepository.save(coupon);
-            return CouponResponseDTO.fromEntity(savedCoupon);
-        } catch (Exception e) {
-            String errorMessage = "쿠폰을 생성할 수 없습니다";
-            log.error(errorMessage, e);
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return Optional.of(couponRepository.save(coupon))
+                .map(CouponResponseDTO::fromEntity)
+                .orElseThrow(() -> new CouponCreationException(ErrorStatus.toErrorStatus("쿠폰 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())));
     }
 
     /**
@@ -67,26 +60,18 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
-        try {
-            List<CouponPolicyBook> bookPolicies = couponPolicyBookRepository.findByBookId(bookId);
-            List<CouponPolicyCategory> categoryPolicies = couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds);
+        List<CouponPolicyBook> bookPolicies = couponPolicyBookRepository.findByBookId(bookId);
+        List<CouponPolicyCategory> categoryPolicies = couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds);
 
-            List<CouponPolicy> couponPolicies = new ArrayList<>();
-            for (CouponPolicyBook bookPolicy : bookPolicies) {
-                couponPolicies.add(bookPolicy.getCouponPolicy());
-            }
-            for (CouponPolicyCategory categoryPolicy : categoryPolicies) {
-                couponPolicies.add(categoryPolicy.getCouponPolicy());
-            }
+        List<CouponPolicy> couponPolicies = new ArrayList<>();
+        couponPolicies.addAll(bookPolicies.stream()
+                .map(CouponPolicyBook::getCouponPolicy)
+                .toList());
+        couponPolicies.addAll(categoryPolicies.stream()
+                .map(CouponPolicyCategory::getCouponPolicy)
+                .toList());
 
-            return couponRepository.findByCouponPolicyIn(couponPolicies);
-        } catch (Exception e) {
-            String errorMessage = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰 조회 중 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return couponRepository.findByCouponPolicyIn(couponPolicies);
     }
 
     /**
@@ -98,39 +83,19 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public Date getCouponExpiredDate(Long couponId) {
-        try {
-            Coupon coupon = couponRepository.findById(couponId)
-                    .orElseThrow(() -> new CouponNotFoundException("해당 ID의 쿠폰을 찾을 수 없습니다: " + couponId));
-            return coupon.getCouponExpiredAt();
-        } catch (CouponNotFoundException e) {
-            log.error("쿠폰을 찾을 수 없습니다. ID: {}", couponId, e);
-            throw e;
-        } catch (Exception e) {
-            String errorMessage = "쿠폰 만료 날짜 조회 중 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return couponRepository.findById(couponId)
+                .map(Coupon::getCouponExpiredAt)
+                .orElseThrow(() -> new CouponNotFoundException(ErrorStatus.toErrorStatus("해당 ID의 쿠폰을 찾을 수 없습니다: " + couponId, 404, LocalDateTime.now())));
     }
 
     /**
      * 만료된 쿠폰들을 삭제합니다. 이 메서드는 매일 자정에 실행됩니다.
      */
     @Override
-    @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void removeExpiredCoupons() {
-        try {
-            Date now = new Date();
-            couponRepository.deleteByCouponExpiredAtBefore(now);
-        } catch (Exception e) {
-            String errorMessage = "만료된 쿠폰 삭제 중 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        Date now = new Date();
+        couponRepository.deleteByCouponExpiredAtBefore(now);
     }
 
     /**
@@ -141,14 +106,6 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public List<Coupon> getAllByCouponIdList(List<Long> couponIdList) {
-        try {
-            return couponRepository.findAllById(couponIdList);
-        } catch (Exception e) {
-            String errorMessage = "쿠폰 ID 목록 조회 중 오류가 발생했습니다.";
-            log.error(errorMessage, e);
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return couponRepository.findAllById(couponIdList);
     }
 }

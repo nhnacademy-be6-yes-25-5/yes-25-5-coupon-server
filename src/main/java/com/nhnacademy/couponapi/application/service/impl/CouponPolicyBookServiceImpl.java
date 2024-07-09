@@ -12,12 +12,12 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookRespon
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@link CouponPolicyBookService}의 구현 클래스입니다.
@@ -40,17 +40,9 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     @Override
     @Transactional(readOnly = true)
     public List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks() {
-        try {
-            return couponPolicyBookRepository.findAll().stream()
-                    .map(CouponPolicyBookResponseDTO::fromEntity)
-                    .toList();
-        } catch (DataAccessException e) {
-            String errorMessage = "도서 쿠폰 정책 조회 실패";
-            log.error(errorMessage, e);
-            throw new CouponPolicyBookServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        return couponPolicyBookRepository.findAll().stream()
+                .map(CouponPolicyBookResponseDTO::fromEntity)
+                .toList();
     }
 
     /**
@@ -63,48 +55,38 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
     @Override
     @Transactional
     public CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO) {
-        try {
-            // 쿠폰 정책 생성
-            CouponPolicy couponPolicy = CouponPolicy.builder()
-                    .couponPolicyName(requestDTO.couponPolicyName())
-                    .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
-                    .couponPolicyRate(requestDTO.couponPolicyRate())
-                    .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
-                    .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
-                    .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
-                    .build();
-            CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+        CouponPolicy couponPolicy = Optional.ofNullable(CouponPolicy.builder()
+                        .couponPolicyName(requestDTO.couponPolicyName())
+                        .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
+                        .couponPolicyRate(requestDTO.couponPolicyRate())
+                        .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
+                        .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
+                        .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
+                        .build())
+                .orElseThrow(() -> new CouponPolicyBookServiceException(
+                        ErrorStatus.toErrorStatus("쿠폰 정책을 생성하는 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+                ));
 
-            // 도서 쿠폰 정책 생성
-            CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
-                    .couponPolicy(savedCouponPolicy)
-                    .bookId(requestDTO.bookId())
-                    .bookName(requestDTO.bookName())
-                    .build();
-            CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
-            // 쿠폰 생성
-            couponCreationUtil.createCoupon(savedCouponPolicy);
+        CouponPolicyBook couponPolicyBook = Optional.ofNullable(CouponPolicyBook.builder()
+                        .couponPolicy(savedCouponPolicy)
+                        .bookId(requestDTO.bookId())
+                        .bookName(requestDTO.bookName())
+                        .build())
+                .orElseThrow(() -> new CouponPolicyBookServiceException(
+                        ErrorStatus.toErrorStatus("도서 쿠폰 정책을 생성하는 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+                ));
 
-            return CouponPolicyBookResponseDTO.builder()
-                    .couponPolicyBookId(savedCouponPolicyBook.getCouponPolicyBookId())
-                    .bookId(savedCouponPolicyBook.getBookId())
-                    .bookName(savedCouponPolicyBook.getBookName())
-                    .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyBook.getCouponPolicy()))
-                    .build();
+        CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
-        } catch (DataAccessException e) {
-            String errorMessage = "도서 쿠폰 정책 저장 실패 - 데이터베이스 오류";
-            log.error(errorMessage, e);
-            throw new CouponPolicyBookServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        } catch (Exception e) {
-            String errorMessage = "도서 쿠폰 정책 저장 실패 - 알 수 없는 오류";
-            log.error(errorMessage, e);
-            throw new CouponPolicyBookServiceException(
-                    ErrorStatus.toErrorStatus(errorMessage, 500, LocalDateTime.now())
-            );
-        }
+        couponCreationUtil.createCoupon(savedCouponPolicy);
+
+        return CouponPolicyBookResponseDTO.builder()
+                .couponPolicyBookId(savedCouponPolicyBook.getCouponPolicyBookId())
+                .bookId(savedCouponPolicyBook.getBookId())
+                .bookName(savedCouponPolicyBook.getBookName())
+                .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyBook.getCouponPolicy()))
+                .build();
     }
 }

@@ -2,15 +2,18 @@ package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.common.exception.CouponCreationException;
 import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,6 +22,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class CouponCreationUtil {
 
     private final CouponRepository couponRepository;
@@ -32,23 +36,19 @@ public class CouponCreationUtil {
      */
     public CouponResponseDTO createCoupon(CouponPolicy couponPolicy) {
         if (couponPolicy == null) {
-            throw new CouponNotFoundException("쿠폰 정책을 찾을 수 없습니다.");
+            throw new CouponNotFoundException(ErrorStatus.toErrorStatus("쿠폰 정책을 찾을 수 없습니다.", 404, LocalDateTime.now()));
         }
 
-        try {
-            Coupon coupon = Coupon.builder()
-                    .couponName(couponPolicy.getCouponPolicyName())
-                    .couponCode(UUID.randomUUID().toString())
-                    .couponExpiredAt(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))  // 한 달 후 만료
-                    .couponCreatedAt(new Date())
-                    .couponPolicy(couponPolicy)
-                    .build();
-            Coupon savedCoupon = couponRepository.save(coupon);
-            return CouponResponseDTO.fromEntity(savedCoupon);
-        } catch (DataAccessException e) {
-            throw new CouponCreationException("쿠폰 생성 중 데이터베이스 오류가 발생했습니다.");
-        } catch (Exception e) {
-            throw new CouponCreationException("쿠폰 생성 중 알 수 없는 오류가 발생했습니다.");
-        }
+        Coupon coupon = Coupon.builder()
+                .couponName(couponPolicy.getCouponPolicyName())
+                .couponCode(UUID.randomUUID().toString())
+                .couponExpiredAt(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))  // 한 달 후 만료
+                .couponCreatedAt(new Date())
+                .couponPolicy(couponPolicy)
+                .build();
+
+        return Optional.of(couponRepository.save(coupon))
+                .map(CouponResponseDTO::fromEntity)
+                .orElseThrow(() -> new CouponCreationException(ErrorStatus.toErrorStatus("쿠폰 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())));
     }
 }
