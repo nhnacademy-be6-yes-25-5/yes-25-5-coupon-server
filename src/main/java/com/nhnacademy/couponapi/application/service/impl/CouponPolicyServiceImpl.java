@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -52,17 +51,26 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
      */
     @Override
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
-        CouponPolicy couponPolicy = Optional.ofNullable(CouponPolicy.builder()
-                        .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
-                        .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
-                        .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
-                        .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
-                        .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
-                        .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
-                        .build())
-                .orElseThrow(() -> new CouponPolicyServiceException(
-                        ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
-                ));
+        if (couponPolicyRequestDTO == null) {
+            throw new CouponPolicyServiceException(
+                    ErrorStatus.toErrorStatus("요청 값이 비어있습니다.", 400, LocalDateTime.now())
+            );
+        }
+
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
+                .build();
+
+        if (couponPolicy == null) {
+            throw new CouponPolicyServiceException(
+                    ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+            );
+        }
 
         CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 

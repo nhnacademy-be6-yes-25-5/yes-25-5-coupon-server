@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -57,30 +56,42 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Override
     @Transactional
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
+        if (requestDTO == null) {
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus("요청 값이 비어있습니다.", 400, LocalDateTime.now())
+            );
+        }
+
         // 쿠폰 정책 생성
-        CouponPolicy couponPolicy = Optional.ofNullable(CouponPolicy.builder()
-                        .couponPolicyName(requestDTO.couponPolicyName())
-                        .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
-                        .couponPolicyRate(requestDTO.couponPolicyRate())
-                        .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
-                        .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
-                        .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
-                        .build())
-                .orElseThrow(() -> new CouponPolicyCategoryServiceException(
-                        ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
-                ));
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .couponPolicyName(requestDTO.couponPolicyName())
+                .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
+                .couponPolicyRate(requestDTO.couponPolicyRate())
+                .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
+                .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
+                .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
+                .build();
+
+        if (couponPolicy == null) {
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+            );
+        }
 
         CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
         // 카테고리 쿠폰 정책 생성
-        CouponPolicyCategory couponPolicyCategory = Optional.ofNullable(CouponPolicyCategory.builder()
-                        .couponPolicy(savedCouponPolicy)
-                        .categoryId(requestDTO.categoryId())
-                        .categoryName(requestDTO.categoryName())
-                        .build())
-                .orElseThrow(() -> new CouponPolicyCategoryServiceException(
-                        ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
-                ));
+        CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
+                .couponPolicy(savedCouponPolicy)
+                .categoryId(requestDTO.categoryId())
+                .categoryName(requestDTO.categoryName())
+                .build();
+
+        if (couponPolicyCategory == null) {
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+            );
+        }
 
         CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 

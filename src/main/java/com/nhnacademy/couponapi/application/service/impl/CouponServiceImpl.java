@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * {@link CouponService}의 구현 클래스입니다.
@@ -46,9 +45,13 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public CouponResponseDTO createCoupon(Coupon coupon) {
-        return Optional.of(couponRepository.save(coupon))
-                .map(CouponResponseDTO::fromEntity)
-                .orElseThrow(() -> new CouponCreationException(ErrorStatus.toErrorStatus("쿠폰 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())));
+        if (coupon == null) {
+            throw new CouponCreationException(ErrorStatus.toErrorStatus("쿠폰 정보가 비어있습니다.", 400, LocalDateTime.now()));
+        }
+
+        Coupon savedCoupon = couponRepository.save(coupon);
+
+        return CouponResponseDTO.fromEntity(savedCoupon);
     }
 
     /**
@@ -60,6 +63,10 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
+        if (bookId == null || categoryIds == null || categoryIds.isEmpty()) {
+            throw new IllegalArgumentException("도서 ID와 카테고리 ID 목록은 비어있을 수 없습니다.");
+        }
+
         List<CouponPolicyBook> bookPolicies = couponPolicyBookRepository.findByBookId(bookId);
         List<CouponPolicyCategory> categoryPolicies = couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds);
 
@@ -83,9 +90,10 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public Date getCouponExpiredDate(Long couponId) {
-        return couponRepository.findById(couponId)
-                .map(Coupon::getCouponExpiredAt)
+        Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CouponNotFoundException(ErrorStatus.toErrorStatus("해당 ID의 쿠폰을 찾을 수 없습니다: " + couponId, 404, LocalDateTime.now())));
+
+        return coupon.getCouponExpiredAt();
     }
 
     /**
@@ -106,6 +114,10 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public List<Coupon> getAllByCouponIdList(List<Long> couponIdList) {
+        if (couponIdList == null || couponIdList.isEmpty()) {
+            throw new IllegalArgumentException("쿠폰 ID 목록은 비어있을 수 없습니다.");
+        }
+
         return couponRepository.findAllById(couponIdList);
     }
 }

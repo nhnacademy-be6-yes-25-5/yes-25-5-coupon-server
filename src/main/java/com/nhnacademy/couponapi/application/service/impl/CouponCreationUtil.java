@@ -1,6 +1,5 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
-import com.nhnacademy.couponapi.common.exception.CouponCreationException;
 import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -47,8 +45,7 @@ public class CouponCreationUtil {
                 .couponPolicy(couponPolicy)
                 .build();
 
-        return Optional.of(couponRepository.save(coupon))
-                .map(CouponResponseDTO::fromEntity)
-                .orElseThrow(() -> new CouponCreationException(ErrorStatus.toErrorStatus("쿠폰 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())));
+        Coupon savedCoupon = couponRepository.save(coupon);
+        return CouponResponseDTO.fromEntity(savedCoupon);
     }
 }

@@ -7,9 +7,4 @@ public class CouponNotFoundException extends ApplicationException {
     public CouponNotFoundException(ErrorStatus errorStatus) {
         super(errorStatus);
     }
-
-    @Override
-    public String getMessage() {
-        return super.getErrorStatus().getMessage();
-    }
 }
