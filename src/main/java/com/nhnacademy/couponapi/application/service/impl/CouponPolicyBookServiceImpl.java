@@ -70,13 +70,13 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                 .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
                 .build();
 
-        if (couponPolicy == null) {
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+
+        if (savedCouponPolicy == null) {
             throw new CouponPolicyBookServiceException(
-                    ErrorStatus.toErrorStatus("쿠폰 정책을 생성하는 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("쿠폰 정책을 저장하는 중 오류가 발생했습니다.", 500, LocalDateTime.now())
             );
         }
-
-        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
         // 도서 쿠폰 정책 생성
         CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
@@ -85,13 +85,13 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
                 .bookName(requestDTO.bookName())
                 .build();
 
-        if (couponPolicyBook == null) {
+        CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
+
+        if (savedCouponPolicyBook == null) {
             throw new CouponPolicyBookServiceException(
-                    ErrorStatus.toErrorStatus("도서 쿠폰 정책을 생성하는 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("도서 쿠폰 정책을 저장하는 중 오류가 발생했습니다.", 500, LocalDateTime.now())
             );
         }
-
-        CouponPolicyBook savedCouponPolicyBook = couponPolicyBookRepository.save(couponPolicyBook);
 
         couponCreationUtil.createCoupon(savedCouponPolicy);
 

@@ -72,13 +72,13 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                 .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
                 .build();
 
-        if (couponPolicy == null) {
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+
+        if (savedCouponPolicy == null) {
             throw new CouponPolicyCategoryServiceException(
                     ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
             );
         }
-
-        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
         // 카테고리 쿠폰 정책 생성
         CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
@@ -87,13 +87,13 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
                 .categoryName(requestDTO.categoryName())
                 .build();
 
-        if (couponPolicyCategory == null) {
+        CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
+
+        if (savedCouponPolicyCategory == null) {
             throw new CouponPolicyCategoryServiceException(
                     ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
             );
         }
-
-        CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
 
         // 쿠폰 생성
         couponCreationUtil.createCoupon(savedCouponPolicy);

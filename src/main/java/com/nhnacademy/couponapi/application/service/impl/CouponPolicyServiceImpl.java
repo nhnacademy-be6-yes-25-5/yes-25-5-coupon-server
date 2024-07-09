@@ -66,13 +66,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                 .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
                 .build();
 
-        if (couponPolicy == null) {
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+
+        if (savedCouponPolicy == null) {
             throw new CouponPolicyServiceException(
                     ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
             );
         }
-
-        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
 
         couponCreationUtil.createCoupon(savedCouponPolicy);
 
