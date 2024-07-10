@@ -1,9 +1,12 @@
 package com.nhnacademy.couponapi.common.exception.payload;
 
 import org.springframework.http.HttpStatus;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ErrorStatus {
+public class ErrorStatus implements Serializable {
+    private static final long serialVersionUID = 1L; // 직렬화 버전 ID
     private String message;
     private int status;
     private LocalDateTime timestamp;

@@ -43,7 +43,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
         return couponPolicyCategoryRepository.findAll().stream()
                 .map(CouponPolicyCategoryResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
