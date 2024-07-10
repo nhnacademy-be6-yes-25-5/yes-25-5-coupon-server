@@ -27,10 +27,18 @@ public class HttpAppender extends AppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent eventObject) {
         try {
             String logLevel = eventObject.getLevel().toString();
-            LogEvent logEvent = new LogEvent(
-                    projectName, projectVersion, logVersion, eventObject.getFormattedMessage(),
-                    logSource, logType, host, secretKey, logLevel, platform
-            );
+            LogEvent logEvent = new LogEvent.Builder()
+                    .projectName(projectName)
+                    .projectVersion(projectVersion)
+                    .logVersion(logVersion)
+                    .body(eventObject.getFormattedMessage())
+                    .logSource(logSource)
+                    .logType(logType)
+                    .host(host)
+                    .secretKey(secretKey)
+                    .logLevel(logLevel)
+                    .platform(platform)
+                    .build();
             String json = objectMapper.writeValueAsString(logEvent);
             RequestBody body = RequestBody.create(json, JSON);
             Request request = new Request.Builder()
@@ -61,7 +69,6 @@ public class HttpAppender extends AppenderBase<ILoggingEvent> {
             addError("Failed to send log event", e);
         }
     }
-
 
     // Getters and setters for configuration
     public void setUrl(String url) {
@@ -101,30 +108,136 @@ public class HttpAppender extends AppenderBase<ILoggingEvent> {
     }
 
     static class LogEvent {
-        public String projectName;
-        public String projectVersion;
-        public String logVersion;
-        public String body;
-        public String logSource;
-        public String logType;
-        public String host;
-        public String secretKey;
-        public String logLevel;
-        public String platform;
+        private final String projectName;
+        private final String projectVersion;
+        private final String logVersion;
+        private final String body;
+        private final String logSource;
+        private final String logType;
+        private final String host;
+        private final String secretKey;
+        private final String logLevel;
+        private final String platform;
 
-        public LogEvent(String projectName, String projectVersion, String logVersion, String body,
-                        String logSource, String logType, String host, String secretKey,
-                        String logLevel, String platform) {
-            this.projectName = projectName;
-            this.projectVersion = projectVersion;
-            this.logVersion = logVersion;
-            this.body = body;
-            this.logSource = logSource;
-            this.logType = logType;
-            this.host = host;
-            this.secretKey = secretKey;
-            this.logLevel = logLevel;
-            this.platform = platform;
+        private LogEvent(Builder builder) {
+            this.projectName = builder.projectName;
+            this.projectVersion = builder.projectVersion;
+            this.logVersion = builder.logVersion;
+            this.body = builder.body;
+            this.logSource = builder.logSource;
+            this.logType = builder.logType;
+            this.host = builder.host;
+            this.secretKey = builder.secretKey;
+            this.logLevel = builder.logLevel;
+            this.platform = builder.platform;
+        }
+
+        // Getters
+        public String getProjectName() {
+            return projectName;
+        }
+
+        public String getProjectVersion() {
+            return projectVersion;
+        }
+
+        public String getLogVersion() {
+            return logVersion;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public String getLogSource() {
+            return logSource;
+        }
+
+        public String getLogType() {
+            return logType;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public String getLogLevel() {
+            return logLevel;
+        }
+
+        public String getPlatform() {
+            return platform;
+        }
+
+        public static class Builder {
+            private String projectName;
+            private String projectVersion;
+            private String logVersion;
+            private String body;
+            private String logSource;
+            private String logType;
+            private String host;
+            private String secretKey;
+            private String logLevel;
+            private String platform;
+
+            public Builder projectName(String projectName) {
+                this.projectName = projectName;
+                return this;
+            }
+
+            public Builder projectVersion(String projectVersion) {
+                this.projectVersion = projectVersion;
+                return this;
+            }
+
+            public Builder logVersion(String logVersion) {
+                this.logVersion = logVersion;
+                return this;
+            }
+
+            public Builder body(String body) {
+                this.body = body;
+                return this;
+            }
+
+            public Builder logSource(String logSource) {
+                this.logSource = logSource;
+                return this;
+            }
+
+            public Builder logType(String logType) {
+                this.logType = logType;
+                return this;
+            }
+
+            public Builder host(String host) {
+                this.host = host;
+                return this;
+            }
+
+            public Builder secretKey(String secretKey) {
+                this.secretKey = secretKey;
+                return this;
+            }
+
+            public Builder logLevel(String logLevel) {
+                this.logLevel = logLevel;
+                return this;
+            }
+
+            public Builder platform(String platform) {
+                this.platform = platform;
+                return this;
+            }
+
+            public LogEvent build() {
+                return new LogEvent(this);
+            }
         }
     }
 }
