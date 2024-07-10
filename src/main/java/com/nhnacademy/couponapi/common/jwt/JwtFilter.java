@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +34,6 @@ public class JwtFilter extends GenericFilterBean {
             "/coupons/swagger-ui.html",
             "/coupons/swagger-ui/index.html",
             "/coupons/v3/api-docs",
-            "/coupons/v3/api-docs",
             "/coupons/swagger-ui",
             "/coupons",
             "/coupons/expired",
@@ -41,17 +41,18 @@ public class JwtFilter extends GenericFilterBean {
     );
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-                         FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String path = request.getServletPath();
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String path = httpRequest.getServletPath();
 
-        if (isExcludedUrl(path) && StringUtils.isEmpty(request.getHeader("Authorization"))) {
-            filterChain.doFilter(request, servletResponse);
+        if (isExcludedUrl(path) && StringUtils.isEmpty(httpRequest.getHeader("Authorization"))) {
+            chain.doFilter(request, response);
             return;
         }
 
-        String token = getToken((HttpServletRequest) servletRequest);
+        String token = getToken(httpRequest);
 
         if (jwtProvider.isValidToken(token)) {
             String uuid = jwtProvider.getUserNameFromToken(token);
@@ -64,11 +65,12 @@ public class JwtFilter extends GenericFilterBean {
                     jwtUserDetails, null,
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
             );
-
+            httpResponse.setHeader("Authorization", "Bearer " + token);
+            httpResponse.setHeader("Refresh-Token", jwtAuthResponse.refreshJwt());
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        chain.doFilter(request, response);
     }
 
     private boolean isExcludedUrl(String path) {
