@@ -1,12 +1,16 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
+import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -16,6 +20,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class CouponCreationUtil {
 
     private final CouponRepository couponRepository;
@@ -28,6 +33,10 @@ public class CouponCreationUtil {
      * @return 생성된 쿠폰을 나타내는 {@link CouponResponseDTO}
      */
     public CouponResponseDTO createCoupon(CouponPolicy couponPolicy) {
+        if (couponPolicy == null) {
+            throw new CouponNotFoundException(ErrorStatus.toErrorStatus("쿠폰 정책을 찾을 수 없습니다.", 404, LocalDateTime.now()));
+        }
+
         Coupon coupon = Coupon.builder()
                 .couponName(couponPolicy.getCouponPolicyName())
                 .couponCode(UUID.randomUUID().toString())
@@ -35,6 +44,7 @@ public class CouponCreationUtil {
                 .couponCreatedAt(new Date())
                 .couponPolicy(couponPolicy)
                 .build();
+
         Coupon savedCoupon = couponRepository.save(coupon);
         return CouponResponseDTO.fromEntity(savedCoupon);
     }

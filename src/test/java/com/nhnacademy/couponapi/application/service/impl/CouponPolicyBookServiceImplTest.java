@@ -1,25 +1,28 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
+import com.nhnacademy.couponapi.common.exception.CouponPolicyBookServiceException;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyBookRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookResponseDTO;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CouponPolicyBookServiceImplTest {
 
     @Mock
@@ -34,29 +37,41 @@ class CouponPolicyBookServiceImplTest {
     @InjectMocks
     private CouponPolicyBookServiceImpl couponPolicyBookService;
 
+    private CouponPolicyBookRequestDTO requestDTO;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        requestDTO = new CouponPolicyBookRequestDTO(
+                "Test Policy",
+                new BigDecimal("10.00"),
+                new BigDecimal("0.10"),
+                new BigDecimal("50.00"),
+                new BigDecimal("100.00"),
+                true,
+                "Test Book",
+                1L
+        );
     }
 
     @Test
-    void testGetAllCouponPolicyBooks() {
-        CouponPolicy couponPolicy = createCouponPolicy();
-        CouponPolicyBook couponPolicyBook = createCouponPolicyBook(couponPolicy);
+    void getAllCouponPolicyBooks() {
+        CouponPolicy couponPolicy = CouponPolicy.builder().couponPolicyName("Test Policy").build();
+        CouponPolicyBook couponPolicyBook1 = CouponPolicyBook.builder().couponPolicyBookId(1L).couponPolicy(couponPolicy).bookId(1L).bookName("Test Book 1").build();
+        CouponPolicyBook couponPolicyBook2 = CouponPolicyBook.builder().couponPolicyBookId(2L).couponPolicy(couponPolicy).bookId(2L).bookName("Test Book 2").build();
 
-        when(couponPolicyBookRepository.findAll()).thenReturn(Collections.singletonList(couponPolicyBook));
+        when(couponPolicyBookRepository.findAll()).thenReturn(Arrays.asList(couponPolicyBook1, couponPolicyBook2));
 
-        List<CouponPolicyBookResponseDTO> response = couponPolicyBookService.getAllCouponPolicyBooks();
+        List<CouponPolicyBookResponseDTO> result = couponPolicyBookService.getAllCouponPolicyBooks();
 
-        assertEquals(1, response.size());
+        assertNotNull(result);
+        assertEquals(2, result.size());
         verify(couponPolicyBookRepository, times(1)).findAll();
     }
 
     @Test
-    void testCreateCouponPolicyBook() {
-        CouponPolicyBookRequestDTO requestDTO = createCouponPolicyBookRequestDTO();
-        CouponPolicy couponPolicy = createCouponPolicy();
-        CouponPolicyBook couponPolicyBook = createCouponPolicyBook(couponPolicy);
+    void createCouponPolicyBook_Success() {
+        CouponPolicy couponPolicy = CouponPolicy.builder().couponPolicyName("Test Policy").build();
+        CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder().couponPolicyBookId(1L).couponPolicy(couponPolicy).bookId(1L).bookName("Test Book").build();
 
         when(couponPolicyRepository.save(any(CouponPolicy.class))).thenReturn(couponPolicy);
         when(couponPolicyBookRepository.save(any(CouponPolicyBook.class))).thenReturn(couponPolicyBook);
@@ -64,42 +79,45 @@ class CouponPolicyBookServiceImplTest {
         CouponPolicyBookResponseDTO responseDTO = couponPolicyBookService.createCouponPolicyBook(requestDTO);
 
         assertNotNull(responseDTO);
-        assertEquals(couponPolicyBook.getCouponPolicyBookId(), responseDTO.couponPolicyBookId());
+        assertEquals(1L, responseDTO.couponPolicyBookId());
+        assertEquals("Test Book", responseDTO.bookName());
+        assertEquals(1L, responseDTO.bookId());
         verify(couponPolicyRepository, times(1)).save(any(CouponPolicy.class));
         verify(couponPolicyBookRepository, times(1)).save(any(CouponPolicyBook.class));
         verify(couponCreationUtil, times(1)).createCoupon(any(CouponPolicy.class));
     }
 
-    private CouponPolicy createCouponPolicy() {
-        return CouponPolicy.builder()
-                .couponPolicyName("Test Policy")
-                .couponPolicyDiscountValue(BigDecimal.valueOf(10.00))
-                .couponPolicyRate(BigDecimal.valueOf(0.10))
-                .couponPolicyMinOrderAmount(BigDecimal.valueOf(50.00))
-                .couponPolicyMaxAmount(BigDecimal.valueOf(100.00))
-                .couponPolicyDiscountType(true)
-                .build();
+    @Test
+    void createCouponPolicyBook_NullRequestDTO_ThrowsException() {
+        CouponPolicyBookServiceException exception = assertThrows(CouponPolicyBookServiceException.class, () -> {
+            couponPolicyBookService.createCouponPolicyBook(null);
+        });
+
+        assertEquals("요청 값이 비어있습니다.", exception.getErrorStatus().getMessage());
     }
 
-    private CouponPolicyBook createCouponPolicyBook(CouponPolicy couponPolicy) {
-        return CouponPolicyBook.builder()
-                .couponPolicyBookId(1L)
-                .couponPolicy(couponPolicy)
-                .bookId(1L)
-                .bookName("Test Book")
-                .build();
+    @Test
+    void createCouponPolicyBook_CouponPolicySaveError_ThrowsException() {
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenReturn(null);
+
+        CouponPolicyBookServiceException exception = assertThrows(CouponPolicyBookServiceException.class, () -> {
+            couponPolicyBookService.createCouponPolicyBook(requestDTO);
+        });
+
+        assertEquals("쿠폰 정책을 저장하는 중 오류가 발생했습니다.", exception.getErrorStatus().getMessage());
     }
 
-    private CouponPolicyBookRequestDTO createCouponPolicyBookRequestDTO() {
-        return new CouponPolicyBookRequestDTO(
-                "Test Policy",
-                BigDecimal.valueOf(10.00),
-                BigDecimal.valueOf(0.10),
-                BigDecimal.valueOf(50.00),
-                BigDecimal.valueOf(100.00),
-                true,
-                "Test Book",
-                1L
-        );
+    @Test
+    void createCouponPolicyBook_CouponPolicyBookSaveError_ThrowsException() {
+        CouponPolicy couponPolicy = CouponPolicy.builder().couponPolicyName("Test Policy").build();
+
+        when(couponPolicyRepository.save(any(CouponPolicy.class))).thenReturn(couponPolicy);
+        when(couponPolicyBookRepository.save(any(CouponPolicyBook.class))).thenReturn(null);
+
+        CouponPolicyBookServiceException exception = assertThrows(CouponPolicyBookServiceException.class, () -> {
+            couponPolicyBookService.createCouponPolicyBook(requestDTO);
+        });
+
+        assertEquals("도서 쿠폰 정책을 저장하는 중 오류가 발생했습니다.", exception.getErrorStatus().getMessage());
     }
 }

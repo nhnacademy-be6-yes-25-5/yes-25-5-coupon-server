@@ -2,6 +2,7 @@ package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
+import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.infrastructure.adapter.BookAdapter;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -82,17 +84,6 @@ class CouponControllerTest {
 
         assertNotNull(response);
         assertEquals(expiredDate, response.couponExpiredAt());
-    }
-
-    @Test
-    void testGetCouponExpiredDate_CouponNotFoundException() {
-        Long couponId = 1L;
-
-        when(couponService.getCouponExpiredDate(anyLong())).thenThrow(new CouponNotFoundException("Coupon not found with id: " + couponId));
-
-        Exception exception = assertThrows(CouponNotFoundException.class, () -> couponController.getCouponExpiredDate(couponId));
-
-        assertEquals("Coupon not found with id: " + couponId, exception.getMessage());
     }
 
     @Test

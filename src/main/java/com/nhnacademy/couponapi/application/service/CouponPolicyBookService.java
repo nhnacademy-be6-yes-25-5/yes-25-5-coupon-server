@@ -6,8 +6,6 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyBookRespon
 import java.util.List;
 
 public interface CouponPolicyBookService {
-
     List<CouponPolicyBookResponseDTO> getAllCouponPolicyBooks();
     CouponPolicyBookResponseDTO createCouponPolicyBook(CouponPolicyBookRequestDTO requestDTO);
-
 }

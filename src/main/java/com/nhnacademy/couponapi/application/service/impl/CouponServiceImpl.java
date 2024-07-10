@@ -1,8 +1,8 @@
 package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.common.exception.CouponCreationException;
 import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
-import com.nhnacademy.couponapi.common.exception.CouponServiceException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -13,6 +13,7 @@ import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepos
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import java.util.List;
  * {@link CouponService}의 구현 클래스입니다.
  * 이 클래스는 쿠폰의 생성 및 조회 기능을 제공합니다.
  */
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -40,18 +42,16 @@ public class CouponServiceImpl implements CouponService {
      *
      * @param coupon 생성할 쿠폰 정보
      * @return 생성된 쿠폰의 정보
-     * @throws CouponServiceException 쿠폰 생성 중 예외 발생 시
      */
     @Override
     public CouponResponseDTO createCoupon(Coupon coupon) {
-        try {
-            Coupon savedCoupon = couponRepository.save(coupon);
-            return CouponResponseDTO.fromEntity(savedCoupon);
-        } catch (Exception e) {
-            throw new CouponServiceException(
-                    ErrorStatus.toErrorStatus("쿠폰을 생성할 수 없습니다", 500, LocalDateTime.now())
-            );
+        if (coupon == null) {
+            throw new CouponCreationException(ErrorStatus.toErrorStatus("쿠폰 정보가 비어있습니다.", 400, LocalDateTime.now()));
         }
+
+        Coupon savedCoupon = couponRepository.save(coupon);
+
+        return CouponResponseDTO.fromEntity(savedCoupon);
     }
 
     /**
@@ -61,17 +61,22 @@ public class CouponServiceImpl implements CouponService {
      * @param categoryIds 카테고리 ID 목록
      * @return 조회된 쿠폰 목록
      */
+    @Override
     public List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
+        if (bookId == null || categoryIds == null || categoryIds.isEmpty()) {
+            throw new IllegalArgumentException("도서 ID와 카테고리 ID 목록은 비어있을 수 없습니다.");
+        }
+
         List<CouponPolicyBook> bookPolicies = couponPolicyBookRepository.findByBookId(bookId);
         List<CouponPolicyCategory> categoryPolicies = couponPolicyCategoryRepository.findByCategoryIdIn(categoryIds);
 
         List<CouponPolicy> couponPolicies = new ArrayList<>();
-        for (CouponPolicyBook bookPolicy : bookPolicies) {
-            couponPolicies.add(bookPolicy.getCouponPolicy());
-        }
-        for (CouponPolicyCategory categoryPolicy : categoryPolicies) {
-            couponPolicies.add(categoryPolicy.getCouponPolicy());
-        }
+        couponPolicies.addAll(bookPolicies.stream()
+                .map(CouponPolicyBook::getCouponPolicy)
+                .toList());
+        couponPolicies.addAll(categoryPolicies.stream()
+                .map(CouponPolicyCategory::getCouponPolicy)
+                .toList());
 
         return couponRepository.findByCouponPolicyIn(couponPolicies);
     }
@@ -83,9 +88,11 @@ public class CouponServiceImpl implements CouponService {
      * @return 쿠폰의 만료 날짜
      * @throws CouponNotFoundException 주어진 ID에 해당하는 쿠폰이 없는 경우
      */
+    @Override
     public Date getCouponExpiredDate(Long couponId) {
         Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException("Coupon not found with id: " + couponId));
+                .orElseThrow(() -> new CouponNotFoundException(ErrorStatus.toErrorStatus("해당 ID의 쿠폰을 찾을 수 없습니다: " + couponId, 404, LocalDateTime.now())));
+
         return coupon.getCouponExpiredAt();
     }
 
@@ -93,7 +100,6 @@ public class CouponServiceImpl implements CouponService {
      * 만료된 쿠폰들을 삭제합니다. 이 메서드는 매일 자정에 실행됩니다.
      */
     @Override
-    @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void removeExpiredCoupons() {
         Date now = new Date();
@@ -108,7 +114,10 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public List<Coupon> getAllByCouponIdList(List<Long> couponIdList) {
+        if (couponIdList == null || couponIdList.isEmpty()) {
+            throw new IllegalArgumentException("쿠폰 ID 목록은 비어있을 수 없습니다.");
+        }
+
         return couponRepository.findAllById(couponIdList);
     }
-
 }

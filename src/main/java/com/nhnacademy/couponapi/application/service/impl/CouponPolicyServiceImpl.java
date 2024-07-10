@@ -8,6 +8,7 @@ import com.nhnacademy.couponapi.persistence.repository.CouponPolicyRepository;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * {@link CouponPolicyService}의 구현 클래스입니다.
  * 이 클래스는 쿠폰 정책의 생성 및 조회 기능을 제공합니다.
  */
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -37,7 +39,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
         return couponPolicyRepository.findAll().stream()
                 .map(CouponPolicyResponseDTO::fromEntity)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -49,26 +51,31 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
      */
     @Override
     public CouponPolicyResponseDTO createCouponPolicy(CouponPolicyRequestDTO couponPolicyRequestDTO) {
-        try {
-            CouponPolicy couponPolicy = CouponPolicy.builder()
-                    .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
-                    .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
-                    .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
-                    .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
-                    .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
-                    .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
-                    .build();
-
-            CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
-
-            couponCreationUtil.createCoupon(savedCouponPolicy);
-
-            return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
-        } catch (Exception e) {
+        if (couponPolicyRequestDTO == null) {
             throw new CouponPolicyServiceException(
-                    ErrorStatus.toErrorStatus("쿠폰 정책 생성 실패", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("요청 값이 비어있습니다.", 400, LocalDateTime.now())
             );
         }
-    }
 
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .couponPolicyName(couponPolicyRequestDTO.couponPolicyName())
+                .couponPolicyDiscountValue(couponPolicyRequestDTO.couponPolicyDiscountValue())
+                .couponPolicyRate(couponPolicyRequestDTO.couponPolicyRate())
+                .couponPolicyMinOrderAmount(couponPolicyRequestDTO.couponPolicyMinOrderAmount())
+                .couponPolicyMaxAmount(couponPolicyRequestDTO.couponPolicyMaxAmount())
+                .couponPolicyDiscountType(couponPolicyRequestDTO.couponPolicyDiscountType())
+                .build();
+
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+
+        if (savedCouponPolicy == null) {
+            throw new CouponPolicyServiceException(
+                    ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+            );
+        }
+
+        couponCreationUtil.createCoupon(savedCouponPolicy);
+
+        return CouponPolicyResponseDTO.fromEntity(savedCouponPolicy);
+    }
 }

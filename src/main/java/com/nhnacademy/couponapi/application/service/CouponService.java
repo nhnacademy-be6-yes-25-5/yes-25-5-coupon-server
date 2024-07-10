@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface CouponService {
-
     CouponResponseDTO createCoupon(Coupon coupon);
     List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds);
     Date getCouponExpiredDate(Long couponId);

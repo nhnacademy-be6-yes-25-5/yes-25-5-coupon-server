@@ -2,9 +2,8 @@ package com.nhnacademy.couponapi.common.exception;
 
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 
-public class CouponNotFoundException extends ApplicationException {
-
-    public CouponNotFoundException(ErrorStatus errorStatus) {
+public class CouponCreationException extends ApplicationException {
+    public CouponCreationException(ErrorStatus errorStatus) {
         super(errorStatus);
     }
 }

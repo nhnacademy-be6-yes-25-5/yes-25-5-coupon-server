@@ -11,24 +11,24 @@ import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyCategoryReq
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyCategoryResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@link CouponPolicyCategoryService}의 구현 클래스입니다.
  * 이 클래스는 카테고리별 쿠폰 정책의 생성 및 조회 기능을 제공합니다.
  */
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryService {
 
-    private static final Logger log = LoggerFactory.getLogger(CouponPolicyCategoryServiceImpl.class);
     private final CouponPolicyCategoryRepository couponPolicyCategoryRepository;
     private final CouponPolicyRepository couponPolicyRepository;
     private final CouponCreationUtil couponCreationUtil;
@@ -43,7 +43,7 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     public List<CouponPolicyCategoryResponseDTO> getAllCouponPolicyCategories() {
         return couponPolicyCategoryRepository.findAll().stream()
                 .map(CouponPolicyCategoryResponseDTO::fromEntity)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -56,42 +56,53 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
     @Override
     @Transactional
     public CouponPolicyCategoryResponseDTO createCouponPolicyCategory(CouponPolicyCategoryRequestDTO requestDTO) {
-        try {
-            // 쿠폰 정책 생성
-            CouponPolicy couponPolicy = CouponPolicy.builder()
-                    .couponPolicyName(requestDTO.couponPolicyName())
-                    .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
-                    .couponPolicyRate(requestDTO.couponPolicyRate())
-                    .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
-                    .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
-                    .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
-                    .build();
-            CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
-
-            // 카테고리 쿠폰 정책 생성
-            CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
-                    .couponPolicy(savedCouponPolicy)
-                    .categoryId(requestDTO.categoryId())
-                    .categoryName(requestDTO.categoryName())
-                    .build();
-            CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
-
-            // 쿠폰 생성
-            couponCreationUtil.createCoupon(savedCouponPolicy);
-
-            return CouponPolicyCategoryResponseDTO.builder()
-                    .couponPolicyCategoryId(savedCouponPolicyCategory.getCouponPolicyCategoryId())
-                    .categoryId(savedCouponPolicyCategory.getCategoryId())
-                    .categoryName(savedCouponPolicyCategory.getCategoryName())
-                    .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyCategory.getCouponPolicy()))
-                    .build();
-
-        } catch (Exception e) {
-            String errorMessage = "카테고리 쿠폰 정책 생성 중 예상치 못한 오류가 발생했습니다.";
-            log.error(errorMessage, e);
+        if (requestDTO == null) {
             throw new CouponPolicyCategoryServiceException(
-                    ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 저장 실패", 500, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("요청 값이 비어있습니다.", 400, LocalDateTime.now())
             );
         }
+
+        // 쿠폰 정책 생성
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .couponPolicyName(requestDTO.couponPolicyName())
+                .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
+                .couponPolicyRate(requestDTO.couponPolicyRate())
+                .couponPolicyMinOrderAmount(requestDTO.couponPolicyMinOrderAmount())
+                .couponPolicyMaxAmount(requestDTO.couponPolicyMaxAmount())
+                .couponPolicyDiscountType(requestDTO.couponPolicyDiscountType())
+                .build();
+
+        CouponPolicy savedCouponPolicy = couponPolicyRepository.save(couponPolicy);
+
+        if (savedCouponPolicy == null) {
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus("쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+            );
+        }
+
+        // 카테고리 쿠폰 정책 생성
+        CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
+                .couponPolicy(savedCouponPolicy)
+                .categoryId(requestDTO.categoryId())
+                .categoryName(requestDTO.categoryName())
+                .build();
+
+        CouponPolicyCategory savedCouponPolicyCategory = couponPolicyCategoryRepository.save(couponPolicyCategory);
+
+        if (savedCouponPolicyCategory == null) {
+            throw new CouponPolicyCategoryServiceException(
+                    ErrorStatus.toErrorStatus("카테고리 쿠폰 정책 생성 중 오류가 발생했습니다.", 500, LocalDateTime.now())
+            );
+        }
+
+        // 쿠폰 생성
+        couponCreationUtil.createCoupon(savedCouponPolicy);
+
+        return CouponPolicyCategoryResponseDTO.builder()
+                .couponPolicyCategoryId(savedCouponPolicyCategory.getCouponPolicyCategoryId())
+                .categoryId(savedCouponPolicyCategory.getCategoryId())
+                .categoryName(savedCouponPolicyCategory.getCategoryName())
+                .couponPolicy(CouponPolicyResponseDTO.fromEntity(savedCouponPolicyCategory.getCouponPolicy()))
+                .build();
     }
 }
