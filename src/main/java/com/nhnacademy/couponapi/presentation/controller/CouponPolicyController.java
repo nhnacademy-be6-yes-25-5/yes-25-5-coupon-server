@@ -4,6 +4,10 @@ import com.nhnacademy.couponapi.application.service.CouponPolicyService;
 import com.nhnacademy.couponapi.presentation.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponPolicyResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +35,21 @@ public class CouponPolicyController {
      *
      * @return CouponPolicyResponseDTO 객체 목록을 포함하는 ResponseEntity.
      */
-    @Operation(summary = "모든 쿠폰 정책 조회", description = "모든 쿠폰 정책 목록을 조회합니다.")
+    @Operation(
+            summary = "모든 쿠폰 정책 조회",
+            description = "모든 쿠폰 정책 목록을 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 쿠폰 정책 목록 조회",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CouponPolicyResponseDTO.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     @GetMapping
     public ResponseEntity<List<CouponPolicyResponseDTO>> getAll() {
         List<CouponPolicyResponseDTO> couponPolicies = couponPolicyService.getAllCouponPolicies();
@@ -44,9 +62,26 @@ public class CouponPolicyController {
      * @param couponPolicyRequestDTO 생성할 쿠폰 정책의 세부 정보.
      * @return 생성된 CouponPolicyResponseDTO 객체를 포함하는 ResponseEntity.
      */
-    @Operation(summary = "쿠폰 정책 생성", description = "새로운 쿠폰 정책을 생성합니다.")
+    @Operation(
+            summary = "쿠폰 정책 생성",
+            description = "새로운 쿠폰 정책을 생성합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "성공적으로 쿠폰 정책 생성",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CouponPolicyResponseDTO.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     @PostMapping("/create")
-    public ResponseEntity<CouponPolicyResponseDTO> create(@RequestBody @Valid CouponPolicyRequestDTO couponPolicyRequestDTO) {
+    public ResponseEntity<CouponPolicyResponseDTO> create(
+            @Parameter(description = "생성할 쿠폰 정책의 세부 정보", required = true)
+            @RequestBody @Valid CouponPolicyRequestDTO couponPolicyRequestDTO) {
         log.info("Creating new coupon policy with request: {}", couponPolicyRequestDTO);
         CouponPolicyResponseDTO createdCouponPolicy = couponPolicyService.createCouponPolicy(couponPolicyRequestDTO);
         log.info("Created coupon policy: {}", createdCouponPolicy);

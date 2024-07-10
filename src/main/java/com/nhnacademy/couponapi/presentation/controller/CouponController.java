@@ -7,6 +7,9 @@ import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +38,23 @@ public class CouponController {
      * @return 조회된 쿠폰 목록
      */
     @GetMapping
-    @Operation(summary = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰 조회", description = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰들을 조회합니다.")
+    @Operation(
+            summary = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰 조회",
+            description = "도서 ID와 카테고리 ID 목록에 해당하는 쿠폰들을 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 쿠폰 조회",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BookDetailCouponResponseDTO.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "404", description = "쿠폰을 찾을 수 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     public List<BookDetailCouponResponseDTO> getCoupons(
             @Parameter(description = "도서 ID", required = true) @RequestParam Long bookId,
             @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds) {
@@ -59,7 +78,23 @@ public class CouponController {
      * @return 만료 날짜를 포함한 응답 객체
      */
     @PostMapping("/expired")
-    @Operation(summary = "쿠폰 만료 날짜 조회", description = "쿠폰의 만료 날짜를 조회합니다.")
+    @Operation(
+            summary = "쿠폰 만료 날짜 조회",
+            description = "쿠폰의 만료 날짜를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 만료 날짜 조회",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ExpiredCouponUserResponse.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "404", description = "쿠폰을 찾을 수 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     public ExpiredCouponUserResponse getCouponExpiredDate(@Parameter(description = "쿠폰 ID", required = true) @RequestParam Long couponId) {
         Date couponExpiredAt = couponService.getCouponExpiredDate(couponId);
         return new ExpiredCouponUserResponse(couponExpiredAt);
@@ -72,7 +107,23 @@ public class CouponController {
      * @return 쿠폰 정보 목록
      */
     @GetMapping("/info")
-    @Operation(summary = "쿠폰 정보 조회", description = "쿠폰 ID 목록에 해당하는 쿠폰들의 정보를 조회합니다.")
+    @Operation(
+            summary = "쿠폰 정보 조회",
+            description = "쿠폰 ID 목록에 해당하는 쿠폰들의 정보를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 쿠폰 정보 조회",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CouponInfoResponse.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "404", description = "쿠폰을 찾을 수 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     public List<CouponInfoResponse> getAllByCouponIdList(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
         return couponService.getAllByCouponIdList(couponIdList)
                 .stream()
