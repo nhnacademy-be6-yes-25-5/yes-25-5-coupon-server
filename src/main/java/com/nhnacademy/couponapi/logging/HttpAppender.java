@@ -1,4 +1,4 @@
-package com.yes25.yes255orderpaymentserver.common.appender;
+package com.nhnacademy.couponapi.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
