@@ -6,7 +6,10 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "coupon_policy_book")
+@Table(name = "coupon_policy_book", indexes = {
+        @Index(name = "idx_book_id", columnList = "book_id"),
+        @Index(name = "idx_coupon_policy", columnList = "coupon_policy_id")
+})
 public class CouponPolicyBook {
 
     @Id

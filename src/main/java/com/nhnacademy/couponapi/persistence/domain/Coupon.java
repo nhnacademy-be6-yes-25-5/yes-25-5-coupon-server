@@ -11,7 +11,10 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "coupon")
+@Table(name = "coupon", indexes = {
+        @Index(name = "idx_coupon_policy", columnList = "coupon_policy_id"),
+        @Index(name = "idx_coupon_expired_at", columnList = "coupon_expired_at"),
+})
 public class Coupon {
 
     @Id
