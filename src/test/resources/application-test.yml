@@ -24,9 +24,9 @@ api:
 
 eureka:
   client:
-    enabled: true
-    fetchRegistry: true
-    registerWithEureka: true
+    enabled: false
+    fetchRegistry: false
+    registerWithEureka: false
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
   gateway: http://localhost:8085
