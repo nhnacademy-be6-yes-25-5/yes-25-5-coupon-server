@@ -11,6 +11,7 @@ import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@link CouponService}의 구현 클래스입니다.
@@ -113,11 +115,38 @@ public class CouponServiceImpl implements CouponService {
      * @return 조회된 쿠폰 목록
      */
     @Override
-    public List<Coupon> getAllByCouponIdList(List<Long> couponIdList) {
+    public List<CouponInfoResponse> getAllByCouponIdList(List<Long> couponIdList) {
         if (couponIdList == null || couponIdList.isEmpty()) {
             throw new IllegalArgumentException("쿠폰 ID 목록은 비어있을 수 없습니다.");
         }
 
-        return couponRepository.findAllById(couponIdList);
+        List<Coupon> coupons = couponRepository.findAllById(couponIdList);
+
+        return coupons.stream()
+                .map(coupon -> {
+                    Long bookId = coupon.getCouponPolicy().getCouponPolicyBooks().stream()
+                            .findFirst()
+                            .map(CouponPolicyBook::getBookId)
+                            .orElse(null);
+                    List<Long> categoryIds = coupon.getCouponPolicy().getCouponPolicyCategories().stream()
+                            .map(CouponPolicyCategory::getCategoryId)
+                            .collect(Collectors.toList());
+                    Boolean applyCouponToAllBooks = coupon.getCouponPolicy().getCouponPolicyBooks().isEmpty();
+                    return CouponInfoResponse.builder()
+                            .couponId(coupon.getCouponId())
+                            .couponName(coupon.getCouponName())
+                            .couponMinAmount(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount())
+                            .couponMaxAmount(coupon.getCouponPolicy().getCouponPolicyMaxAmount())
+                            .couponDiscountAmount(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
+                            .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate())
+                            .couponCreatedAt(coupon.getCouponCreatedAt())
+                            .couponCode(coupon.getCouponCode())
+                            .bookId(bookId)
+                            .categoryIds(categoryIds)
+                            .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
+                            .applyCouponToAllBooks(applyCouponToAllBooks)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package com.nhnacademy.couponapi.application.service;
 
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 
 import java.util.Date;
@@ -11,5 +12,5 @@ public interface CouponService {
     List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds);
     Date getCouponExpiredDate(Long couponId);
     void removeExpiredCoupons();
-    List<Coupon> getAllByCouponIdList(List<Long> couponIdList);
+    List<CouponInfoResponse> getAllByCouponIdList(List<Long> couponIdList);
 }

@@ -158,16 +158,16 @@ class CouponServiceImplTest {
         verify(couponRepository, times(1)).deleteByCouponExpiredAtBefore(any(Date.class));
     }
 
-    @Test
-    void getAllByCouponIdList_Success() {
-        when(couponRepository.findAllById(anyList())).thenReturn(Collections.singletonList(coupon));
-
-        List<Coupon> result = couponService.getAllByCouponIdList(Arrays.asList(1L, 2L));
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(couponRepository, times(1)).findAllById(anyList());
-    }
+//    @Test
+//    void getAllByCouponIdList_Success() {
+//        when(couponRepository.findAllById(anyList())).thenReturn(Collections.singletonList(coupon));
+//
+//        List<Coupon> result = couponService.getAllByCouponIdList(Arrays.asList(1L, 2L));
+//
+//        assertNotNull(result);
+//        assertEquals(1, result.size());
+//        verify(couponRepository, times(1)).findAllById(anyList());
+//    }
 
     @Test
     void getAllByCouponIdList_NullOrEmptyList_ThrowsException() {

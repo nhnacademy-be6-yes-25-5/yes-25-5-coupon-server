@@ -126,33 +126,9 @@ public class CouponController {
                     @ApiResponse(responseCode = "500", description = "서버 오류")
             }
     )
+
     public List<CouponInfoResponse> getAllByCouponIdList(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
-        return couponService.getAllByCouponIdList(couponIdList)
-                .stream()
-                .map(coupon -> {
-                    Long bookId = coupon.getCouponPolicy().getCouponPolicyBooks().stream()
-                            .findFirst()
-                            .map(CouponPolicyBook::getBookId)
-                            .orElse(null);
-                    List<Long> categoryIds = coupon.getCouponPolicy().getCouponPolicyCategories().stream()
-                            .map(CouponPolicyCategory::getCategoryId)
-                            .collect(Collectors.toList());
-                    Boolean applyCouponToAllBooks = coupon.getCouponPolicy().getCouponPolicyBooks().isEmpty();
-                    return CouponInfoResponse.builder()
-                            .couponId(coupon.getCouponId())
-                            .couponName(coupon.getCouponName())
-                            .couponMinAmount(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount())
-                            .couponMaxAmount(coupon.getCouponPolicy().getCouponPolicyMaxAmount())
-                            .couponDiscountAmount(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
-                            .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate())
-                            .couponCreatedAt(coupon.getCouponCreatedAt())
-                            .couponCode(coupon.getCouponCode())
-                            .bookId(bookId)
-                            .categoryIds(categoryIds)
-                            .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
-                            .applyCouponToAllBooks(applyCouponToAllBooks)
-                            .build();
-                })
-                .collect(Collectors.toList());
+        return couponService.getAllByCouponIdList(couponIdList);
     }
+
 }
