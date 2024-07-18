@@ -130,9 +130,10 @@ public class CouponController {
         return couponService.getAllByCouponIdList(couponIdList)
                 .stream()
                 .map(coupon -> {
-                    List<Long> bookIds = coupon.getCouponPolicy().getCouponPolicyBooks().stream()
+                    Long bookId = coupon.getCouponPolicy().getCouponPolicyBooks().stream()
+                            .findFirst()
                             .map(CouponPolicyBook::getBookId)
-                            .collect(Collectors.toList());
+                            .orElse(null);
                     List<Long> categoryIds = coupon.getCouponPolicy().getCouponPolicyCategories().stream()
                             .map(CouponPolicyCategory::getCategoryId)
                             .collect(Collectors.toList());
@@ -145,7 +146,7 @@ public class CouponController {
                             .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate())
                             .couponCreatedAt(coupon.getCouponCreatedAt())
                             .couponCode(coupon.getCouponCode())
-                            .bookIds(bookIds)
+                            .bookId(bookId)
                             .categoryIds(categoryIds)
                             .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
                             .build();

@@ -1,8 +1,6 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
-import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
-import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.infrastructure.adapter.BookAdapter;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
@@ -18,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -140,7 +137,7 @@ class CouponControllerTest {
         assertEquals(new BigDecimal("50.00"), response.get(0).couponMaxAmount());
         assertEquals(new BigDecimal("10.00"), response.get(0).couponDiscountAmount());
         assertEquals(new BigDecimal("0.10"), response.get(0).couponDiscountRate());
-        assertEquals(Collections.singletonList(1L), response.get(0).bookIds());
+        assertEquals(1L, response.get(0).bookId());
         assertEquals(Collections.singletonList(10L), response.get(0).categoryIds());
         assertEquals(true, response.get(0).couponDiscountType());
     }

@@ -16,12 +16,12 @@ public record CouponInfoResponse(Long couponId,
                                  BigDecimal couponDiscountRate,
                                  Date couponCreatedAt,
                                  String couponCode,
-                                 List<Long> bookIds,
+                                 Long bookId,
                                  List<Long> categoryIds,
                                  Boolean couponDiscountType) {
 
-    public List<Long> getBookIds() {
-        return bookIds;
+    public Long getBookId() {
+        return bookId;
     }
 
     public List<Long> getCategoryIds() {
