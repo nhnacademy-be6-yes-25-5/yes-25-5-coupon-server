@@ -6,6 +6,8 @@ import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.infrastructure.adapter.BookAdapter;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
@@ -18,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -90,6 +93,21 @@ class CouponControllerTest {
     void testGetAllByCouponIdList() {
         List<Long> couponIdList = Arrays.asList(1L, 2L);
 
+        // Create CouponPolicyBook and CouponPolicyCategory objects
+        CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
+                .couponPolicyBookId(1L)
+                .bookId(1L)
+                .build();
+
+        CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
+                .couponPolicyCategoryId(1L)
+                .categoryId(10L)
+                .build();
+
+        // Initialize couponPolicyBooks and couponPolicyCategories lists
+        List<CouponPolicyBook> couponPolicyBooks = List.of(couponPolicyBook);
+        List<CouponPolicyCategory> couponPolicyCategories = List.of(couponPolicyCategory);
+
         CouponPolicy couponPolicy = CouponPolicy.builder()
                 .couponPolicyId(1L)
                 .couponPolicyName("Policy Name")
@@ -98,6 +116,8 @@ class CouponControllerTest {
                 .couponPolicyDiscountValue(new BigDecimal("10.00"))
                 .couponPolicyRate(new BigDecimal("0.10"))
                 .couponPolicyDiscountType(true)
+                .couponPolicyBooks(couponPolicyBooks)
+                .couponPolicyCategories(couponPolicyCategories)
                 .build();
 
         Coupon coupon = Coupon.builder()
@@ -120,6 +140,8 @@ class CouponControllerTest {
         assertEquals(new BigDecimal("50.00"), response.get(0).couponMaxAmount());
         assertEquals(new BigDecimal("10.00"), response.get(0).couponDiscountAmount());
         assertEquals(new BigDecimal("0.10"), response.get(0).couponDiscountRate());
+        assertEquals(Collections.singletonList(1L), response.get(0).bookIds());
+        assertEquals(Collections.singletonList(10L), response.get(0).categoryIds());
         assertEquals(true, response.get(0).couponDiscountType());
     }
 }

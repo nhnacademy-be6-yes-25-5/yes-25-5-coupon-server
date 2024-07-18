@@ -1,6 +1,7 @@
 package com.nhnacademy.couponapi.presentation.dto.response;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,4 +19,12 @@ public record CouponInfoResponse(Long couponId,
                                  List<Long> bookIds,
                                  List<Long> categoryIds,
                                  Boolean couponDiscountType) {
+
+    public List<Long> getBookIds() {
+        return bookIds;
+    }
+
+    public List<Long> getCategoryIds() {
+        return categoryIds;
+    }
 }
