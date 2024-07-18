@@ -18,6 +18,7 @@ public record CouponInfoResponse(Long couponId,
                                  String couponCode,
                                  Long bookId,
                                  List<Long> categoryIds,
+                                 Boolean applyCouponToAllBooks,
                                  Boolean couponDiscountType) {
 
     public Long getBookId() {

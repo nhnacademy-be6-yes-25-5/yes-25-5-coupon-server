@@ -137,6 +137,7 @@ public class CouponController {
                     List<Long> categoryIds = coupon.getCouponPolicy().getCouponPolicyCategories().stream()
                             .map(CouponPolicyCategory::getCategoryId)
                             .collect(Collectors.toList());
+                    Boolean applyCouponToAllBooks = coupon.getCouponPolicy().getCouponPolicyBooks().isEmpty();
                     return CouponInfoResponse.builder()
                             .couponId(coupon.getCouponId())
                             .couponName(coupon.getCouponName())
@@ -149,6 +150,7 @@ public class CouponController {
                             .bookId(bookId)
                             .categoryIds(categoryIds)
                             .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
+                            .applyCouponToAllBooks(applyCouponToAllBooks)
                             .build();
                 })
                 .collect(Collectors.toList());
