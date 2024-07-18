@@ -4,6 +4,7 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Builder
 public record CouponInfoResponse(Long couponId,
@@ -14,5 +15,7 @@ public record CouponInfoResponse(Long couponId,
                                  BigDecimal couponDiscountRate,
                                  Date couponCreatedAt,
                                  String couponCode,
+                                 List<Long> bookIds,
+                                 List<Long> categoryIds,
                                  Boolean couponDiscountType) {
 }

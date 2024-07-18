@@ -2,6 +2,8 @@ package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
@@ -127,17 +129,27 @@ public class CouponController {
     public List<CouponInfoResponse> getAllByCouponIdList(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
         return couponService.getAllByCouponIdList(couponIdList)
                 .stream()
-                .map(coupon -> CouponInfoResponse.builder()
-                        .couponId(coupon.getCouponId())
-                        .couponName(coupon.getCouponName())
-                        .couponMinAmount(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount())
-                        .couponMaxAmount(coupon.getCouponPolicy().getCouponPolicyMaxAmount())
-                        .couponDiscountAmount(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
-                        .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate())
-                        .couponCreatedAt(coupon.getCouponCreatedAt())
-                        .couponCode(coupon.getCouponCode())
-                        .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
-                        .build())
+                .map(coupon -> {
+                    List<Long> bookIds = coupon.getCouponPolicy().getCouponPolicyBooks().stream()
+                            .map(CouponPolicyBook::getBookId)
+                            .collect(Collectors.toList());
+                    List<Long> categoryIds = coupon.getCouponPolicy().getCouponPolicyCategories().stream()
+                            .map(CouponPolicyCategory::getCategoryId)
+                            .collect(Collectors.toList());
+                    return CouponInfoResponse.builder()
+                            .couponId(coupon.getCouponId())
+                            .couponName(coupon.getCouponName())
+                            .couponMinAmount(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount())
+                            .couponMaxAmount(coupon.getCouponPolicy().getCouponPolicyMaxAmount())
+                            .couponDiscountAmount(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
+                            .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate())
+                            .couponCreatedAt(coupon.getCouponCreatedAt())
+                            .couponCode(coupon.getCouponCode())
+                            .bookIds(bookIds)
+                            .categoryIds(categoryIds)
+                            .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 }
