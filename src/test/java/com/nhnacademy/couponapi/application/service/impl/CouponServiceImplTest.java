@@ -10,6 +10,7 @@ import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
+import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -50,12 +52,24 @@ class CouponServiceImplTest {
     @BeforeEach
     void setUp() {
         couponPolicy = CouponPolicy.builder()
+                .couponPolicyId(1L)
                 .couponPolicyName("Test Policy")
+                .couponPolicyMinOrderAmount(new BigDecimal("100.00"))
+                .couponPolicyMaxAmount(new BigDecimal("50.00"))
+                .couponPolicyDiscountValue(new BigDecimal("10.00"))
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyDiscountType(true)
+                .couponPolicyBooks(Collections.singletonList(couponPolicyBook))
+                .couponPolicyCategories(Collections.singletonList(couponPolicyCategory))
                 .build();
 
         coupon = Coupon.builder()
-                .couponPolicy(couponPolicy)
+                .couponId(1L)
+                .couponName("Test Coupon")
+                .couponCode("TEST123")
                 .couponExpiredAt(new Date())
+                .couponCreatedAt(new Date())
+                .couponPolicy(couponPolicy)
                 .build();
 
         couponPolicyBook = CouponPolicyBook.builder()
@@ -68,7 +82,7 @@ class CouponServiceImplTest {
         couponPolicyCategory = CouponPolicyCategory.builder()
                 .couponPolicyCategoryId(1L)
                 .couponPolicy(couponPolicy)
-                .categoryId(1L)
+                .categoryId(10L)
                 .categoryName("Test Category")
                 .build();
     }
@@ -158,16 +172,66 @@ class CouponServiceImplTest {
         verify(couponRepository, times(1)).deleteByCouponExpiredAtBefore(any(Date.class));
     }
 
-//    @Test
-//    void getAllByCouponIdList_Success() {
-//        when(couponRepository.findAllById(anyList())).thenReturn(Collections.singletonList(coupon));
-//
-//        List<Coupon> result = couponService.getAllByCouponIdList(Arrays.asList(1L, 2L));
-//
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        verify(couponRepository, times(1)).findAllById(anyList());
-//    }
+    @Test
+    void getAllByCouponIdList_Success() {
+        // Create CouponPolicyBook and CouponPolicyCategory objects
+        CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
+                .couponPolicyBookId(1L)
+                .bookId(1L)
+                .build();
+
+        CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
+                .couponPolicyCategoryId(1L)
+                .categoryId(10L)
+                .build();
+
+        // Initialize couponPolicyBooks and couponPolicyCategories lists
+        List<CouponPolicyBook> couponPolicyBooks = List.of(couponPolicyBook);
+        List<CouponPolicyCategory> couponPolicyCategories = List.of(couponPolicyCategory);
+
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .couponPolicyId(1L)
+                .couponPolicyName("Policy Name")
+                .couponPolicyMinOrderAmount(new BigDecimal("100.00"))
+                .couponPolicyMaxAmount(new BigDecimal("50.00"))
+                .couponPolicyDiscountValue(new BigDecimal("10.00"))
+                .couponPolicyRate(new BigDecimal("0.10"))
+                .couponPolicyDiscountType(true)
+                .couponPolicyBooks(couponPolicyBooks)
+                .couponPolicyCategories(couponPolicyCategories)
+                .build();
+
+        Coupon coupon = Coupon.builder()
+                .couponId(1L)
+                .couponName("Coupon Name")
+                .couponCode("ABC123")
+                .couponCreatedAt(new Date())
+                .couponPolicy(couponPolicy)
+                .build();
+
+        when(couponRepository.findAllById(anyList())).thenReturn(Collections.singletonList(coupon));
+
+        List<CouponInfoResponse> result = couponService.getAllByCouponIdList(Arrays.asList(1L, 2L));
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(couponRepository, times(1)).findAllById(anyList());
+
+        CouponInfoResponse response = result.get(0);
+        assertEquals(coupon.getCouponId(), response.couponId());
+        assertEquals(coupon.getCouponName(), response.couponName());
+        assertEquals(coupon.getCouponCode(), response.couponCode());
+        assertEquals(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount(), response.couponMinAmount());
+        assertEquals(coupon.getCouponPolicy().getCouponPolicyMaxAmount(), response.couponMaxAmount());
+        assertEquals(coupon.getCouponPolicy().getCouponPolicyDiscountValue(), response.couponDiscountAmount());
+        assertEquals(coupon.getCouponPolicy().getCouponPolicyRate(), response.couponDiscountRate());
+        assertEquals(coupon.getCouponCreatedAt(), response.couponCreatedAt());
+        assertEquals(coupon.getCouponPolicy().isCouponPolicyDiscountType(), response.couponDiscountType());
+        assertNotNull(response.categoryIds());
+        assertNotNull(response.bookId());
+        assertNotNull(response.applyCouponToAllBooks());
+    }
+
 
     @Test
     void getAllByCouponIdList_NullOrEmptyList_ThrowsException() {

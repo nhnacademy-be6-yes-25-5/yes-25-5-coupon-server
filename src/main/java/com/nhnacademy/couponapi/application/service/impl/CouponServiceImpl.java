@@ -131,7 +131,7 @@ public class CouponServiceImpl implements CouponService {
                     List<Long> categoryIds = coupon.getCouponPolicy().getCouponPolicyCategories().stream()
                             .map(CouponPolicyCategory::getCategoryId)
                             .collect(Collectors.toList());
-                    Boolean applyCouponToAllBooks = coupon.getCouponPolicy().getCouponPolicyBooks().isEmpty();
+                    Boolean applyCouponToAllBooks = coupon.getCouponPolicy().getCouponPolicyBooks() == null || coupon.getCouponPolicy().getCouponPolicyBooks().isEmpty();
                     return CouponInfoResponse.builder()
                             .couponId(coupon.getCouponId())
                             .couponName(coupon.getCouponName())
@@ -149,4 +149,5 @@ public class CouponServiceImpl implements CouponService {
                 })
                 .collect(Collectors.toList());
     }
+
 }
