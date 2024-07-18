@@ -2,6 +2,8 @@ package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
+import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
@@ -124,20 +126,9 @@ public class CouponController {
                     @ApiResponse(responseCode = "500", description = "서버 오류")
             }
     )
+
     public List<CouponInfoResponse> getAllByCouponIdList(@Parameter(description = "쿠폰 ID 목록", required = true) @RequestParam List<Long> couponIdList) {
-        return couponService.getAllByCouponIdList(couponIdList)
-                .stream()
-                .map(coupon -> CouponInfoResponse.builder()
-                        .couponId(coupon.getCouponId())
-                        .couponName(coupon.getCouponName())
-                        .couponMinAmount(coupon.getCouponPolicy().getCouponPolicyMinOrderAmount())
-                        .couponMaxAmount(coupon.getCouponPolicy().getCouponPolicyMaxAmount())
-                        .couponDiscountAmount(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
-                        .couponDiscountRate(coupon.getCouponPolicy().getCouponPolicyRate())
-                        .couponCreatedAt(coupon.getCouponCreatedAt())
-                        .couponCode(coupon.getCouponCode())
-                        .couponDiscountType(coupon.getCouponPolicy().isCouponPolicyDiscountType())
-                        .build())
-                .collect(Collectors.toList());
+        return couponService.getAllByCouponIdList(couponIdList);
     }
+
 }
