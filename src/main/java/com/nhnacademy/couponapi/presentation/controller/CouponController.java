@@ -60,17 +60,7 @@ public class CouponController {
     public List<BookDetailCouponResponseDTO> getCoupons(
             @Parameter(description = "도서 ID", required = true) @RequestParam Long bookId,
             @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds) {
-        List<Coupon> coupons = couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds);
-        return coupons.stream()
-                .map(coupon -> BookDetailCouponResponseDTO.builder()
-                        .couponId(coupon.getCouponId())
-                        .couponName(coupon.getCouponName())
-                        .couponExpiredAt(coupon.getCouponExpiredAt())
-                        .couponPolicyName(coupon.getCouponPolicy().getCouponPolicyName())
-                        .couponPolicyDiscountValue(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
-                        .couponPolicyRate(coupon.getCouponPolicy().getCouponPolicyRate())
-                        .build())
-                .collect(Collectors.toList());
+        return couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds);
     }
 
     /**

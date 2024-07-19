@@ -11,6 +11,7 @@ import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
+import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +65,7 @@ public class CouponServiceImpl implements CouponService {
      * @return 조회된 쿠폰 목록
      */
     @Override
-    public List<Coupon> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
+    public List<BookDetailCouponResponseDTO> getAllByBookIdAndCategoryIds(Long bookId, List<Long> categoryIds) {
         if (bookId == null || categoryIds == null || categoryIds.isEmpty()) {
             throw new IllegalArgumentException("도서 ID와 카테고리 ID 목록은 비어있을 수 없습니다.");
         }
@@ -80,7 +81,18 @@ public class CouponServiceImpl implements CouponService {
                 .map(CouponPolicyCategory::getCouponPolicy)
                 .toList());
 
-        return couponRepository.findByCouponPolicyIn(couponPolicies);
+        List<Coupon> coupons = couponRepository.findByCouponPolicyIn(couponPolicies);
+
+        return coupons.stream()
+                .map(coupon -> BookDetailCouponResponseDTO.builder()
+                        .couponId(coupon.getCouponId())
+                        .couponName(coupon.getCouponName())
+                        .couponExpiredAt(coupon.getCouponExpiredAt())
+                        .couponPolicyName(coupon.getCouponPolicy().getCouponPolicyName())
+                        .couponPolicyDiscountValue(coupon.getCouponPolicy().getCouponPolicyDiscountValue())
+                        .couponPolicyRate(coupon.getCouponPolicy().getCouponPolicyRate())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**
