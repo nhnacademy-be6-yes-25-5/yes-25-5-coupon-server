@@ -1,15 +1,35 @@
-# Dockerfile
-# 로컬에서 '~/.ssh/id_rsa.pub' (공개키) = 원격에서 '~/.ssh/authorized_keys' (인증키)
-# 로컬에서 '~/.ssh/id_rsa' (개인키)를 SSH_PRIVATE_KEY에 삽입
+FROM jenkins/jenkins:lts
 
-# Use the official Maven image with Java 11
-FROM maven:3.8.8-eclipse-temurin-21
+# Install necessary packages
+USER root
+RUN apt-get update && apt-get install -y \
+    tzdata \
+    maven && \
+    ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
-# 이 부분 사용자의 디렉토리에 맞게 수정
-RUN apt-get update && apt-get install -y tzdata && \
-    ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone \
 WORKDIR /app
+
+# Install Jenkins plugins
+RUN jenkins-plugin-cli --plugins \
+    git \
+    docker-workflow \
+    ssh-agent \
+    publish-over-ssh \
+    junit \
+    workflow-aggregator \
+    sonar \
+    slack
+
+# Copy JCasC configuration file
+COPY jenkins.yaml /var/jenkins_home/casc_configs/jenkins.yaml
+
+# Set environment variable for JCasC
+ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
+
+# Switch back to the jenkins user
+USER jenkins
 
 # Copy the pom.xml and download dependencies
 COPY pom.xml .
@@ -22,5 +42,8 @@ COPY . .
 RUN mvn package
 
 # Default command
-# 이 부분도 jar파일 생성위치에 맞게 수정
 CMD ["java", "-jar", "target/couponApi-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
+
+# Expose the required ports
+EXPOSE 8080
+EXPOSE 50000

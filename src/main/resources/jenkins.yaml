@@ -1,0 +1,31 @@
+jenkins:
+  systemMessage: "Jenkins configured as code"
+  numExecutors: 2
+  scmCheckoutRetryCount: 2
+  mode: NORMAL
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "sa990422"
+          password: "cofud1561311"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  remotingSecurity:
+    enabled: true
+  plugins:
+    required:
+      - git
+      - docker-workflow
+      - ssh-agent
+      - publish-over-ssh
+      - junit
+      - workflow-aggregator
+      - sonar
+      - slack
+  tool:
+    git:
+      installations:
+        - name: "Default"
+          home: "/usr/bin/git"
