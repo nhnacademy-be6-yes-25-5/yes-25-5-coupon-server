@@ -1,8 +1,8 @@
-name: Java CI with Docker
+name: Java CI with Maven
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "develop", "main" ]
 
 permissions: write-all
 
@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Verify Dockerfile exists
         run: |
@@ -21,14 +20,40 @@ jobs:
             exit 1
           fi
 
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/github_rsa
+          chmod 400 ~/.ssh/github_rsa
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Clean Remote Directory
+        env:
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+        run: |
+          ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "rm -rf ${REMOTE_DIR}/*"
+
+      - name: Copy project files to Remote Server
+        env:
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+        run: |
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no Dockerfile ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/Dockerfile
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no pom.xml ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/pom.xml
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no -r src ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/src
+
       - name: Build Docker image
         run: |
-          docker build --no-cache -t coupon-app .
+          docker build --no-cache -t coupons-app .
 
       - name: Run Maven tests in Docker
         run: |
-          docker run --rm coupon-app mvn clean verify sonar:sonar \
-          -Dspring.profile.active=ci \
+          docker run --rm coupons-app mvn clean verify sonar:sonar \
           -Dsonar.projectKey=yes-25-5-coupons \
           -Dsonar.projectName='yes-25-5-coupons' \
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
@@ -36,8 +61,7 @@ jobs:
 
       - name: Build Maven project in Docker
         run: |
-          docker run --rm -v "$(pwd)":/app -w /app coupon-app mvn package \
-          -Dspring.profiles.active=ci
+          docker run --rm -v "$(pwd)":/app -w /app coupons-app mvn package
 
       - name: Check if JAR file exists
         run: |
@@ -53,26 +77,12 @@ jobs:
           check_name: 'Maven Test Results'
           junit_files: target/surefire-reports/**/*.xml
 
-      - name: Upload JAR to Remote Server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/github_rsa
-          chmod 400 ~/.ssh/github_rsa
-          ssh-keyscan ${REMOTE_HOST} >> ~/.ssh/known_hosts
-          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no target/*.jar ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}
-
       - name: Send Dooray Webhook on Success
         if: success()
         uses: actions/github-script@v6
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_ACTOR: ${{ github.actor }}
           DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
         with:
           script: |
