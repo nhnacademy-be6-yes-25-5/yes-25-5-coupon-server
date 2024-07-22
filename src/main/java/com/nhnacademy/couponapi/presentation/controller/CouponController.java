@@ -1,9 +1,6 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
-import com.nhnacademy.couponapi.persistence.domain.Coupon;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 쿠폰 컨트롤러 클래스입니다.
