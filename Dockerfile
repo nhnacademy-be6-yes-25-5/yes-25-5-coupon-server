@@ -32,11 +32,11 @@ ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
 USER jenkins
 
 # Copy the pom.xml and download dependencies
-COPY pom.xml .
+COPY pom.xml /app/pom.xml
 RUN mvn dependency:go-offline
 
 # Copy the rest of the application code
-COPY . .
+COPY . /app
 
 # Build the application
 RUN mvn package
