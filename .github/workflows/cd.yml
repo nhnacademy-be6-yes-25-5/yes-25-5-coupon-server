@@ -37,6 +37,8 @@ jobs:
           BOOK_USER_SERVER: ${{ secrets.BOOK_USER_SERVER }}
           COUPON_SERVER: ${{ secrets.COUPON_SERVER }}
           RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+          AUTH_SERVER: ${{ secrets.AUTH_SERVER }}
+
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
