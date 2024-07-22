@@ -1,0 +1,137 @@
+name: Java CD with Maven
+
+on:
+  push:
+    branches: ["develop", "main"]
+
+permissions: write-all
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/github_rsa
+          chmod 400 ~/.ssh/github_rsa
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy JAR on Remote Server
+        env:
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+          YES25_5_MYSQL_PASSWORD: ${{ secrets.YES25_5_MYSQL_PASSWORD }}
+          YES25_5_REDIS_PASSWORD: ${{ secrets.YES25_5_REDIS_PASSWORD }}
+          PAYMENT_SECRET: ${{ secrets.PAYMENT_SECRET }}
+          EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
+          EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          BOOK_USER_SERVER: ${{ secrets.BOOK_USER_SERVER }}
+          COUPON_SERVER: ${{ secrets.COUPON_SERVER }}
+          RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+        run: |
+          ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
+            cd ${REMOTE_DIR}
+            if [ ! -f Dockerfile ]; then
+              echo "Dockerfile not found!"
+              exit 1
+            fi
+            docker build -t coupons-app .
+            docker stop coupons-app || true
+            docker rm coupons-app || true
+            docker run -d -p 8070:8070 --name coupons-app \
+              --network yes255-network \
+              -e YES25_5_MYSQL_PASSWORD=${YES25_5_MYSQL_PASSWORD} \
+              -e YES25_5_REDIS_PASSWORD=${YES25_5_REDIS_PASSWORD} \
+              -e PAYMENT_SECRET=${PAYMENT_SECRET} \
+              -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
+              -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
+              -e BOOK_USER_SERVER=${BOOK_USER_SERVER} \
+              -e COUPON_SERVER=${COUPON_SERVER} \
+              -e AUTH_SERVER=${AUTH_SERVER} \
+              -e JWT_SECRET=${JWT_SECRET} \
+              -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} \
+              coupons-app
+          EOF
+
+      - name: Send Deployment Status to Dooray
+        if: success()
+        uses: actions/github-script@v6
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_ACTOR: ${{ github.actor }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
+        with:
+          script: |
+            const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
+            const payload = {
+              botName: "쿠폰 서버 Bot",
+              botIconImage: "https://www.tistory.com/favicon.ico",
+              text: "쿠폰 서버의 배포가 성공적으로 완료되었습니다!",
+              attachments: [
+                {
+                  title: "Pull Request URL",
+                  titleLink: process.env.PR_URL,
+                  color: "green",
+                  text: `PR 제목: ${process.env.PR_TITLE}, PR 작성자: ${process.env.PR_ACTOR}`
+                }
+              ]
+            };
+
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`Failed to send webhook: ${response.statusText}`);
+            }
+
+      - name: Send Deployment Failure to Dooray
+        if: failure()
+        uses: actions/github-script@v6
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_ACTOR: ${{ github.actor }}
+          DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
+        with:
+          script: |
+            const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
+            const payload = {
+              botName: "쿠폰 서버 Bot",
+              botIconImage: "https://www.tistory.com/favicon.ico",
+              text: "쿠폰 서버의 배포가 실패했습니다...",
+              attachments: [
+                {
+                  title: "Pull Request URL",
+                  titleLink: process.env.PR_URL,
+                  color: "red",
+                  text: `PR 제목: ${process.env.PR_TITLE}, PR 작성자: ${process.env.PR_ACTOR}`
+                }
+              ]
+            };
+
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`Failed to send webhook: ${response.statusText}`);
+            }
