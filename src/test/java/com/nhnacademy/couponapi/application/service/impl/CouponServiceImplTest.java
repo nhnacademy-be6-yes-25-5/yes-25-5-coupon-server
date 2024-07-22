@@ -10,6 +10,7 @@ import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyBookRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponPolicyCategoryRepository;
 import com.nhnacademy.couponapi.persistence.repository.CouponRepository;
+import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,7 +118,7 @@ class CouponServiceImplTest {
         when(couponPolicyCategoryRepository.findByCategoryIdIn(anyList())).thenReturn(Collections.singletonList(couponPolicyCategory));
         when(couponRepository.findByCouponPolicyIn(anyList())).thenReturn(Collections.singletonList(coupon));
 
-        List<Coupon> result = couponService.getAllByBookIdAndCategoryIds(1L, Arrays.asList(1L, 2L));
+        List<BookDetailCouponResponseDTO> result = couponService.getAllByBookIdAndCategoryIds(1L, Arrays.asList(1L, 2L));
 
         assertNotNull(result);
         assertEquals(1, result.size());

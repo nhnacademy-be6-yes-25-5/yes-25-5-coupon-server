@@ -3,8 +3,6 @@ package com.nhnacademy.couponapi.presentation.controller;
 import com.nhnacademy.couponapi.application.service.CouponService;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;
-import com.nhnacademy.couponapi.persistence.domain.CouponPolicyCategory;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
@@ -43,22 +41,17 @@ class CouponControllerTest {
         Long bookId = 1L;
         List<Long> categoryIds = Arrays.asList(1L, 2L);
 
-        CouponPolicy couponPolicy = CouponPolicy.builder()
-                .couponPolicyId(1L)
+        BookDetailCouponResponseDTO couponResponseDTO = BookDetailCouponResponseDTO.builder()
+                .couponId(1L)
+                .couponName("Coupon Name")
+                .couponExpiredAt(new Date())
                 .couponPolicyName("Policy Name")
                 .couponPolicyDiscountValue(new BigDecimal("10.00"))
                 .couponPolicyRate(new BigDecimal("0.10"))
                 .build();
 
-        Coupon coupon = Coupon.builder()
-                .couponId(1L)
-                .couponName("Coupon Name")
-                .couponExpiredAt(new Date())
-                .couponPolicy(couponPolicy)
-                .build();
-
         when(couponService.getAllByBookIdAndCategoryIds(any(Long.class), anyList()))
-                .thenReturn(Collections.singletonList(coupon));
+                .thenReturn(Collections.singletonList(couponResponseDTO));
 
         List<BookDetailCouponResponseDTO> response = couponController.getCoupons(bookId, categoryIds);
 
@@ -88,19 +81,6 @@ class CouponControllerTest {
     void testGetAllByCouponIdList() {
         List<Long> couponIdList = Arrays.asList(1L, 2L);
 
-        CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
-                .couponPolicyBookId(1L)
-                .bookId(1L)
-                .build();
-
-        CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
-                .couponPolicyCategoryId(1L)
-                .categoryId(10L)
-                .build();
-
-        List<CouponPolicyBook> couponPolicyBooks = List.of(couponPolicyBook);
-        List<CouponPolicyCategory> couponPolicyCategories = List.of(couponPolicyCategory);
-
         CouponPolicy couponPolicy = CouponPolicy.builder()
                 .couponPolicyId(1L)
                 .couponPolicyName("Policy Name")
@@ -109,8 +89,6 @@ class CouponControllerTest {
                 .couponPolicyDiscountValue(new BigDecimal("10.00"))
                 .couponPolicyRate(new BigDecimal("0.10"))
                 .couponPolicyDiscountType(true)
-                .couponPolicyBooks(couponPolicyBooks)
-                .couponPolicyCategories(couponPolicyCategories)
                 .build();
 
         Coupon coupon = Coupon.builder()
