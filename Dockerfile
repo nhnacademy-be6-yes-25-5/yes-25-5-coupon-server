@@ -3,18 +3,18 @@ FROM jenkins/jenkins:lts
 # Install necessary packages
 USER root
 
-# Install dependencies and AdoptOpenJDK 21
+# Install dependencies and Zulu OpenJDK 21
 RUN apt-get update && \
     apt-get install -y wget gnupg && \
-    wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
-    echo "deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ buster main" | tee /etc/apt/sources.list.d/adoptopenjdk.list && \
+    wget -qO - https://repos.azul.com/azul-repo.key | apt-key add - && \
+    echo "deb https://repos.azul.com/zulu/deb/ stable main" | tee /etc/apt/sources.list.d/zulu.list && \
     apt-get update && \
-    apt-get install -y adoptopenjdk-21-hotspot maven && \
+    apt-get install -y zulu-21 maven && \
     ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone && \
     rm -rf /var/lib/apt/lists/*
 
 # Set JAVA_HOME for JDK 21
-ENV JAVA_HOME /usr/lib/jvm/adoptopenjdk-21-hotspot-amd64
+ENV JAVA_HOME /usr/lib/jvm/zulu-21-amd64
 ENV PATH $JAVA_HOME/bin:$PATH
 
 # Create the working directory
