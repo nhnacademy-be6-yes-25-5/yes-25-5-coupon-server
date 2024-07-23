@@ -83,10 +83,10 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-          DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
+          DOORAY_WEBHOOK_URL2: ${{ secrets.DOORAY_WEBHOOK_URL2 }}
         with:
           script: |
-            const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
+            const webhookUrl = process.env.DOORAY_WEBHOOK_URL2;
             const payload = {
               botName: "쿠폰 서버 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
@@ -120,7 +120,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_ACTOR: ${{ github.actor }}
-          DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
+          DOORAY_WEBHOOK_URL2: ${{ secrets.DOORAY_WEBHOOK_URL2 }}
         with:
           script: |
             const webhookUrl = process.env.DOORAY_WEBHOOK_URL2;
