@@ -14,8 +14,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set JAVA_HOME for JDK 21
-ENV JAVA_HOME /usr/lib/jvm/zulu21-jdk-amd64
-ENV PATH $JAVA_HOME/bin:$PATH
+ENV JAVA_HOME=/usr/lib/jvm/zulu-21-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Create the working directory
 RUN mkdir -p /app
@@ -42,6 +42,10 @@ ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
 
 # Switch back to the jenkins user
 USER jenkins
+
+# Set JAVA_HOME for Jenkins user
+ENV JAVA_HOME=/usr/lib/jvm/zulu-21-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Copy the pom.xml and download dependencies
 COPY pom.xml /app/pom.xml
