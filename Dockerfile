@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone && \
     rm -rf /var/lib/apt/lists/*
 
+# Create the working directory
+RUN mkdir -p /app
+
 # Set the working directory
 WORKDIR /app
 
@@ -37,6 +40,14 @@ RUN mvn dependency:go-offline
 
 # Copy the rest of the application code
 COPY . /app
+
+# Fix permissions for the application files
+USER root
+RUN chown -R jenkins:jenkins /app
+RUN chmod -R 755 /app
+
+# Switch back to the jenkins user
+USER jenkins
 
 # Build the application
 RUN mvn package
