@@ -43,12 +43,13 @@ ENV CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
 # Switch back to the jenkins user
 USER jenkins
 
+# Copy the pom.xml and download dependencies
+COPY pom.xml /app/pom.xml
+
 # Set JAVA_HOME for Jenkins user
 ENV JAVA_HOME=/usr/lib/jvm/zulu-21-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Copy the pom.xml and download dependencies
-COPY pom.xml /app/pom.xml
 RUN mvn dependency:go-offline
 
 # Copy the rest of the application code
