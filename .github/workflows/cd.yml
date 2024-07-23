@@ -111,7 +111,7 @@ jobs:
           DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
         with:
           script: |
-            const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
+            const webhookUrl = process.env.DOORAY_WEBHOOK_URL2;
             const payload = {
               botName: "쿠폰 서버 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",

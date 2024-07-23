@@ -2,11 +2,15 @@ FROM jenkins/jenkins:lts
 
 # Install necessary packages
 USER root
-RUN apt-get update && apt-get install -y \
-    tzdata \
-    openjdk-21-jdk \
-    maven && \
-    ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone && \
+
+# Update package list and install tzdata
+RUN apt-get update && \
+    apt-get install -y tzdata && \
+    ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone
+
+# Install OpenJDK 21 and Maven
+RUN apt-get update && \
+    apt-get install -y openjdk-21-jdk maven && \
     rm -rf /var/lib/apt/lists/*
 
 # Set JAVA_HOME for JDK 21
