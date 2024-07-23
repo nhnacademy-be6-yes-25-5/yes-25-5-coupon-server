@@ -50,13 +50,6 @@ public class GlobalRestControllerAdvice {
         return new ResponseEntity<>(errorStatus, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(CouponServiceException.class)
-    public ResponseEntity<ErrorStatus> handleCouponServiceException(CouponServiceException ex) {
-        log.error("CouponServiceException: ", ex);
-        ErrorStatus errorStatus = new ErrorStatus(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDateTime.now());
-        return new ResponseEntity<>(errorStatus, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorStatus> handleGenericException(Exception ex) {
         log.error("Exception: ", ex);
