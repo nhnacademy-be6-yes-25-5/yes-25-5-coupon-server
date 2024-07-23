@@ -9,12 +9,12 @@ RUN apt-get update && \
     wget -qO - https://repos.azul.com/azul-repo.key | apt-key add - && \
     echo "deb https://repos.azul.com/zulu/deb/ stable main" | tee /etc/apt/sources.list.d/zulu.list && \
     apt-get update && \
-    apt-get install -y zulu-21 maven && \
+    apt-get install -y zulu21-jdk maven && \
     ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone && \
     rm -rf /var/lib/apt/lists/*
 
 # Set JAVA_HOME for JDK 21
-ENV JAVA_HOME /usr/lib/jvm/zulu-21-amd64
+ENV JAVA_HOME /usr/lib/jvm/zulu21-jdk-amd64
 ENV PATH $JAVA_HOME/bin:$PATH
 
 # Create the working directory
