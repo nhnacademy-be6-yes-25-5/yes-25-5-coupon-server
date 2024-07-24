@@ -3,7 +3,7 @@ package com.nhnacademy.couponapi.common.jwt;
 import com.nhnacademy.couponapi.common.exception.JwtException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.infrastructure.adapter.AuthAdaptor;
-import com.nhnacademy.couponapi.presentation.dto.response.JwtAuthResponse;
+import com.nhnacademy.couponapi.presentation.dto.response.LoginUserResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -55,18 +55,17 @@ public class JwtFilter extends GenericFilterBean {
         String token = getToken(httpRequest);
 
         if (jwtProvider.isValidToken(token)) {
-            String uuid = jwtProvider.getUserNameFromToken(token);
-            JwtAuthResponse jwtAuthResponse = authAdaptor.getUserInfoByUUID(uuid);
+            LoginUserResponse user = jwtProvider.getLoginUserFromToken(token);
 
-            JwtUserDetails jwtUserDetails = JwtUserDetails.of(jwtAuthResponse.customerId(),
-                    jwtAuthResponse.role(), token);
+            JwtUserDetails jwtUserDetails = JwtUserDetails.of(user.userId(),
+                    user.userRole(), token);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     jwtUserDetails, null,
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.userRole()))
             );
             httpResponse.setHeader("Authorization", "Bearer " + token);
-            httpResponse.setHeader("Refresh-Token", jwtAuthResponse.refreshJwt());
+            httpResponse.setHeader("Refresh-Token", ((HttpServletRequest) request).getHeader("Refresh-Token"));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
