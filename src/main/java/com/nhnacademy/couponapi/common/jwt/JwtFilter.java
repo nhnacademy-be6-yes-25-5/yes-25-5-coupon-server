@@ -2,8 +2,7 @@ package com.nhnacademy.couponapi.common.jwt;
 
 import com.nhnacademy.couponapi.common.exception.JwtException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
-import com.nhnacademy.couponapi.infrastructure.adapter.AuthAdaptor;
-import com.nhnacademy.couponapi.presentation.dto.response.LoginUserResponse;
+import com.nhnacademy.couponapi.presentation.dto.response.JwtAuthResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -28,7 +27,6 @@ import java.util.Arrays;
 @Component
 public class JwtFilter extends GenericFilterBean {
     private final JwtProvider jwtProvider;
-    private final AuthAdaptor authAdaptor;
 
     private static final List<String> EXCLUDE_URLS = Arrays.asList(
             "/coupons/swagger-ui.html",
@@ -55,14 +53,14 @@ public class JwtFilter extends GenericFilterBean {
         String token = getToken(httpRequest);
 
         if (jwtProvider.isValidToken(token)) {
-            LoginUserResponse user = jwtProvider.getLoginUserFromToken(token);
+            JwtAuthResponse user = jwtProvider.getJwtAuthFromToken(token);
 
-            JwtUserDetails jwtUserDetails = JwtUserDetails.of(user.userId(),
-                    user.userRole(), token);
+            JwtUserDetails jwtUserDetails = JwtUserDetails.of(user.customerId(),
+                    user.role(), token);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     jwtUserDetails, null,
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.userRole()))
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.role()))
             );
             httpResponse.setHeader("Authorization", "Bearer " + token);
             httpResponse.setHeader("Refresh-Token", ((HttpServletRequest) request).getHeader("Refresh-Token"));

@@ -1,6 +1,6 @@
 package com.nhnacademy.couponapi.common.jwt;
 
-import com.nhnacademy.couponapi.presentation.dto.response.LoginUserResponse;
+import com.nhnacademy.couponapi.presentation.dto.response.JwtAuthResponse;
 import com.nhnacademy.couponapi.common.exception.JwtException;
 import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import io.jsonwebtoken.Claims;
@@ -56,15 +56,18 @@ public class JwtProvider {
                 .getPayload();
     }
 
-    public LoginUserResponse getLoginUserFromToken(String token) {
+    public JwtAuthResponse getJwtAuthFromToken(String token) {
         try {
             Claims claims = parseToken(token);
 
-            Long userId = claims.get("userId", Long.class);
-            String userRole = claims.get("userRole", String.class);
+            Long customerId = claims.get("userId", Long.class);
+            String role = claims.get("userRole", String.class);
             String loginStatusName = claims.get("loginStatus", String.class);
 
-            return new LoginUserResponse(userId, userRole, loginStatusName);
+            return JwtAuthResponse.builder()
+                    .customerId(customerId)
+                    .role(role)
+                    .loginStateName(loginStatusName).build();
         } catch (ExpiredJwtException e) {
             throw new JwtException(ErrorStatus.toErrorStatus("JWT token is expired", 401, LocalDateTime.now()));
         } catch (Exception e) {
