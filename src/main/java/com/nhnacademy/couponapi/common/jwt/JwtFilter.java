@@ -84,21 +84,20 @@ public class JwtFilter extends GenericFilterBean {
         String accessToken = getToken(httpRequest);
         String refreshToken = httpRequest.getHeader("Refresh-Token");
 
-        if (jwtProvider.isValidToken(accessToken)) {
-            String uuid = jwtProvider.getUserNameFromToken(accessToken);
-            JwtAuthResponse jwtAuthResponse = authAdaptor.getUserInfoByUUID(uuid);
 
-            JwtUserDetails jwtUserDetails = JwtUserDetails.of(jwtAuthResponse.customerId(),
-                    jwtAuthResponse.role(), accessToken, refreshToken);
+        String uuid = jwtProvider.getUserNameFromToken(accessToken);
+        JwtAuthResponse jwtAuthResponse = authAdaptor.getUserInfoByUUID(uuid);
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    jwtUserDetails, null,
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
-            );
-            httpResponse.setHeader("Authorization", "Bearer " + accessToken);
-            httpResponse.setHeader("Refresh-Token", refreshToken);
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
+        JwtUserDetails jwtUserDetails = JwtUserDetails.of(jwtAuthResponse.customerId(),
+                jwtAuthResponse.role(), accessToken, refreshToken);
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                jwtUserDetails, null,
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
+        );
+        httpResponse.setHeader("Authorization", "Bearer " + accessToken);
+        httpResponse.setHeader("Refresh-Token", refreshToken);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
 
         chain.doFilter(request, response);
