@@ -1,6 +1,8 @@
 package com.nhnacademy.couponapi.presentation.controller;
 
 import com.nhnacademy.couponapi.application.service.CouponService;
+import com.nhnacademy.couponapi.common.jwt.JwtUserDetails;
+import com.nhnacademy.couponapi.common.jwt.annotation.CurrentUser;
 import com.nhnacademy.couponapi.presentation.dto.response.BookDetailCouponResponseDTO;
 import com.nhnacademy.couponapi.presentation.dto.response.CouponInfoResponse;
 import com.nhnacademy.couponapi.presentation.dto.response.ExpiredCouponUserResponse;
@@ -11,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -53,10 +57,14 @@ public class CouponController {
                     @ApiResponse(responseCode = "500", description = "서버 오류")
             }
     )
-    public List<BookDetailCouponResponseDTO> getCoupons(
+    public ResponseEntity<List<BookDetailCouponResponseDTO>> getCoupons(
             @Parameter(description = "도서 ID", required = true) @RequestParam Long bookId,
-            @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds) {
-        return couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds);
+            @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds,
+            @CurrentUser JwtUserDetails jwtUserDetails) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUserDetails.accessToken())
+                .header("Refresh-Token", jwtUserDetails.refreshToken())
+                .body(couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds));
     }
 
     /**

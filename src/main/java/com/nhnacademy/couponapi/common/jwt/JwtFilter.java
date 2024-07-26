@@ -35,7 +35,6 @@ public class JwtFilter extends GenericFilterBean {
             "/coupons/swagger-ui/index.html",
             "/coupons/v3/api-docs",
             "/coupons/swagger-ui",
-            "/coupons",
             "/coupons/expired",
             "/coupons/info"
     );
@@ -47,26 +46,56 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String path = httpRequest.getServletPath();
 
+        //토큰이 있으면 받고 없으면 바로 리턴
+        if (path.matches("/coupons")) {
+            try {
+                String accessToken = getToken(httpRequest);
+                String refreshToken = httpRequest.getHeader("Refresh-Token");
+                String uuid = jwtProvider.getUserNameFromToken(accessToken);
+                JwtAuthResponse jwtAuthResponse = authAdaptor.getUserInfoByUUID(uuid);
+
+                JwtUserDetails jwtUserDetails = JwtUserDetails.of(jwtAuthResponse.customerId(),
+                        jwtAuthResponse.role(), accessToken, refreshToken);
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        jwtUserDetails, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
+                );
+
+                httpResponse.setHeader("Authorization", "Bearer " + accessToken);
+                httpResponse.setHeader("Refresh-Token", refreshToken);
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+                chain.doFilter(request, response);
+                return;
+
+            } catch (Exception e) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
+
         if (isExcludedUrl(path) && StringUtils.isEmpty(httpRequest.getHeader("Authorization"))) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = getToken(httpRequest);
+        String accessToken = getToken(httpRequest);
+        String refreshToken = httpRequest.getHeader("Refresh-Token");
 
-        if (jwtProvider.isValidToken(token)) {
-            String uuid = jwtProvider.getUserNameFromToken(token);
+        if (jwtProvider.isValidToken(accessToken)) {
+            String uuid = jwtProvider.getUserNameFromToken(accessToken);
             JwtAuthResponse jwtAuthResponse = authAdaptor.getUserInfoByUUID(uuid);
 
             JwtUserDetails jwtUserDetails = JwtUserDetails.of(jwtAuthResponse.customerId(),
-                    jwtAuthResponse.role(), token);
+                    jwtAuthResponse.role(), accessToken, refreshToken);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     jwtUserDetails, null,
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
             );
-            httpResponse.setHeader("Authorization", "Bearer " + token);
-            httpResponse.setHeader("Refresh-Token", jwtAuthResponse.refreshJwt());
+            httpResponse.setHeader("Authorization", "Bearer " + accessToken);
+            httpResponse.setHeader("Refresh-Token", refreshToken);
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
