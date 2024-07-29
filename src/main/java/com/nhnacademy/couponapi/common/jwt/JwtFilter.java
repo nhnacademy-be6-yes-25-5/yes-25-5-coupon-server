@@ -34,7 +34,8 @@ public class JwtFilter extends GenericFilterBean {
             "/coupons/v3/api-docs",
             "/coupons/swagger-ui",
             "/coupons/expired",
-            "/coupons/info"
+            "/coupons/info",
+            "/coupons"
 
     );
 
@@ -53,17 +54,17 @@ public class JwtFilter extends GenericFilterBean {
         String accessToken = getToken(httpRequest);
         String refreshToken = httpRequest.getHeader("Refresh-Token");
 
-        if (jwtProvider.isValidToken(token)) {
-            JwtAuthResponse user = jwtProvider.getJwtAuthFromToken(token);
+        if (jwtProvider.isValidToken(accessToken)) {
+            JwtAuthResponse user = jwtProvider.getJwtAuthFromToken(accessToken);
 
             JwtUserDetails jwtUserDetails = JwtUserDetails.of(user.customerId(),
-                    user.role(), token);
+                    user.role(), accessToken, refreshToken);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     jwtUserDetails, null,
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.role()))
             );
-            httpResponse.setHeader("Authorization", "Bearer " + token);
+            httpResponse.setHeader("Authorization", "Bearer " + accessToken);
             httpResponse.setHeader("Refresh-Token", ((HttpServletRequest) request).getHeader("Refresh-Token"));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
