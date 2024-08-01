@@ -82,4 +82,3 @@ jwt:
 
 api:
   books-users: http://localhost:8061
-  auth: http://localhost:8050

@@ -12,13 +12,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 쿠폰 컨트롤러 클래스입니다.
@@ -61,6 +65,10 @@ public class CouponController {
             @Parameter(description = "도서 ID", required = true) @RequestParam Long bookId,
             @Parameter(description = "카테고리 ID 목록", required = true) @RequestParam List<Long> categoryIds,
             @CurrentUser JwtUserDetails jwtUserDetails) {
+        if (Objects.isNull(jwtUserDetails)) {
+            return ResponseEntity.ok(couponService.getAllByBookIdAndCategoryIds(bookId, categoryIds));
+        }
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUserDetails.accessToken())
                 .header("Refresh-Token", jwtUserDetails.refreshToken())
