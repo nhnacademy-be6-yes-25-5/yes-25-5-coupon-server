@@ -40,7 +40,7 @@ public class CouponCreationUtil {
         Coupon coupon = Coupon.builder()
                 .couponName(couponPolicy.getCouponPolicyName())
                 .couponCode(UUID.randomUUID().toString())
-                .couponExpiredAt(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))  // 한 달 후 만료
+                .couponExpiredAt(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))
                 .couponCreatedAt(new Date())
                 .couponPolicy(couponPolicy)
                 .build();

@@ -25,16 +25,16 @@ public class SecurityConfig {
                                 "/coupons/swagger-ui.html",
                                 "/coupons/swagger-ui/**",
                                 "/coupons/v3/api-docs/**"
-                        ).permitAll() // Swagger 접근 허용
+                        ).permitAll()
                         .requestMatchers(
                                 "/coupon/modal",
                                 "/coupons/books/*/coupons",
                                 "/coupons",
                                 "/coupons/info",
                                 "/coupons/expired"
-                        ).permitAll() // 비회원 접근 허용
-                        .requestMatchers("/coupons/policy").authenticated() // 회원 접근 허용
-                        .anyRequest().authenticated() // 그 외 요청은 인증 필요
+                        ).permitAll()
+                        .requestMatchers("/coupons/policy").authenticated()
+                        .anyRequest().authenticated()
                 );
 
         return http.build();

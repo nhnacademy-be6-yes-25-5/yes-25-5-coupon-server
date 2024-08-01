@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * {@link CouponPolicyCategoryService}의 구현 클래스입니다.
@@ -62,7 +61,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
             );
         }
 
-        // 쿠폰 정책 생성
         CouponPolicy couponPolicy = CouponPolicy.builder()
                 .couponPolicyName(requestDTO.couponPolicyName())
                 .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
@@ -80,7 +78,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
             );
         }
 
-        // 카테고리 쿠폰 정책 생성
         CouponPolicyCategory couponPolicyCategory = CouponPolicyCategory.builder()
                 .couponPolicy(savedCouponPolicy)
                 .categoryId(requestDTO.categoryId())
@@ -95,7 +92,6 @@ public class CouponPolicyCategoryServiceImpl implements CouponPolicyCategoryServ
             );
         }
 
-        // 쿠폰 생성
         couponCreationUtil.createCoupon(savedCouponPolicy);
 
         return CouponPolicyCategoryResponseDTO.builder()
