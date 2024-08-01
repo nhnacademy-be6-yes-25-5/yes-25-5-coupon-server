@@ -2,7 +2,6 @@ package com.nhnacademy.couponapi.application.service.impl;
 
 import com.nhnacademy.couponapi.common.exception.CouponCreationException;
 import com.nhnacademy.couponapi.common.exception.CouponNotFoundException;
-import com.nhnacademy.couponapi.common.exception.payload.ErrorStatus;
 import com.nhnacademy.couponapi.persistence.domain.Coupon;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicy;
 import com.nhnacademy.couponapi.persistence.domain.CouponPolicyBook;

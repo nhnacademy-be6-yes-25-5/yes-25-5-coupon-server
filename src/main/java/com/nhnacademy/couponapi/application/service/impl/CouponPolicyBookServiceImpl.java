@@ -60,7 +60,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
             );
         }
 
-        // 쿠폰 정책 생성
         CouponPolicy couponPolicy = CouponPolicy.builder()
                 .couponPolicyName(requestDTO.couponPolicyName())
                 .couponPolicyDiscountValue(requestDTO.couponPolicyDiscountValue())
@@ -78,7 +77,6 @@ public class CouponPolicyBookServiceImpl implements CouponPolicyBookService {
             );
         }
 
-        // 도서 쿠폰 정책 생성
         CouponPolicyBook couponPolicyBook = CouponPolicyBook.builder()
                 .couponPolicy(savedCouponPolicy)
                 .bookId(requestDTO.bookId())

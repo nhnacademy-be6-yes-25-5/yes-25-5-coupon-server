@@ -80,7 +80,6 @@ springdoc:
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 
-# 각 서버별 api 호출 코드를 수정합니다.
 api:
   books-users: http://localhost:8061
   auth: http://localhost:8050

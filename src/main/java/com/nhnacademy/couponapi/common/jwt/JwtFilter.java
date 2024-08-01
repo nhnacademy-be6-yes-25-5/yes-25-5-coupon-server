@@ -47,7 +47,6 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String path = httpRequest.getServletPath();
 
-        //토큰이 있으면 받고 없으면 바로 리턴
         if (path.matches("/coupons")) {
             try {
                 String accessToken = getToken(httpRequest);
