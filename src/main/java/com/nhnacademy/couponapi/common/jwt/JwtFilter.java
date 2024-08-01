@@ -41,38 +41,10 @@ public class JwtFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String path = httpRequest.getServletPath();
-
-        if (path.matches("/coupons")) {
-            try {
-                String accessToken = getToken(httpRequest);
-                String refreshToken = httpRequest.getHeader("Refresh-Token");
-                String uuid = jwtProvider.getUserNameFromToken(accessToken);
-                JwtAuthResponse jwtAuthResponse = authAdaptor.getUserInfoByUUID(uuid);
-
-                JwtUserDetails jwtUserDetails = JwtUserDetails.of(jwtAuthResponse.customerId(),
-                        jwtAuthResponse.role(), accessToken, refreshToken);
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        jwtUserDetails, null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + jwtAuthResponse.role()))
-                );
-
-                httpResponse.setHeader("Authorization", "Bearer " + accessToken);
-                httpResponse.setHeader("Refresh-Token", refreshToken);
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-                chain.doFilter(request, response);
-                return;
-
-            } catch (Exception e) {
-                chain.doFilter(request, response);
-                return;
-            }
-        }
 
         if (isExcludedUrl(path) && StringUtils.isEmpty(httpRequest.getHeader("Authorization"))) {
             chain.doFilter(request, response);
@@ -111,7 +83,7 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         throw new JwtException(
-            ErrorStatus.toErrorStatus("헤더에서 토큰을 찾을 수 없습니다.", 401, LocalDateTime.now())
+                ErrorStatus.toErrorStatus("헤더에서 토큰을 찾을 수 없습니다.", 401, LocalDateTime.now())
         );
     }
 }
