@@ -47,7 +47,7 @@ Yes25.5의 메세지 기반 쿠폰발급 및 쿠폰 관리를 담당하는 서�
 
 <br/>
 
-<img src="https://github.com/user-attachments/assets/f0ce12ea-3e97-4682-b2ba-5dd2686f4a28" alt="Example Image" style="height: 300px; width: 1300px;">
+<img src="https://github.com/user-attachments/assets/f0ce12ea-3e97-4682-b2ba-5dd2686f4a28" alt="Example Image" style="height: 400px; width: 1300px;">
 
 > 모니터링에 대한 알림
 
